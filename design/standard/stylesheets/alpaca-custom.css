@@ -1,0 +1,22 @@
+/*custom luca*/
+.radio + .radio, .checkbox + .checkbox {
+    margin-top: 10px;
+}
+
+.alpaca-container .alpaca-container-label {
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.alpaca-field-openstreetmap {
+    border: 1px #eee solid;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+.alpaca-control.radio {
+    min-height: inherit;
+    height: inherit;
+    margin-left: 10px;
+    padding: 0
+}
