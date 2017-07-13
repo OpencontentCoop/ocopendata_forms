@@ -175,12 +175,13 @@
             }
         });
         var editObjectForm = function (objectId, containerId) {
+            var d = new Date();
             $('#modal').modal('show');
             $(containerId).alpaca('destroy').alpaca({
-                "dataSource": "{/literal}{'/forms/connector/full/data?object='|ezurl(no)}{literal}" + objectId,
-                "schemaSource": "{/literal}{'/forms/connector/full/schema?object='|ezurl(no)}{literal}" + objectId,
-                "optionsSource": "{/literal}{'/forms/connector/full/options?object='|ezurl(no)}{literal}" + objectId,
-                "viewSource": "{/literal}{'/forms/connector/full/view?object='|ezurl(no)}{literal}" + objectId,
+                "dataSource": "{/literal}{'/forms/connector/full/data?object='|ezurl(no)}{literal}" + objectId + '&nocache=' + d.getTime(),
+                "schemaSource": "{/literal}{'/forms/connector/full/schema?object='|ezurl(no)}{literal}" + objectId + '&nocache=' + d.getTime(),
+                "optionsSource": "{/literal}{'/forms/connector/full/options?object='|ezurl(no)}{literal}" + objectId + '&nocache=' + d.getTime(),
+                "viewSource": "{/literal}{'/forms/connector/full/view?object='|ezurl(no)}{literal}" + objectId + '&nocache=' + d.getTime(),
                 "options": {
                     "form": {
                         "buttons": {
@@ -197,9 +198,9 @@
                             "submit": {
                                 "click": function () {
                                     var button = $('#form-submit');
-                                    button.hide();
                                     this.refreshValidationState(true);
                                     if (this.isValid(true)) {
+                                        button.hide();
                                         var promise = this.ajaxSubmit();
                                         promise.done(function (data) {
                                             if (data.error){
@@ -223,12 +224,13 @@
             });
         };
         var showClassForm = function (classIdentifier, containerId) {
+            var d = new Date();
             $('#modal').modal('show');
             $(containerId).alpaca('destroy').alpaca({
-                "dataSource": "{/literal}{'/forms/connector/full/data?class='|ezurl(no)}{literal}" + classIdentifier,
-                "schemaSource": "{/literal}{'/forms/connector/full/schema?class='|ezurl(no)}{literal}" + classIdentifier,
-                "optionsSource": "{/literal}{'/forms/connector/full/options?class='|ezurl(no)}{literal}" + classIdentifier,
-                "viewSource": "{/literal}{'/forms/connector/full/view?class='|ezurl(no)}{literal}" + classIdentifier,
+                "dataSource": "{/literal}{'/forms/connector/full/data?class='|ezurl(no)}{literal}" + classIdentifier + '&nocache=' + d.getTime(),
+                "schemaSource": "{/literal}{'/forms/connector/full/schema?class='|ezurl(no)}{literal}" + classIdentifier + '&nocache=' + d.getTime(),
+                "optionsSource": "{/literal}{'/forms/connector/full/options?class='|ezurl(no)}{literal}" + classIdentifier + '&nocache=' + d.getTime(),
+                "viewSource": "{/literal}{'/forms/connector/full/view?class='|ezurl(no)}{literal}" + classIdentifier + '&nocache=' + d.getTime(),
                 "options": {
                     "form": {
                         "buttons": {
@@ -245,9 +247,9 @@
                             "submit": {
                                 "click": function () {
                                     var button = $('#form-submit');
-                                    button.hide();
                                     this.refreshValidationState(true);
                                     if (this.isValid(true)) {
+                                        button.hide();
                                         var promise = this.ajaxSubmit();
                                         promise.done(function (data) {
                                             if (data.error){
