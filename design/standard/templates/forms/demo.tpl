@@ -3,6 +3,7 @@
 'bootstrap/bootstrap.min.js',
 'handlebars.min.js',
 'tinymce/tinymce.min.js',
+'tinymce/themes/modern/theme.js',
 'moment-with-locales.min.js',
 'bootstrap-datetimepicker.min.js',
 'jquery.fileupload.js',
@@ -30,7 +31,9 @@
 'leaflet/MarkerCluster.Default.css',
 'bootstrap-datetimepicker.min.css',
 'jquery.fileupload.css',
-'alpaca-custom.css'
+'alpaca-custom.css',
+'tinymce/skins/lightgray/skin.min.css',
+'tinymce/skins/lightgray/content.min.css'
 ))}
 
 <div id="modal" class="modal fade">
