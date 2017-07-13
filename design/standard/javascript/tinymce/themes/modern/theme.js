@@ -573,26 +573,26 @@ tinymce.ThemeManager.add('modern', function(editor) {
 	self.renderUI = function(args) {
 		var skin = settings.skin !== false ? settings.skin || 'lightgray' : false;
 
-		//if (skin) {
-		//	var skinUrl = settings.skin_url;
-        //
-		//	if (skinUrl) {
-		//		skinUrl = editor.documentBaseURI.toAbsolute(skinUrl);
-		//	} else {
-		//		skinUrl = tinymce.baseURL + '/skins/' + skin;
-		//	}
-        //
-		//	// Load special skin for IE7
-		//	// TODO: Remove this when we drop IE7 support
-		//	if (tinymce.Env.documentMode <= 7) {
-		//		args.skinUiCss = skinUrl + '/skin.ie7.min.css';
-		//	} else {
-		//		args.skinUiCss = skinUrl + '/skin.min.css';
-		//	}
-        //
-		//	// Load content.min.css or content.inline.min.css
-		//	editor.contentCSS.push(skinUrl + '/content' + (editor.inline ? '.inline' : '') + '.min.css');
-		//}
+		if (skin) {
+			var skinUrl = settings.skin_url;
+
+			if (skinUrl) {
+				skinUrl = editor.documentBaseURI.toAbsolute(skinUrl);
+			} else {
+				skinUrl = tinymce.baseURL + '/skins/' + skin;
+			}
+
+			// Load special skin for IE7
+			// TODO: Remove this when we drop IE7 support
+			if (tinymce.Env.documentMode <= 7) {
+				args.skinUiCss = skinUrl + '/skin.ie7.min.css';
+			} else {
+				args.skinUiCss = skinUrl + '/skin.min.css';
+			}
+
+			// Load content.min.css or content.inline.min.css
+			editor.contentCSS.push(skinUrl + '/content' + (editor.inline ? '.inline' : '') + '.min.css');
+		}
 
 		// Handle editor setProgressState change
 		editor.on('ProgressState', function(e) {
