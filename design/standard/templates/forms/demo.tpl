@@ -109,6 +109,25 @@
             </div>
         </div>
     </div>
+    <div class="row" id="demo-contents-containers">
+        <div class="col-sm-12">
+            <hr />
+            <p>In questa tabella puoi vedere i contenuti che gengeri in questa sessione di demo</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Class</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="demo-contents">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 
@@ -137,6 +156,8 @@
 
     $(document).ready(function () {
 
+        $('#demo-contents-containers').hide();
+
         var classEndpoint = "/api/opendata/v2/classes";
         var classSelect = $('#selectclass');
         $.ajax({
@@ -153,50 +174,8 @@
                 alert(error.error_message);
             }
         });
-
-        var showClassForm = function (classIdentifier, containerId) {
-            $(containerId).alpaca('destroy').alpaca({
-                "dataSource": "{/literal}{'/forms/connector/full/data?class='|ezurl(no)}{literal}" + classIdentifier,
-                "schemaSource": "{/literal}{'/forms/connector/full/schema?class='|ezurl(no)}{literal}" + classIdentifier,
-                "optionsSource": "{/literal}{'/forms/connector/full/options?class='|ezurl(no)}{literal}" + classIdentifier,
-                "viewSource": "{/literal}{'/forms/connector/full/view?class='|ezurl(no)}{literal}" + classIdentifier,
-                "options": {
-                    "form": {
-                        "buttons": {
-                            "validate": {
-                                "title": "Validate and view JSON!",
-                                "click": function () {
-                                    this.refreshValidationState(true);
-                                    if (this.isValid(true)) {
-                                        var value = this.getValue();
-                                        alert(JSON.stringify(value));
-                                    }
-                                }
-                            },
-                            "submit": {
-                                "click": function () {
-                                    this.refreshValidationState(true);
-                                    if (this.isValid(true)) {
-                                        var promise = this.ajaxSubmit();
-                                        promise.done(function (data) {
-                                            if (data.error){
-                                                alert(data.error);
-                                            }else{
-                                                $('#modal').modal('hide');
-                                            }
-                                        });
-                                        promise.fail(function (error) {
-                                            alert(error);
-                                        });
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        };
         var editObjectForm = function (objectId, containerId) {
+            $('#modal').modal('show');
             $(containerId).alpaca('destroy').alpaca({
                 "dataSource": "{/literal}{'/forms/connector/full/data?object='|ezurl(no)}{literal}" + objectId,
                 "schemaSource": "{/literal}{'/forms/connector/full/schema?object='|ezurl(no)}{literal}" + objectId,
@@ -205,40 +184,109 @@
                 "options": {
                     "form": {
                         "buttons": {
-                            "validate": {
-                                "title": "Validate and view JSON!",
-                                "click": function () {
-                                    this.refreshValidationState(true);
-                                    if (this.isValid(true)) {
-                                        var value = this.getValue();
-                                        alert(JSON.stringify(value));
-                                    }
-                                }
-                            },
+//                            "validate": {
+//                                "title": "Validate and view JSON!",
+//                                "click": function () {
+//                                    this.refreshValidationState(true);
+//                                    if (this.isValid(true)) {
+//                                        var value = this.getValue();
+//                                        alert(JSON.stringify(value));
+//                                    }
+//                                }
+//                            },
                             "submit": {
                                 "click": function () {
+                                    var button = $('#form-submit');
+                                    button.hide();
                                     this.refreshValidationState(true);
                                     if (this.isValid(true)) {
                                         var promise = this.ajaxSubmit();
                                         promise.done(function (data) {
                                             if (data.error){
                                                 alert(data.error);
+                                                button.show();
                                             }else{
                                                 $('#modal').modal('hide');
                                             }
                                         });
                                         promise.fail(function (error) {
                                             alert(error);
+                                            button.show();
                                         });
                                     }
-                                }
+                                },
+                                "id": 'form-submit'
                             }
                         }
                     }
                 }
             });
         };
+        var showClassForm = function (classIdentifier, containerId) {
+            $('#modal').modal('show');
+            $(containerId).alpaca('destroy').alpaca({
+                "dataSource": "{/literal}{'/forms/connector/full/data?class='|ezurl(no)}{literal}" + classIdentifier,
+                "schemaSource": "{/literal}{'/forms/connector/full/schema?class='|ezurl(no)}{literal}" + classIdentifier,
+                "optionsSource": "{/literal}{'/forms/connector/full/options?class='|ezurl(no)}{literal}" + classIdentifier,
+                "viewSource": "{/literal}{'/forms/connector/full/view?class='|ezurl(no)}{literal}" + classIdentifier,
+                "options": {
+                    "form": {
+                        "buttons": {
+//                            "validate": {
+//                                "title": "Validate and view JSON!",
+//                                "click": function () {
+//                                    this.refreshValidationState(true);
+//                                    if (this.isValid(true)) {
+//                                        var value = this.getValue();
+//                                        alert(JSON.stringify(value));
+//                                    }
+//                                }
+//                            },
+                            "submit": {
+                                "click": function () {
+                                    var button = $('#form-submit');
+                                    button.hide();
+                                    this.refreshValidationState(true);
+                                    if (this.isValid(true)) {
+                                        var promise = this.ajaxSubmit();
+                                        promise.done(function (data) {
+                                            if (data.error){
+                                                alert(data.error);
+                                                button.show();
+                                            }else{
+                                                $('#demo-contents-containers').show();
+                                                $('#modal').modal('hide');
+                                                var language = 'ita-IT';
+                                                var newRow = $('<tr></tr>');
+                                                newRow.append($('<td>'+data.content.metadata.id+'</td>'));
+                                                newRow.append($('<td><a href="">'+data.content.metadata.name[language]+'</a></td>'));
+                                                newRow.append($('<td><a href="">'+data.content.metadata.classIdentifier+'</a></td>'));
+                                                var buttonCell = $('<td></td>');
+                                                var edit = $('<button class="btn btn-default" data-object="'+data.content.metadata.id+'"><i class="fa fa-edit"></i></button>')
+                                                        .bind('click', function(e){
+                                                            editObjectForm($(this).data('object'), '#form');
+                                                            e.preventDefault();
+                                                        }).appendTo(buttonCell);
+                                                buttonCell.appendTo(newRow);
+                                                $('#demo-contents').append(newRow);
+                                            }
+                                        });
+                                        promise.fail(function (error) {
+                                            alert(error);
+                                            button.show();
+                                        });
+                                    }
+                                },
+                                "id": 'form-submit'
+                            }
+                        }
+                    }
+                }
+            });
+        };
+
         var showDemoForm = function () {
+            $('#modal').modal('show');
             $("#form").alpaca('destroy').alpaca({
                 "dataSource": "{/literal}{'/forms/connector/demo/data?demo=1'|ezurl(no)}{literal}",
                 "schemaSource": "{/literal}{'/forms/connector/demo/schema'|ezurl(no)}{literal}",
@@ -248,19 +296,16 @@
         };
 
         $('#showclass').on('click', function (e) {
-            $('#modal').modal('show');
             showClassForm(classSelect.val(), '#form');
             e.preventDefault();
         });
 
         $('#showdemo').on('click', function (e) {
-            $('#modal').modal('show');
             showDemoForm();
             e.preventDefault();
         });
 
         $('#editobject').on('click', function (e) {
-            $('#modal').modal('show');
             editObjectForm($('#selectobject').val(), '#form');
             e.preventDefault();
         });
