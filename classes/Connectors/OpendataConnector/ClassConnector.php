@@ -104,8 +104,12 @@ class ClassConnector implements ClassConnectorInterface
 
     public function getView()
     {
+        $baseView = 'create';
+        if ($this->getHelper()->hasParameter('object') || $this->getHelper()->hasParameter('from')){
+            $baseView = 'edit';
+        }
         $view = array(
-            "parent" => "bootstrap-edit",
+            "parent" => "bootstrap-{$baseView}",
             "locale" => "it_IT"
         );
 
