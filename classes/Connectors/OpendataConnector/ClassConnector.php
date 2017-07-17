@@ -10,7 +10,7 @@ use eZHTTPTool;
 
 class ClassConnector implements ClassConnectorInterface
 {
-    const SELECT_PARENT_FIELD_IDENTIFIER = '_parent';
+    const SELECT_PARENT_FIELD_IDENTIFIER = 'add-assignments';
 
     /**
      * @var eZContentClass
@@ -69,8 +69,7 @@ class ClassConnector implements ClassConnectorInterface
             $data["properties"][self::SELECT_PARENT_FIELD_IDENTIFIER] = array(
                 "title" => "Parent Node",
                 'required' => true,
-                'type' => 'array',
-                'minItems' => 1
+                'type' => 'array'
             );
         }
 
@@ -112,6 +111,10 @@ class ClassConnector implements ClassConnectorInterface
             "parent" => "bootstrap-{$baseView}",
             "locale" => "it_IT"
         );
+
+        if ($this->getHelper()->hasSetting('SplitAttributeCategories')) {
+            $view['layout'] = $this->getSplitAttributeCategoriesLayout();
+        }
 
         return $view;
     }
@@ -260,7 +263,7 @@ class ClassConnector implements ClassConnectorInterface
                             'identifiers' => array()
                         );
                     }
-                    $this->fieldCategories[$category]['identifiers'] = $identifier;
+                    $this->fieldCategories[$category]['identifiers'][] = $identifier;
                 }
             }
         }
@@ -268,5 +271,39 @@ class ClassConnector implements ClassConnectorInterface
         return $this->fieldCategories;
     }
 
+    protected function getSplitAttributeCategoriesLayout()
+    {
+        $categories = $this->getFieldCategories();
+        $bindings = array();
+        $tabs = '<ul class="nav nav-tabs">';
+        $panels = '<div class="tab-content">';
+        $i = 0;
 
+        foreach ($categories as $identifier => $category) {
+            $tabClass = $i == 0 ? ' class="active"' : '';
+            $panelClass = $i == 0 ? ' active' : '';
+            $tabs .= '<li' . $tabClass . '><a data-toggle="tab" href="#attribute-group-' . $identifier . '">' . $category['name'] . '</a></li>';
+            $panels .= '<div class="clearfix tab-pane' . $panelClass . '" id="attribute-group-' . $identifier . '"></div>';
+            foreach($category['identifiers'] as $field){
+                $bindings[$field] = 'attribute-group-' . $identifier;
+            }
+            $i++;
+        }
+        $tabs .= '</ul>';
+        $panels .= '</div>';
+
+        if (!$this->getHelper()->hasParameter('parent')) {
+            $panels .= '<div class="clearfix" id="attribute-group-' . self::SELECT_PARENT_FIELD_IDENTIFIER . '"></div>';
+            $bindings[self::SELECT_PARENT_FIELD_IDENTIFIER] = 'attribute-group-' . self::SELECT_PARENT_FIELD_IDENTIFIER;
+        }
+
+        if (count($categories) == 1){
+            $tabs = '';
+        }
+
+        return array(
+            'template' => '<div><legend class="alpaca-container-label">{{options.label}}</legend>' . $tabs . $panels . '</div>',
+            'bindings' => $bindings
+        );
+    }
 }

@@ -2,7 +2,7 @@
 
     var Alpaca = $.alpaca;
 
-    Alpaca.Fields.RelationBrowse = Alpaca.Fields.TableField.extend({
+    Alpaca.Fields.RelationBrowse = Alpaca.Fields.ArrayField.extend({
         getFieldType: function () {
             return "relationbrowse";
         },
@@ -15,15 +15,9 @@
                     "type": "object",
                     "properties": {
                         "id": {
-                            "title": "ID",
                             "type": "string"
                         },
                         "name": {
-                            "title": "Name",
-                            "type": "string"
-                        },
-                        "class": {
-                            "title": "Class",
                             "type": "string"
                         }
                     }
@@ -31,12 +25,19 @@
             });
 
             Alpaca.merge(this.options, {
-                "type": "table",
-                "readonly": true
+                "toolbarSticky": true,
+                "items": {
+                    "fields": {
+                        "id": {
+                            "view": "bootstrap-display",
+                            "type": "hidden"
+                        },
+                        "name": {"view": "bootstrap-display"}
+                    }
+                }
             });
 
             this.base();
-            this.options.showActionsColumn = true;
         },
 
         /**
@@ -90,8 +91,7 @@
                     $.each(opendataBrowse.selection, function(){
                         var data = {
                             id: this.contentobject_id,
-                            name: this.name,
-                            class: this.class_name
+                            name: this.name + '(' + this.class_name + ')'
                         };                        
                         self.addedItems.push(data);
                         

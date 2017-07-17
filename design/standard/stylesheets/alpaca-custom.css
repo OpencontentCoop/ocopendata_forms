@@ -3,7 +3,8 @@
     margin-top: 10px;
 }
 
-.alpaca-container .alpaca-container-label {
+.alpaca-container .alpaca-container-label,
+.alpaca-container-item legend.alpaca-container-label {
     font-size: 1em;
     font-weight: bold;
 }

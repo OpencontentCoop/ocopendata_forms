@@ -2,7 +2,7 @@
 
     var Alpaca = $.alpaca;
 
-    Alpaca.Fields.LocationBrowse = Alpaca.Fields.TableField.extend({
+    Alpaca.Fields.LocationBrowse = Alpaca.Fields.ArrayField.extend({
         getFieldType: function () {
             return "locationbrowse";
         },
@@ -15,11 +15,9 @@
                     "type": "object",
                     "properties": {
                         "node_id": {
-                            "title": "Node ID",
                             "type": "string"
                         },
                         "name": {
-                            "title": "Name",
                             "type": "string"
                         }
                     }
@@ -27,12 +25,19 @@
             });
 
             Alpaca.merge(this.options, {
-                "type": "table",
-                "readonly": true
+                "toolbarSticky": true,
+                "items": {
+                    "fields": {
+                        "node_id": {
+                            "view": "bootstrap-display",
+                            "type": "hidden"
+                        },
+                        "name": {"view": "bootstrap-display"}
+                    }
+                }
             });
 
             this.base();
-            this.options.showActionsColumn = true;
         },
 
         /**
@@ -50,6 +55,8 @@
                     .hide();
 
                 callback();
+
+                $(self.getContainerEl()).parent().show();
 
             });
         },
@@ -111,6 +118,8 @@
 
                                 // trigger update
                                 self.triggerUpdate();
+
+                                $(self.getContainerEl()).parent().find(".alpaca-readonly").show();
 
                                 if (callback)
                                 {
