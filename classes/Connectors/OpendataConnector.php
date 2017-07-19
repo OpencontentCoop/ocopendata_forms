@@ -57,9 +57,6 @@ class OpendataConnector extends AbstractBaseConnector
             } elseif ($this->hasParameter('object')) {
                 $this->object = eZContentObject::fetch((int)$this->getParameter('object'));
                 if ($this->object instanceof eZContentObject) {
-                    if (!$this->object->canRead()) {
-                        throw new \Exception("User can not read object #" . $this->getParameter('object'));
-                    }
                     $this->class = $this->object->contentClass();
                     $parents = $this->object->assignedNodes(false);
                     $parentsIdList = array_column($parents, 'node_id');
@@ -68,10 +65,16 @@ class OpendataConnector extends AbstractBaseConnector
             } elseif ($this->hasParameter('from')) {
                 $this->object = eZContentObject::fetch((int)$this->getParameter('from'));
                 if ($this->object instanceof eZContentObject) {
-                    if (!$this->object->canRead()) {
-                        throw new \Exception("User can not read object #" . $this->getParameter('from'));
-                    }
                     $this->class = $this->object->contentClass();
+                }
+            }
+
+            if ($this->object instanceof eZContentObject) {
+                if (!$this->object->canRead()) {
+                    throw new \Exception("User can not read object #" . $this->getParameter('object'));
+                }
+                if (!$this->object->canEdit()) {
+                    throw new \Exception("User can not edit object #" . $this->getParameter('object'));
                 }
             }
 

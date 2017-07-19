@@ -54,47 +54,23 @@
 
 <h2>Demo form</h2>
 <p>Form dimostrativo: non utitlizza nessun valore dinamico e non salva alcun dato. E' l'implemetazione del tutorial di <a href="http://www.alpacajs.org/tutorial.html">alpacajs <i class="fa fa-external-link"></i> </a></p>
-<p>Utilizza la classe <code>\Opencontent\Ocopendata\Forms\Connectors\DemoConnector</code></p>
 <button id="showdemo" class="btn btn-lg btn-success">Open Demo Form</button>
 <div id="staticform"></div>
+<hr />
+<p>Utilizza la classe <code>\Opencontent\Ocopendata\Forms\Connectors\DemoConnector</code></p>
 
 <h2>Class form</h2>
 <p>Form di creazione e modifica dinamico per ciascuna classe. <strong>Crea e modifica realmente i dati ez!</strong></p>
-<p>Utilizza la classe <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector</code> che richiama l'handler di default <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\ClassConnector</code></p>
-<p>Sono mappati gli attibuti di tipo;</p>
-<ul>
-    <li>ezselection <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\SelectionField</code></li>
-    <li>ezprice <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\PriceField</code></li>
-    <li>ezkeyword <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\KeywordsField</code></li>
-    <li>eztags <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\TagsField</code></li>
-    <li>ezgmaplocation <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\GeoField</code></li>
-    <li>ezdate <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\DateField</code></li>
-    <li>ezdatetime <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\DateTimeField</code></li>
-    <li>eztime <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\TimeField</code></li>
-    <li>ezmatrix <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\MatrixField</code></li>
-    <li>ezxmltext <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\EzXmlField</code></li>
-    <li>ezauthor <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\AuthorField</code></li>
-    <li>ezobjectrelation <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\RelationField</code></li>
-    <li>ezobjectrelationlist <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\RelationsField</code></li>
-    <li>ezbinaryfile <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\FileField</code></li>
-    <li>ezimage <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\ImageField</code></li>
-    <li>ezpage <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\PageField</code></li>
-    <li>ezboolean <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\BooleanField</code></li>
-    <li>ezuser <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\UserField</code></li>
-    <li>ezfloat <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\FloatField</code></li>
-    <li>ezinteger <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\IntegerField</code></li>
-    <li>ezstring <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\StringField</code></li>
-    <li>ezsrrating <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\RatingField</code></li>
-    <li>ezemail <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\EmailField</code></li>
-    <li>ezcountry <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\CountryField</code></li>
-    <li>ezurl <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\UrlField</code></li>
-    <li>eztext <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\TextField</code></li>
-</ul>
 <div class="container">
     <div class="row">
         <div class="col-sm-6">
             <div class="input-group">
-                <select id="selectclass" class="form-control input-lg"></select>
+                <select id="selectclass" class="form-control input-lg">
+                    {def $class_list = fetch(class, list, hash(sort_by, array(name, true())))}
+                    {foreach $class_list as $class}
+                        <option value="{$class.identifier}">{$class.name|wash()}</option>
+                    {/foreach}
+                </select>
                 <span class="input-group-btn">
                     <button id="showclass" class="btn btn-lg btn-success">Create</button>
                 </span>
@@ -129,6 +105,89 @@
         </div>
     </div>
 </div>
+<hr />
+<p>Utilizza la classe <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector</code> che richiama l'handler di default <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\ClassConnector</code></p>
+<p>Sono mappati gli attibuti di tipo;</p>
+<table class="table">
+    <tr>
+        <td>ezselection</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\SelectionField</code></td>
+    </tr>
+    <tr>
+        <td>ezprice</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\PriceField</code></td>
+    </tr>
+    <tr>
+        <td>ezkeyword</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\KeywordsField</code></td>
+    </tr>
+    <tr>
+        <td>eztags</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\TagsField</code></td>
+    </tr>
+    <tr>
+        <td>ezgmaplocation</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\GeoField</code></td>
+    </tr>
+    <tr>
+        <td>ezdate</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\DateField</code></td>
+    </tr>
+    <tr>
+        <td>ezdatetime</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\DateTimeField</code></td>
+    </tr>
+    <tr>
+        <td>eztime</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\TimeField</code></td>
+    </tr>
+    <tr>
+        <td>ezmatrix</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\MatrixField</code></td>
+    </tr>
+    <tr>
+        <td>ezxmltext</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\EzXmlField</code></td>
+    </tr>
+    <tr>
+        <td>ezauthor</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\AuthorField</code></td>
+    </tr>
+    <tr>
+        <td>ezobjectrelation</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\RelationField</code></td>
+    </tr>
+    <tr>
+        <td>ezobjectrelationlist</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\RelationsField</code></td>
+    </tr>
+    <tr>
+        <td>ezbinaryfile</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\FileField</code></td>
+    </tr>
+    <tr>
+        <td>ezimage</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\ImageField</code></td>
+    </tr>
+    <tr>
+        <td>ezpage</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\PageField</code></td>
+    </tr>
+    <tr>
+        <td>ezboolean</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\BooleanField</code></td>
+    </tr>
+    <tr>
+        <td>ezuser</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\UserField</code></td>
+    </tr>
+    <tr>
+        <td>ezfloat</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\FloatField</code></td>
+    </tr>
+    <tr>
+        <td>ezinteger</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\IntegerField</code></td>
+    </tr>
+    <tr>
+        <td>ezstring</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\StringField</code></td>
+    </tr>
+    <tr>
+        <td>ezsrrating</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\RatingField</code></td>
+    </tr>
+    <tr>
+        <td>ezemail</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\EmailField</code></td>
+    </tr>
+    <tr>
+        <td>ezcountry</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\CountryField</code></td>
+    </tr>
+    <tr>
+        <td>ezurl</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\UrlField</code></td>
+    </tr>
+    <tr>
+        <td>eztext</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\TextField</code></td>
+    </tr>
+</table>
 
 
 <h2>Browse demo</h2>
@@ -158,22 +217,7 @@
 
         $('#demo-contents-containers').hide();
 
-        var classEndpoint = "/api/opendata/v2/classes";
         var classSelect = $('#selectclass');
-        $.ajax({
-            type: "GET",
-            url: classEndpoint,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-                $.each(data.classes, function () {
-                    classSelect.append($('<option value="' + this.identifier + '">' + this.name + '</option>'));
-                });
-            },
-            error: function (data) {
-                alert(error.error_message);
-            }
-        });
         var editObjectForm = function (objectId, containerId) {
             var d = new Date();
             $('#modal').modal('show');
@@ -185,16 +229,6 @@
                 "options": {
                     "form": {
                         "buttons": {
-//                            "validate": {
-//                                "title": "Validate and view JSON!",
-//                                "click": function () {
-//                                    this.refreshValidationState(true);
-//                                    if (this.isValid(true)) {
-//                                        var value = this.getValue();
-//                                        alert(JSON.stringify(value));
-//                                    }
-//                                }
-//                            },
                             "submit": {
                                 "click": function () {
                                     var button = $('#form-submit');

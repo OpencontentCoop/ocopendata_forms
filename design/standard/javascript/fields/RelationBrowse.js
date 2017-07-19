@@ -11,7 +11,7 @@
 
             Alpaca.merge(this.schema, {
                 "type": "array",
-                "items" : {
+                "items": {
                     "type": "object",
                     "properties": {
                         "id": {
@@ -43,11 +43,11 @@
         /**
          * @see Alpaca.Field#afterRenderContainer
          */
-        afterRenderContainer: function(model, callback) {
+        afterRenderContainer: function (model, callback) {
 
             var self = this;
 
-            this.base(model, function() {
+            this.base(model, function () {
                 var container = self.getContainerEl();
                 self.browser = $('<div></div>')
                     .prependTo(container)
@@ -73,34 +73,35 @@
          * @param {Any} data the data for the newly inserted item
          * @param [Function] callback called after the child is added
          */
-        addItem: function(index, schema, options, data, callback)
-        {
+        addItem: function (index, schema, options, data, callback) {
             var self = this;
             var toolbarEl = $(self.getFieldEl()).find(".alpaca-array-toolbar[data-alpaca-array-toolbar-field-id='" + self.getId() + "']");
 
-            if (self._validateEqualMaxItems())
-            {
-                self.browser.show();
-                $(toolbarEl).hide();
 
-                self.browser.on('opendata.browse.select', function(event, opendataBrowse){
+            self.browser.show();
+            $(toolbarEl).hide();
 
-                    self.browser.hide();
-                    self.browser.off('opendata.browse.select');
-                    
-                    $.each(opendataBrowse.selection, function(){
-                        var data = {
-                            id: this.contentobject_id,
-                            name: this.name + '(' + this.class_name + ')'
-                        };                        
+            self.browser.on('opendata.browse.select', function (event, opendataBrowse) {
+
+                self.browser.hide();
+                self.browser.off('opendata.browse.select');
+
+                $.each(opendataBrowse.selection, function () {
+                    var data = {
+                        id: this.contentobject_id,
+                        name: this.name + ' (' + this.class_name + ')'
+                    };
+
+                    if (self._validateEqualMaxItems()) {
+
                         self.addedItems.push(data);
-                        
-                        self.createItem(index, schema, options, data, function(item) {
+
+                        self.createItem(index, schema, options, data, function (item) {
                             // register the child
                             self.registerChild(item, index);
 
                             // insert into dom
-                            self.doAddItem(index, item, function() {
+                            self.doAddItem(index, item, function () {
 
                                 // updates dom markers for this element and any siblings
                                 self.handleRepositionDOMRefresh();
@@ -117,32 +118,30 @@
                                 // trigger update
                                 self.triggerUpdate();
 
-                                if (callback)
-                                {
+                                if (callback) {
                                     callback(item);
                                 }
 
                             });
                         });
-                    });
-                    opendataBrowse.reset();
+                    }
+
                 });
-            }
+                opendataBrowse.reset();
+            });
         },
 
-        removeItem: function(childIndex, callback)
-        {
+        removeItem: function (childIndex, callback) {
             var self = this;
 
             var toolbarEl = $(self.getFieldEl()).find(".alpaca-array-toolbar[data-alpaca-array-toolbar-field-id='" + self.getId() + "']");
 
-            if (this._validateEqualMinItems())
-            {
+            if (this._validateEqualMinItems()) {
                 // unregister the child
                 self.unregisterChild(childIndex);
 
                 // remove itemContainerEl from DOM
-                self.doRemoveItem(childIndex, function() {
+                self.doRemoveItem(childIndex, function () {
 
                     self.browser.hide();
 
@@ -161,8 +160,7 @@
                     // trigger update
                     self.triggerUpdate();
 
-                    if (callback)
-                    {
+                    if (callback) {
                         callback();
                     }
 
@@ -170,7 +168,7 @@
             }
         },
 
-        getSchemaOfOptions: function() {
+        getSchemaOfOptions: function () {
             return Alpaca.merge(this.base(), {
                 "properties": {
                     "browse": {
@@ -182,7 +180,7 @@
             });
         },
 
-        getOptionsForOptions: function() {
+        getOptionsForOptions: function () {
             return Alpaca.merge(this.base(), {
                 "fields": {
                     "browse": {
