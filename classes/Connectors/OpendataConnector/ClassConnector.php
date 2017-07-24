@@ -126,13 +126,50 @@ class ClassConnector implements ClassConnectorInterface
 
     public function submit()
     {
+        $payload = $this->getPayloadFromPostData();
+
+        $result = $this->doSubmit($payload);
+
+        return $result;
+    }
+
+    protected function doSubmit(PayloadBuilder $payload)
+    {
+        $contentRepository = new ContentRepository();
+        $contentRepository->setEnvironment(EnvironmentLoader::loadPreset('content'));
+
+        if ($this->isUpdate()){
+            $result = $contentRepository->update($payload->getArrayCopy());
+        }else{
+            $result = $contentRepository->create($payload->getArrayCopy());
+        }
+
+        $this->cleanup();
+
+        return $result;
+    }
+
+    protected function cleanup()
+    {
+        foreach ($this->getFieldConnectors() as $identifier => $connector) {
+            if ($connector instanceof UploadFieldConnector){
+                $connector->cleanup();
+            }
+        }
+    }
+
+    protected function isUpdate()
+    {
+        return $this->getHelper()->hasParameter('object');
+    }
+
+    protected function getPayloadFromPostData()
+    {
         $payload = new PayloadBuilder();
         $http = eZHTTPTool::instance();
 
-        $isUpdate = false;
         if ($this->getHelper()->hasParameter('object')) {
             $payload->setId((int)$this->getHelper()->getParameter('object'));
-            $isUpdate = true;
         }
 
         $payload->setClassIdentifier($this->class->attribute('identifier'));
@@ -168,22 +205,7 @@ class ClassConnector implements ClassConnectorInterface
             }
         }
 
-        $contentRepository = new ContentRepository();
-        $contentRepository->setEnvironment(EnvironmentLoader::loadPreset('content'));
-
-
-        if ($isUpdate){
-            $result = $contentRepository->update($payload->getArrayCopy());
-        }else{
-            $result = $contentRepository->create($payload->getArrayCopy());
-        }
-
-        foreach ($this->getFieldConnectors() as $identifier => $connector) {
-            if ($connector instanceof UploadFieldConnector){
-                $connector->cleanup();
-            }
-        }
-        return $result;
+        return $payload;
     }
 
     public function upload()

@@ -14,19 +14,19 @@ class OpendataConnector extends AbstractBaseConnector
     /**
      * @var eZContentClass
      */
-    private $class;
+    protected $class;
 
     /**
      * @var eZContentObject
      */
-    private $object;
+    protected $object;
 
     /**
      * @var ClassConnectorInterface
      */
-    private $classConnector;
+    protected $classConnector;
 
-    private $language;
+    protected $language;
 
     private static $isLoaded;
 
@@ -82,7 +82,11 @@ class OpendataConnector extends AbstractBaseConnector
                 throw new \Exception("Missing class/object parameter");
             }
 
-            $this->classConnector = ClassConnectorFactory::load($this->class, $this->getHelper());
+            if ($this->getHelper()->hasSetting('ClassConnector')){
+                $this->classConnector = ClassConnectorFactory::instance($this->getHelper()->getSetting('ClassConnector'), $this->class, $this->getHelper());
+            }else{
+                $this->classConnector = ClassConnectorFactory::load($this->class, $this->getHelper());
+            }
 
             self::$isLoaded = true;
         }
