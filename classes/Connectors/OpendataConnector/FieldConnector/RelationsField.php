@@ -128,8 +128,8 @@ class RelationsField extends FieldConnector
         if (is_array($this->classConstraintList) && !empty( $this->classConstraintList )) {
             $query .= " classes [" . implode(',', $this->classConstraintList) . "]";
         }
-        if (isset( $this->defaultPlacement['node_id'] )) {
-            $query .= " subtree [" . $this->defaultPlacement['node_id'] . "]";
+        if ($this->defaultPlacement) {
+            $query .= " subtree [" . $this->defaultPlacement . "]";
         }
 
         $query .= " sort [name=>asc] limit 300";
