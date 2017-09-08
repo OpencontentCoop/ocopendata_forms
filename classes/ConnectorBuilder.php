@@ -2,8 +2,6 @@
 
 namespace Opencontent\Ocopendata\Forms;
 
-use Opencontent\QueryLanguage\Converter\Exception;
-
 class ConnectorBuilder
 {
     private static $connectorInstances = array();
@@ -48,7 +46,7 @@ class ConnectorBuilder
                             unset( $settings['PHPClass'] );
                             $connector->setSettings($settings);
                         } else {
-                            throw new \Exception("Connector $phpClass must implements " . ConnectorInterface::class);
+                            throw new \Exception("Connector $phpClass must implement Opencontent\Ocopendata\Forms\ConnectorInterface");
                         }
                     }
                 }
