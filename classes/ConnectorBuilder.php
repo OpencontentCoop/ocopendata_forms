@@ -21,7 +21,7 @@ class ConnectorBuilder
     /**
      * @param string $identifier
      * @return ConnectorInterface;
-     * @throws Exception
+     * @throws \Exception
      */
     public function build($identifier)
     {
@@ -29,7 +29,7 @@ class ConnectorBuilder
             return $this->getConnectorInstance($identifier);
         }
 
-        throw new Exception("Connector $identifier not found");
+        throw new \Exception("Connector $identifier not found");
     }
 
     private function getConnectorInstance($identifier)

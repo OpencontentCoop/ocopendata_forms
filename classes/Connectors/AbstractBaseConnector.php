@@ -67,6 +67,13 @@ abstract class AbstractBaseConnector implements ConnectorInterface
     {
         $this->settings = $settings;
         $this->helper->setSettings($this->settings);
+        if (isset($this->settings['DefaultParameters'])){
+            foreach((array)$this->settings['DefaultParameters'] as $key => $value){
+                if (is_string($key)){
+                    $this->helper->setParameter($key, $value);
+                }
+            }
+        }
     }
 
     public function getSettings()
