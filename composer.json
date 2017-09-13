@@ -1,0 +1,19 @@
+{
+    "name": "opencontent/ocopendata_forms-ls",
+    "description": "Opencontent OpenData Forms Extension",
+    "type": "ezpublish-legacy-extension",
+    "authors": [        
+        {
+            "name": "OpenContent",
+            "homepage": "http://www.opencontent.it"
+        }
+    ],
+    "license": "GPL-2.0",    
+    "minimum-stability": "dev",
+    "require": {
+        "ezsystems/ezpublish-legacy-installer": "*"
+    },
+    "extra": {
+        "ezpublish-legacy-extension-name": "ocopendata_forms"
+    }
+}
