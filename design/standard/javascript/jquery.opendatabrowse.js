@@ -9,8 +9,9 @@
             selectionType: 'multiple',
             language: 'ita-IT',
             browsePaginationLimit: 25,
-            browseSort: 'priority',
-            browseOrder: 1
+            browseSort: 'published',
+            browseOrder: '0',
+            openInSearchMode: false
         };
 
     function Plugin(element, options) {
@@ -39,7 +40,12 @@
         init: function () {            
             this.browserContainer = $('<div></div>').appendTo($(this.element));
             this.selectionContainer = $('<div></div>').appendTo($(this.element));   
-            this.buildTreeSelect();            
+            this.buildTreeSelect();
+            if (this.settings.openInSearchMode){
+                this.resetBrowseParameters();
+                this.buildSearchSelect();
+                this.searchInput.trigger('keyup');
+            }
         },   
 
         resetBrowseParameters: function(){

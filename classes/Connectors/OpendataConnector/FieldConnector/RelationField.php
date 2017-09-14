@@ -22,7 +22,7 @@ class RelationField extends FieldConnector
             );
         }
 
-        return $data;
+        return empty($data) ? null : $data;
     }
 
     public function getSchema()
@@ -40,6 +40,9 @@ class RelationField extends FieldConnector
 
     public function getOptions()
     {
+        $classContent = $this->attribute->dataType()->classAttributeContent($this->attribute);
+        $defaultPlacement = $classContent['default_selection_node'] ? $classContent['default_selection_node'] : null;
+
         $options = array(
             "helper" => $this->attribute->attribute('description'),
             'type' => 'relationbrowse',
@@ -47,6 +50,10 @@ class RelationField extends FieldConnector
                 "selectionType" => 'single'
             ),
         );
+
+        if ($defaultPlacement){
+            $options['browse']["subtree"] = $defaultPlacement;
+        }
 
         return $options;
     }

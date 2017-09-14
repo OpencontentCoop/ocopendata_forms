@@ -40,7 +40,7 @@ class OpendataConnector extends AbstractBaseConnector
         'from',
     );
 
-    private function load()
+    protected function load()
     {
         if (!self::$isLoaded){
 
