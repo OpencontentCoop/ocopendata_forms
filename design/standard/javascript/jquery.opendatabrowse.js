@@ -8,7 +8,7 @@
             classes: false,
             selectionType: 'multiple',
             language: 'ita-IT',
-            browsePaginationLimit: 20,
+            browsePaginationLimit: 10,
             browseSort: 'published',
             browseOrder: '0',
             openInSearchMode: false,

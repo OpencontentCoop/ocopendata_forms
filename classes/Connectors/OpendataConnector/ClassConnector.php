@@ -168,8 +168,12 @@ class ClassConnector implements ClassConnectorInterface
 
     protected function getPayloadFromPostData()
     {
+        return $this->getPayloadFromArray($_POST);
+    }
+
+    protected function getPayloadFromArray(array $data)
+    {
         $payload = new PayloadBuilder();
-        $http = eZHTTPTool::instance();
 
         if ($this->getHelper()->hasParameter('object')) {
             $payload->setId((int)$this->getHelper()->getParameter('object'));
@@ -186,8 +190,8 @@ class ClassConnector implements ClassConnectorInterface
                 $parent = array_map('intval', $parent);
                 $payload->setParentNodes($parent);
             }
-        }elseif($http->hasPostVariable(self::SELECT_PARENT_FIELD_IDENTIFIER)){
-            $parentData = $http->postVariable(self::SELECT_PARENT_FIELD_IDENTIFIER);
+        }elseif(isset($data[self::SELECT_PARENT_FIELD_IDENTIFIER])){
+            $parentData = $data[self::SELECT_PARENT_FIELD_IDENTIFIER];
             foreach($parentData as $item){
                 $payload->setParentNode((int)$item['node_id']);
             }
@@ -195,7 +199,7 @@ class ClassConnector implements ClassConnectorInterface
 
         foreach ($this->getFieldConnectors() as $identifier => $connector) {
 
-            $postData = $http->hasPostVariable($identifier) ? $http->postVariable($identifier) : null;
+            $postData = isset($data[$identifier]) ? $data[$identifier] : null;
             if ($postData) {
                 $data = $connector->setPayload($postData);
                 if ($data !== null) {
