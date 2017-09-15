@@ -26,4 +26,8 @@ interface ClassConnectorInterface
     public function setContent($content);
 
     public function getContent();
+
+    public function getSubmitData();
+
+    public function setSubmitData($submitData);
 }

@@ -18,6 +18,11 @@ class ConnectorHelper
         $this->identifier = $connectorIdentifier;
     }
 
+    public function __clone()
+    {
+        $this->parameters = array();
+    }
+
     public function getServiceUrl($serviceIdentifier, array $params = array())
     {
         $suffix = '';

@@ -169,6 +169,7 @@ class OpendataConnector extends AbstractBaseConnector
 
     protected function submit()
     {
+        $this->classConnector->setSubmitData($_POST);
         return $this->classConnector->submit();
     }
 

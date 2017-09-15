@@ -34,6 +34,8 @@ class ClassConnector implements ClassConnectorInterface
 
     protected $content;
 
+    protected $submitData;
+
     public function __construct(eZContentClass $class, $helper)
     {
         $this->class = $class;
@@ -129,7 +131,7 @@ class ClassConnector implements ClassConnectorInterface
 
     public function submit()
     {
-        $payload = $this->getPayloadFromPostData();
+        $payload = $this->getPayloadFromArray($this->getSubmitData());
 
         $result = $this->doSubmit($payload);
 
@@ -198,15 +200,14 @@ class ClassConnector implements ClassConnectorInterface
         }
 
         foreach ($this->getFieldConnectors() as $identifier => $connector) {
-
             $postData = isset($data[$identifier]) ? $data[$identifier] : null;
             if ($postData) {
-                $data = $connector->setPayload($postData);
-                if ($data !== null) {
+                $payloadData = $connector->setPayload($postData);
+                if ($payloadData !== null) {
                     $payload->setData(
                         $this->getHelper()->getSetting('language'),
                         $identifier,
-                        $data
+                        $payloadData
                     );
                 }
             }
@@ -350,6 +351,22 @@ class ClassConnector implements ClassConnectorInterface
     public function setContent($content)
     {
         $this->content = $content;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSubmitData()
+    {
+        return $this->submitData;
+    }
+
+    /**
+     * @param mixed $submitData
+     */
+    public function setSubmitData($submitData)
+    {
+        $this->submitData = $submitData;
     }
 
 }
