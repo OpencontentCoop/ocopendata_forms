@@ -15,7 +15,7 @@
             addCloseButton: false,
             addCreateButton: false,
             createSettings: {
-                'connector': 'full',
+                'connector': 'default',
                 'options': {}
             }
         };
