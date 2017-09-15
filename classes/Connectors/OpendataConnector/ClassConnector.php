@@ -32,6 +32,8 @@ class ClassConnector implements ClassConnectorInterface
      */
     protected $helper;
 
+    protected $content;
+
     public function __construct(eZContentClass $class, $helper)
     {
         $this->class = $class;
@@ -39,9 +41,10 @@ class ClassConnector implements ClassConnectorInterface
     }
 
 
-    public function getData($rawContent)
+    public function getData()
     {
         $content = array();
+        $rawContent = $this->getContent();
         if ($rawContent) {
             foreach ($this->getFieldConnectors() as $identifier => $connector) {
                 $content[$identifier] = $connector->getData($rawContent[$identifier]);
@@ -224,7 +227,7 @@ class ClassConnector implements ClassConnectorInterface
         return false;
     }
 
-    protected function getFieldConnectors()
+    public function getFieldConnectors()
     {
         if ($this->fieldConnectors === null) {
             /** @var \eZContentClassAttribute[] $classDataMap */
@@ -328,4 +331,21 @@ class ClassConnector implements ClassConnectorInterface
             'bindings' => $bindings
         );
     }
+
+    /**
+     * @return mixed
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param mixed $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
+
 }

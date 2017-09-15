@@ -47,7 +47,8 @@ class RelationField extends FieldConnector
             "helper" => $this->attribute->attribute('description'),
             'type' => 'relationbrowse',
             'browse' => array(
-                "selectionType" => 'single'
+                "selectionType" => 'single',
+                "addCloseButton" => true
             ),
         );
 

@@ -3,6 +3,7 @@
 
 {ezscript_require(array(
 'ezjsc::jquery',
+'ezjsc::jqueryUI',
 'bootstrap/bootstrap.min.js',
 'handlebars.min.js',
 'moment-with-locales.min.js',
@@ -346,8 +347,15 @@
             e.preventDefault();
         });
 
-        $('#browse').opendataBrowse().on('opendata.browse.select', function (event, opendataBrowse) {
+        $('#browse').opendataBrowse({
+            'subtree': 43,
+            'addCloseButton': true,
+            'addCreateButton': true,
+            'classes': ['folder','image']
+        }).on('opendata.browse.select', function (event, opendataBrowse) {
             alert(JSON.stringify(opendataBrowse.selection));
+        }).on('opendata.browse.close', function (event, opendataBrowse) {
+            $('#browse').toggle();
         }).hide();
 
         $('#showdemobrowse').on('click', function (e) {

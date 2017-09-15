@@ -7,7 +7,7 @@ interface ClassConnectorInterface
 {
     public function __construct(eZContentClass $class, $helper);
 
-    public function getData($content);
+    public function getData();
 
     public function getSchema();
 
@@ -20,4 +20,10 @@ interface ClassConnectorInterface
     public function submit();
 
     public function upload();
+
+    public function getFieldConnectors();
+
+    public function setContent($content);
+
+    public function getContent();
 }

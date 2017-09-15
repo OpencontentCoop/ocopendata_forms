@@ -90,6 +90,18 @@ class OpendataConnector extends AbstractBaseConnector
                 $this->classConnector = ClassConnectorFactory::load($this->class, $this->getHelper());
             }
 
+            if ($this->object instanceof eZContentObject) {
+                $contentRepository = new ContentRepository();
+                $currentEnvironment = EnvironmentLoader::loadPreset('full');
+                $contentRepository->setEnvironment($currentEnvironment);
+
+                $data = (array)$contentRepository->read( $this->object->attribute('id') );
+                $locale = \eZLocale::currentLocaleCode();
+                if (isset($data['data'][$locale])){
+                    $this->classConnector->setContent($data['data'][$locale]);
+                }
+            }
+
             self::$isLoaded = true;
         }
     }
@@ -104,25 +116,29 @@ class OpendataConnector extends AbstractBaseConnector
     public function runService($serviceIdentifier)
     {
         $this->load();
+        if ($serviceIdentifier == 'debug') {
+            return $this->getDebug();
+        }
         return parent::runService($serviceIdentifier);
+    }
+
+    protected function getDebug()
+    {
+        $data = array(
+            'connector' => get_called_class(),
+            'class' => get_class($this->classConnector),
+            'attributes' => array()
+        );
+        foreach($this->classConnector->getFieldConnectors() as $identifier => $connector){
+            $data['attributes'][$identifier] = get_class($connector);
+        }
+
+        return $data;
     }
 
     protected function getData()
     {
-        $content = null;
-        if ($this->object instanceof eZContentObject) {
-            $contentRepository = new ContentRepository();
-            $currentEnvironment = EnvironmentLoader::loadPreset('full');
-            $contentRepository->setEnvironment($currentEnvironment);
-
-            $data = (array)$contentRepository->read( $this->object->attribute('id') );
-            $locale = \eZLocale::currentLocaleCode();
-            if (isset($data['data'][$locale])){
-                $content = $data['data'][$locale];
-            }
-        }
-
-        return $this->classConnector->getData($content);
+        return $this->classConnector->getData();
     }
 
     protected function getSchema()

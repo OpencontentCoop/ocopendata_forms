@@ -81,6 +81,11 @@
             self.browser.show();
             $(toolbarEl).hide();
 
+            self.browser.on('opendata.browse.close', function (event, opendataBrowse) {
+                self.browser.hide();
+                $(toolbarEl).show();
+            });
+
             self.browser.on('opendata.browse.select', function (event, opendataBrowse) {
 
                 self.browser.hide();
@@ -188,6 +193,14 @@
                     }
                 }
             });
+        },
+
+        getMessage: function(key)
+        {
+            if (key == "addItemButtonLabel"){
+                return "Seleziona";
+            }
+            return this.view.getMessage(key, this.view.locale);
         }
     });
 

@@ -8,10 +8,16 @@
             classes: false,
             selectionType: 'multiple',
             language: 'ita-IT',
-            browsePaginationLimit: 25,
+            browsePaginationLimit: 20,
             browseSort: 'published',
             browseOrder: '0',
-            openInSearchMode: false
+            openInSearchMode: false,
+            addCloseButton: false,
+            addCreateButton: false,
+            createSettings: {
+                'connector': 'full',
+                'options': {}
+            }
         };
 
     function Plugin(element, options) {
@@ -22,6 +28,13 @@
         this.iconStyle = 'line-height: 0.7;display:table-cell;padding-right:5px;font-size:1.5em';
         this.selection = [];
         this.browseParameters = {};
+
+        if (
+            this.settings.classes == false
+            || typeof $.fn.alpaca == 'undefined'
+        ){
+            this.settings.addCreateButton = false;
+        }
 
         this.resetBrowseParameters();
 
@@ -46,6 +59,12 @@
                 this.buildSearchSelect();
                 this.searchInput.trigger('keyup');
             }
+
+            $(document).keypress(function(e) {
+                if(e.which == 13) {
+                    e.preventDefault();
+                }
+            });
         },   
 
         resetBrowseParameters: function(){
@@ -58,20 +77,77 @@
             };
         },
 
+        buildPanelHeader: function(panel,isTree,isSearch,isCreate){
+            var self = this;
+            var panelHeading = $('<div class="panel-heading clearfix" style="padding: 5px 15px 0"></div>').appendTo(panel);
+
+            if (self.settings.addCloseButton) {
+                var closeButton = $('<a class="btn btn-lg btn-link pull-right" href="#"><span class="glyphicon glyphicon-remove"></span></a>');
+                closeButton.bind('click', function (e) {
+                    if (isCreate){
+                        if (self.settings.openInSearchMode){
+                            self.resetBrowseParameters();
+                            self.buildSearchSelect();
+                            self.searchInput.trigger('keyup');
+                        }else{
+                            self.resetBrowseParameters();
+                            self.buildTreeSelect();
+                        }
+                    }
+                    $(self.element).trigger('opendata.browse.close', self);
+                    e.preventDefault();
+                });
+                panelHeading.append(closeButton);
+            }
+
+            if (isTree || isCreate) {
+                var searchButton = $('<a class="btn btn-lg btn-link pull-right" href="#"><span class="glyphicon glyphicon-search"></span></a>');
+                searchButton.bind('click', function (e) {
+                    self.resetBrowseParameters();
+                    self.buildSearchSelect();
+                    e.preventDefault();
+                });
+                panelHeading.append(searchButton);
+            }
+
+            if (isSearch || isCreate){
+                var treeButton = $('<a class="btn btn-lg btn-link pull-right" href="#"><span class="glyphicon glyphicon-th-list"></span></a>');
+                treeButton.bind('click', function(e){
+                    self.resetBrowseParameters();
+                    self.buildTreeSelect();
+                    e.preventDefault();
+                });
+                panelHeading.append(treeButton);
+            }
+
+            if (self.settings.addCreateButton == true) {
+                var createButtonGroup = $('<div class="btn-group pull-right"></div>');
+                createButtonGroup.append($('<button type="button" class="btn btn-lg btn-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-plus"></span> <span class="caret"></span> </button>'));
+                var list = $('<ul class="dropdown-menu"></ul>');
+                $.each(self.settings.classes, function(){
+                    var classIdentifier = this;
+                    var listItem = $('<li></li>');
+                    var listItemLink = $('<a href="#">'+classIdentifier+'</a>')
+                        .bind('click', function (e) {
+                            self.buildCreateForm(classIdentifier);
+                            e.preventDefault();
+                        })
+                        .appendTo(listItem);
+                    listItem.appendTo(list);
+                });
+                createButtonGroup.append(list);
+                panelHeading.append(createButtonGroup);
+            }
+
+            return panelHeading;
+        },
+
         buildTreeSelect: function () {
             var self = this;
 
             $(this.browserContainer).html('');
             var panel = $('<div class="panel panel-default"></div>').appendTo($(this.browserContainer));
-            var panelHeading = $('<div class="panel-heading"></div>').appendTo(panel);                        
-            
-            var searchButton = $('<a class="pull-right" href="#"><span class="glyphicon glyphicon-search" style="vertical-align:sub;font-size:1.5em"></span></a>');
-            searchButton.bind('click', function(e){
-                self.resetBrowseParameters();
-                self.buildSearchSelect();
-                e.preventDefault();
-            });            
-            panelHeading.append(searchButton);
+            var panelHeading = self.buildPanelHeader(panel, true, false, false);
 
             var panelContent = $('<div class="panel-content"></div>').appendTo(panel); 
             var panelFooter = $('<div class="panel-footer clearfix"></div>');
@@ -79,7 +155,7 @@
             if (this.browseParameters.subtree > 1){
                 $.getJSON('/ezjscore/call/ezjscnode::load::'+self.browseParameters.subtree, function(data){
                     if (data.error_text == ''){
-                        var name = $('<h3 class="panel-title" style="line-height: 1.5em;"></h3>');
+                        var name = $('<h3 class="panel-title" style="line-height: 2.5em;"></h3>');
                         var itemName = (data.content.name.length > 50) ? data.content.name.substring(0,47)+'...' : data.content.name;
                         var back = $('<a href="#" data-node_id="'+data.content.parent_node_id+'"><span class="glyphicon glyphicon-circle-arrow-up" style="vertical-align:sub;font-size:1.5em"></span> '+itemName+'</a>').prependTo(name);
                         back.bind('click', function(e){
@@ -93,7 +169,7 @@
                     }
                 });
             }else{
-                panelHeading.append('<h3 class="panel-title" style="line-height: 1.5em;">Nodi di livello principale</h3>');
+                panelHeading.append('<h3 class="panel-title" style="line-height: 2.5em;">Nodi di livello principale</h3>');
             }
 
             $.getJSON('/ezjscore/call/ezjscnode::subtree::'+self.browseParameters.subtree+'::'+self.browseParameters.limit+'::'+self.browseParameters.offset+'::'+self.browseParameters.sort+'::'+self.browseParameters.order, function(data){                
@@ -154,16 +230,8 @@
             var self = this;  
             $(this.browserContainer).html('');
             var panel = $('<div class="panel panel-default"></div>').appendTo($(this.browserContainer));
-            var panelHeading = $('<div class="panel-heading"></div>').appendTo(panel);            
-
-            var treeButton = $('<a class="pull-right" href="#"><span class="glyphicon glyphicon-th-list" style="vertical-align:sub;font-size:1.5em"></span></a>');
-            treeButton.bind('click', function(e){                
-                self.resetBrowseParameters();
-                self.buildTreeSelect();
-                e.preventDefault();
-            });
-            panelHeading.append(treeButton);       
-            panelHeading.append('<h3 class="panel-title" style="line-height: 1.5em;">Cerca</h3>');      
+            var panelHeading = self.buildPanelHeader(panel, false, true, false);
+            panelHeading.append('<h3 class="panel-title" style="line-height: 2.5em;">Cerca</h3>');
 
             var inputGroup = $('<div class="input-group"></div>');
             this.searchInput = $('<input class="form-control" type="text" placeholder="" value=""/>').appendTo(inputGroup);
@@ -192,7 +260,103 @@
             });
         },
 
-        buildQuery: function(){            
+        buildCreateForm: function(classIdentifier){
+            var self = this;
+            $(this.browserContainer).html('');
+            var panel = $('<div class="panel panel-default"></div>').appendTo($(this.browserContainer));
+            var panelHeading = self.buildPanelHeader(panel, false, false, true);
+            panelHeading.append('<h3 class="panel-title" style="line-height: 2.5em;">Crea nuovo</h3>');
+
+            var queryStringParameter = '';
+            if (self.settings.subtree != 1){
+                queryStringParameter = '&parent='+self.settings.subtree;
+            }
+
+            var d = new Date();
+            queryStringParameter += '&nocache='+d.getTime();
+
+            var options = $.extend(true, {
+                "dataSource": "/forms/connector/"+self.settings.createSettings.connector+"/data?class="+classIdentifier+queryStringParameter,
+                "schemaSource": "/forms/connector/"+self.settings.createSettings.connector+"/schema?class="+classIdentifier+queryStringParameter,
+                "optionsSource": "/forms/connector/"+self.settings.createSettings.connector+"/options?class="+classIdentifier+queryStringParameter,
+                "viewSource": "/forms/connector/"+self.settings.createSettings.connector+"/view?class="+classIdentifier+queryStringParameter,
+                "options": {
+                    "form": {
+                        "buttons": {
+                            "submit": {
+                                "click": function () {
+                                    this.refreshValidationState(true);
+                                    if (this.isValid(true)) {
+                                        hideButtons();
+                                        var promise = this.ajaxSubmit();
+                                        promise.done(function (response) {
+                                            if (response.error) {
+                                                alert(response.error);
+                                                showButtons();
+                                            } else {
+
+                                                var name = typeof response.content.metadata.name[self.settings.language] != 'undefined' ?
+                                                    response.content.metadata.name[self.settings.language] :
+                                                    response.content.metadata.name[Object.keys(response.content.metadata.name)[0]];
+
+                                                var item = {
+                                                    contentobject_id: response.content.metadata.id,
+                                                    node_id: response.content.metadata.mainNodeId,
+                                                    name: name,
+                                                    class_name: response.content.metadata.classIdentifier, //@todo
+                                                    class_identifier: response.content.metadata.classIdentifier
+                                                };
+                                                self.appendToSelection(item);
+
+                                                if (self.settings.openInSearchMode){
+                                                    self.resetBrowseParameters();
+                                                    self.buildSearchSelect();
+                                                    self.searchInput.trigger('keyup');
+                                                }else{
+                                                    self.resetBrowseParameters();
+                                                    self.buildTreeSelect();
+                                                }
+                                            }
+                                        });
+                                        promise.fail(function (error) {
+                                            alert(error);
+                                            showButtons();
+                                        });
+                                    }
+                                },
+                                "id": 'sub-form-submit',
+                                "value": "Salva",
+                                "styles": "btn btn-success pull-right"
+                            }
+                        }
+                    }
+                }
+            }, self.settings.createSettings.options);
+
+            var hideButtons = function () {
+                $.each(options.options.form.buttons, function(){
+                    var button = $('#'+this.id);
+                    button.data('original-text', button.text());
+                    button.text('Salvataggio in corso....');
+                    button.attr('disabled', 'disabled');
+                });
+            };
+            var showButtons = function () {
+                $.each(options.options.form.buttons, function(){
+                    var button = $('#'+this.id);
+                    button.text(button.data('original-text'));
+                    button.attr('disabled', false);
+                });
+            };
+
+            var panelContent = $('<div class="panel-content clearfix" style="padding: 20px"></div>')
+                .alpaca('destroy').alpaca(options)
+                .appendTo(panel);
+
+            var panelFooter = $('<div class="panel-footer clearfix"></div>').hide().appendTo(panel);
+        },
+
+        buildQuery: function(){
             var searchText = this.searchInput.val();
             searchText = searchText.replace(/'/g, "\\'");
             var subtreeQuery = " and subtree ["+this.browseParameters.subtree+"]";

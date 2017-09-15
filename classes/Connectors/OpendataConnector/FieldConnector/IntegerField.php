@@ -15,6 +15,7 @@ class IntegerField extends FieldConnector
     public function getOptions()
     {
         $options = array(
+            "helper" => $this->attribute->attribute('description'),
             "type" => "integer"
         );
 

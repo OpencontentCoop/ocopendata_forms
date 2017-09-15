@@ -60,7 +60,7 @@ class FieldConnector implements FieldConnectorInterface
         return array(
             "helper" => $this->attribute->attribute('description'),
             'disabled' => true,
-            'readonly' => true,
+            'readonly' => true
         );
     }
 
