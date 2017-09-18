@@ -121,19 +121,51 @@
             }
 
             if (self.settings.addCreateButton == true) {
+                var detectError = function(response,jqXHR){
+                    if(response.error_message || response.error_code){
+                        console.log(response.error_message);
+                        return true;
+                    }
+                    return false;
+                };
                 var createButtonGroup = $('<div class="btn-group pull-right"></div>');
                 createButtonGroup.append($('<button type="button" class="btn btn-lg btn-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-plus"></span> <span class="caret"></span> </button>'));
                 var list = $('<ul class="dropdown-menu"></ul>');
                 $.each(self.settings.classes, function(){
                     var classIdentifier = this;
                     var listItem = $('<li></li>');
-                    var listItemLink = $('<a href="#">'+classIdentifier+'</a>')
-                        .bind('click', function (e) {
-                            self.buildCreateForm(classIdentifier);
-                            e.preventDefault();
-                        })
-                        .appendTo(listItem);
-                    listItem.appendTo(list);
+                    $.ajax({
+                        type: "GET",
+                        url: '/opendata/api/classes/'+classIdentifier,
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (response,textStatus,jqXHR) {
+                            if (!detectError(response,jqXHR)){
+                                var className = response.name[self.settings.language];
+                                var listItemLink = $('<a href="#">'+className+'</a>')
+                                    .bind('click', function (e) {
+                                        self.buildCreateForm(classIdentifier);
+                                        e.preventDefault();
+                                    })
+                                    .appendTo(listItem);
+                                listItem.appendTo(list);
+                            }
+                        },
+                        error: function (jqXHR) {
+                            var error = {
+                                error_code: jqXHR.status,
+                                error_message: jqXHR.statusText
+                            };
+                            detectError(error,jqXHR);
+                            var listItemLink = $('<a href="#">'+classIdentifier+'</a>')
+                                .bind('click', function (e) {
+                                    self.buildCreateForm(classIdentifier);
+                                    e.preventDefault();
+                                })
+                                .appendTo(listItem);
+                            listItem.appendTo(list);
+                        }
+                    });
                 });
                 createButtonGroup.append(list);
                 panelHeading.append(createButtonGroup);
