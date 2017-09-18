@@ -10,7 +10,7 @@ class TimeField extends FieldConnector
 
     public function getData()
     {
-        return $this->getContent() ? date('H:i', strtotime($this->getContent())) : null;
+        return parent::getData() ? date('H:i', strtotime(parent::getData())) : null;
     }
 
     public function getSchema()

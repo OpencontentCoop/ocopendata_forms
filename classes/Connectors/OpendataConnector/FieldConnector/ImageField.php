@@ -11,8 +11,7 @@ class ImageField extends UploadFieldConnector
 {
     public function getData()
     {
-        if ($this->getContent()) {
-            $rawContent = $this->getContent();
+        if ($rawContent = $this->getContent()) {
             $thumbnail = false;
             $original = false;
             $attribute = eZContentObjectAttribute::fetch($rawContent['id'], $rawContent['version']);

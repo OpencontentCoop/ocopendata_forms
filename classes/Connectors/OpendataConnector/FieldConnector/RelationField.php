@@ -9,8 +9,7 @@ class RelationField extends FieldConnector
     public function getData()
     {
         $data = array();
-        if ($this->getContent()) {
-            $rawContent = $this->getContent();
+        if ($rawContent = $this->getContent()) {
             foreach ($rawContent['content'] as $item) {
 
                 $language = $this->getHelper()->getSetting('language');

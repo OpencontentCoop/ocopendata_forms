@@ -8,7 +8,7 @@ class KeywordsField extends FieldConnector
 {
     public function getData()
     {
-        return implode(', ', (array)$this->getContent());
+        return implode(', ', (array)parent::getData());
     }
 
     public function getOptions()

@@ -11,8 +11,7 @@ class FileField extends UploadFieldConnector
 {
     public function getData()
     {
-        if ($this->getContent()) {
-            $rawContent = $this->getContent();
+        if ($rawContent = $this->getContent()) {
             $file = false;
             $attribute = eZContentObjectAttribute::fetch($rawContent['id'], $rawContent['version']);
             if ($attribute instanceof eZContentObjectAttribute) {

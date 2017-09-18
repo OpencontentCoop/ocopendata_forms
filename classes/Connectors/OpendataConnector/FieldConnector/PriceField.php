@@ -9,8 +9,7 @@ class PriceField extends FieldConnector
 {
     public function getData()
     {
-        if ($this->getContent()) {
-            $rawContent = $this->getContent();
+        if ($rawContent = $this->getContent()) {
             return isset($rawContent['content']['value']) ? number_format($rawContent['content']['value'], 2) : null;
         }
 

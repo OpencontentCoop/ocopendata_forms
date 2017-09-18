@@ -6,7 +6,6 @@ use Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector;
 
 class TextField extends FieldConnector
 {
-
     public function getOptions()
     {
         $options = array(

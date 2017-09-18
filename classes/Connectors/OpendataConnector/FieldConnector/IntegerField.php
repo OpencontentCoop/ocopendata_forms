@@ -9,7 +9,7 @@ class IntegerField extends FieldConnector
 {
     public function getData()
     {
-        return $this->getContent() ? (int)$this->getContent() : null;
+        return parent::getData() ? (int)parent::getData() : null;
     }
 
     public function getOptions()

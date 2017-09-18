@@ -45,7 +45,8 @@ class FieldConnector implements FieldConnectorInterface
 
     public function getData()
     {
-        return $this->getContent();
+        $rawContent = $this->getContent();
+        return $rawContent ? $rawContent['content'] : null;
     }
 
     public function getSchema()

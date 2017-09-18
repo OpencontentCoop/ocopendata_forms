@@ -8,7 +8,7 @@ class BooleanField extends FieldConnector
 {
     public function getData()
     {
-        return (bool)$this->getContent();
+        return (bool)parent::getData();
     }
 
     public function getSchema()

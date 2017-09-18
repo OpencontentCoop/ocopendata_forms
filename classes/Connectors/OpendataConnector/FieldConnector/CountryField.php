@@ -23,7 +23,7 @@ class CountryField extends FieldConnector
 
     public function getData()
     {
-        return explode(',', (array)$this->getContent());
+        return explode(',', (array)parent::getData());
     }
 
     public function getSchema()

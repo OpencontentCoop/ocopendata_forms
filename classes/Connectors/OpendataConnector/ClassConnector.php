@@ -357,7 +357,7 @@ class ClassConnector implements ClassConnectorInterface
         if (is_array($this->content)) {
             foreach ($this->getFieldConnectors() as $identifier => $connector) {
                 if (isset($this->content[$identifier]['content'])){
-                    $connector->setContent($this->content[$identifier]['content']);
+                    $connector->setContent($this->content[$identifier]);
                 }
             }
         }
