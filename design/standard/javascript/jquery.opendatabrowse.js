@@ -142,6 +142,9 @@
                         success: function (response,textStatus,jqXHR) {
                             if (!detectError(response,jqXHR)){
                                 var className = response.name[self.settings.language];
+                                var className = typeof response.name[self.settings.language] != 'undefined' ?
+                                    response.name[self.settings.language] :
+                                    response.name[Object.keys(response.name)[0]];
                                 var listItemLink = $('<a href="#">'+className+'</a>')
                                     .bind('click', function (e) {
                                         self.buildCreateForm(classIdentifier);
