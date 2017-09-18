@@ -9,7 +9,7 @@ class FloatField extends FieldConnector
 {
     public function getData()
     {
-        return (float)$this->getContent();
+        return $this->getContent() ? (float)$this->getContent() : null;
     }
 
     public function getOptions()

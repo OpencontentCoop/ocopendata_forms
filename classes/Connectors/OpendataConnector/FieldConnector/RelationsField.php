@@ -42,24 +42,26 @@ class RelationsField extends FieldConnector
 
     public function getData()
     {
-        $rawContent = $this->getContent();
         $data = array();
-        foreach ($rawContent['content'] as $item) {
+        if ($this->getContent()) {
+            $rawContent = $this->getContent();
+            foreach ($rawContent['content'] as $item) {
 
-            $language = $this->getHelper()->getSetting('language');
-            $itemName = $item['name'];
-            $name = isset( $itemName[$language] ) ? $itemName[$language] : current($itemName);
+                $language = $this->getHelper()->getSetting('language');
+                $itemName = $item['name'];
+                $name = isset($itemName[$language]) ? $itemName[$language] : current($itemName);
 
-            if ($this->selectionType == self::MODE_LIST_BROWSE) {
-                $data[] = array(
-                    'id' => $item['id'],
-                    'name' => $name,
-                    'class' => $item['classIdentifier'],
-                );
-            } elseif ($this->isSelect) {
-                $data[] = (string)$item['id'];
-            } else {
-                $data[] = $item['id'];
+                if ($this->selectionType == self::MODE_LIST_BROWSE) {
+                    $data[] = array(
+                        'id' => $item['id'],
+                        'name' => $name,
+                        'class' => $item['classIdentifier'],
+                    );
+                } elseif ($this->isSelect) {
+                    $data[] = (string)$item['id'];
+                } else {
+                    $data[] = $item['id'];
+                }
             }
         }
 

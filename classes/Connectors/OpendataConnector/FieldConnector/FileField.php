@@ -11,26 +11,28 @@ class FileField extends UploadFieldConnector
 {
     public function getData()
     {
-        $file = false;
-        $rawContent = $this->getContent();
-        $attribute = eZContentObjectAttribute::fetch($rawContent['id'], $rawContent['version']);
-        if ($attribute instanceof eZContentObjectAttribute) {
-            /** @var \eZBinaryFile $attributeContent */
-            $file = $attribute->content();
-        }
-        if ($file instanceof eZBinaryFile) {
-            return array(
-                'id' => $rawContent['id'],
-                'name' => $file->attribute('original_filename'),
-                'size' => $file->attribute('filesize'),
-                'url' => $rawContent['content']['url'],
-                'thumbnailUrl' => false,
-                'deleteUrl' => $this->getServiceUrl('upload', array('delete' => $file->attribute('original_filename'))),
-                'deleteType' => "GET"
-            );
+        if ($this->getContent()) {
+            $rawContent = $this->getContent();
+            $file = false;
+            $attribute = eZContentObjectAttribute::fetch($rawContent['id'], $rawContent['version']);
+            if ($attribute instanceof eZContentObjectAttribute) {
+                /** @var \eZBinaryFile $attributeContent */
+                $file = $attribute->content();
+            }
+            if ($file instanceof eZBinaryFile) {
+                return array(
+                    'id' => $rawContent['id'],
+                    'name' => $file->attribute('original_filename'),
+                    'size' => $file->attribute('filesize'),
+                    'url' => $rawContent['content']['url'],
+                    'thumbnailUrl' => false,
+                    'deleteUrl' => $this->getServiceUrl('upload', array('delete' => $file->attribute('original_filename'))),
+                    'deleteType' => "GET"
+                );
+            }
         }
 
-        return false;
+        return null;
     }
 
     public function getSchema()

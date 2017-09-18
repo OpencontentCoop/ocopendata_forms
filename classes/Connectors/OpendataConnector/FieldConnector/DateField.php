@@ -11,7 +11,7 @@ class DateField extends FieldConnector
 
     public function getData()
     {
-        return date('d/m/Y', strtotime($this->getContent()));
+        return $this->getContent() ? date('d/m/Y', strtotime($this->getContent())) : null;
     }
 
     public function getSchema()

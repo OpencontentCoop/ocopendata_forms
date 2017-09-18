@@ -11,42 +11,44 @@ class ImageField extends UploadFieldConnector
 {
     public function getData()
     {
-        $rawContent = $this->getContent();
-        $thumbnail = false;
-        $original = false;
-        $attribute = eZContentObjectAttribute::fetch($rawContent['id'], $rawContent['version']);
-        if ($attribute instanceof eZContentObjectAttribute) {
-            /** @var \eZImageAliasHandler $attributeContent */
-            $attributeContent = $attribute->content();
-            if ($attributeContent instanceof eZImageAliasHandler) {
-                $thumbnail = $attributeContent->attribute('small');
-                $original = $attributeContent->attribute('original');
+        if ($this->getContent()) {
+            $rawContent = $this->getContent();
+            $thumbnail = false;
+            $original = false;
+            $attribute = eZContentObjectAttribute::fetch($rawContent['id'], $rawContent['version']);
+            if ($attribute instanceof eZContentObjectAttribute) {
+                /** @var \eZImageAliasHandler $attributeContent */
+                $attributeContent = $attribute->content();
+                if ($attributeContent instanceof eZImageAliasHandler) {
+                    $thumbnail = $attributeContent->attribute('small');
+                    $original = $attributeContent->attribute('original');
 
+                }
             }
-        }
-        if ($original) {
+            if ($original) {
 
-            $url = $original['url'];
-            eZURI::transformURI($url, true, 'full');
+                $url = $original['url'];
+                eZURI::transformURI($url, true, 'full');
 
-            $thumbnailUrl = false;
-            if ($thumbnail) {
-                $thumbnailUrl = $thumbnail['url'];
-                eZURI::transformURI($thumbnailUrl, true, 'full');
+                $thumbnailUrl = false;
+                if ($thumbnail) {
+                    $thumbnailUrl = $thumbnail['url'];
+                    eZURI::transformURI($thumbnailUrl, true, 'full');
+                }
+
+                return array(
+                    'image' => array(
+                        'id' => $rawContent['id'],
+                        'name' => $original['original_filename'],
+                        'size' => $original['filesize'],
+                        'url' => $url,
+                        'thumbnailUrl' => $thumbnailUrl,
+                        'deleteUrl' => $this->getServiceUrl('upload', array('delete' => $original['original_filename'])),
+                        'deleteType' => "GET"
+                    ),
+                    'alt' => $original['alternative_text']
+                );
             }
-
-            return array(
-                'image' => array(
-                    'id' => $rawContent['id'],
-                    'name' => $original['original_filename'],
-                    'size' => $original['filesize'],
-                    'url' => $url,
-                    'thumbnailUrl' => $thumbnailUrl,
-                    'deleteUrl' => $this->getServiceUrl('upload', array('delete' => $original['original_filename'])),
-                    'deleteType' => "GET"
-                ),
-                'alt' => $original['alternative_text']
-            );
         }
 
         return null;

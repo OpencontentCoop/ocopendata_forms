@@ -8,19 +8,21 @@ class RelationField extends FieldConnector
 {
     public function getData()
     {
-        $rawContent = $this->getContent();
         $data = array();
-        foreach($rawContent['content'] as $item){
+        if ($this->getContent()) {
+            $rawContent = $this->getContent();
+            foreach ($rawContent['content'] as $item) {
 
-            $language = $this->getHelper()->getSetting('language');
-            $itemName = $item['name'];
-            $name = isset($itemName[$language]) ? $itemName[$language] : current($itemName);
+                $language = $this->getHelper()->getSetting('language');
+                $itemName = $item['name'];
+                $name = isset($itemName[$language]) ? $itemName[$language] : current($itemName);
 
-            $data[] = array(
-                'id' => $item['id'],
-                'name' => $name,
-                'class' => $item['classIdentifier'],
-            );
+                $data[] = array(
+                    'id' => $item['id'],
+                    'name' => $name,
+                    'class' => $item['classIdentifier'],
+                );
+            }
         }
 
         return empty($data) ? null : $data;

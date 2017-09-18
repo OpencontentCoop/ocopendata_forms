@@ -7,10 +7,14 @@ use eZPriceType;
 
 class PriceField extends FieldConnector
 {
-    public function getData($rawContent)
+    public function getData()
     {
-        $rawContent = $this->getContent();
-        return isset($rawContent['content']['value']) ? number_format($rawContent['content']['value'], 2) : null;
+        if ($this->getContent()) {
+            $rawContent = $this->getContent();
+            return isset($rawContent['content']['value']) ? number_format($rawContent['content']['value'], 2) : null;
+        }
+
+        return null;
     }
 
     public function getSchema()
