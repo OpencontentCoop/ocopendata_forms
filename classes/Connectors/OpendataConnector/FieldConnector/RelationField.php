@@ -6,8 +6,9 @@ use Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector;
 
 class RelationField extends FieldConnector
 {
-    public function getData($rawContent)
+    public function getData()
     {
+        $rawContent = $this->getContent();
         $data = array();
         foreach($rawContent['content'] as $item){
 

@@ -7,9 +7,9 @@ use eZFloatType;
 
 class FloatField extends FieldConnector
 {
-    public function getData($rawContent)
+    public function getData()
     {
-        return (float)$rawContent['content'];
+        return (float)$this->getContent();
     }
 
     public function getOptions()

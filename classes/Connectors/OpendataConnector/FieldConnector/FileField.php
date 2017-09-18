@@ -9,9 +9,10 @@ use eZFSFileHandler;
 
 class FileField extends UploadFieldConnector
 {
-    public function getData($rawContent)
+    public function getData()
     {
         $file = false;
+        $rawContent = $this->getContent();
         $attribute = eZContentObjectAttribute::fetch($rawContent['id'], $rawContent['version']);
         if ($attribute instanceof eZContentObjectAttribute) {
             /** @var \eZBinaryFile $attributeContent */

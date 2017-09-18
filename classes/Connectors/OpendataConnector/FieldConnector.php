@@ -22,6 +22,8 @@ class FieldConnector implements FieldConnectorInterface
      */
     protected $helper;
 
+    protected $content;
+
     /**
      * FieldConnector constructor.
      *
@@ -41,9 +43,9 @@ class FieldConnector implements FieldConnectorInterface
         return $this->attribute->attribute('identifier');
     }
 
-    public function getData($rawContent)
+    public function getData()
     {
-        return $rawContent['content'];
+        return $this->getContent();
     }
 
     public function getSchema()
@@ -114,4 +116,19 @@ class FieldConnector implements FieldConnectorInterface
         return $this->attribute;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param mixed $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
 }

@@ -16,7 +16,7 @@ interface FieldConnectorInterface
      */
     public function __construct($attribute, $class, $helper);
 
-    public function getData($content);
+    public function getData();
 
     public function getSchema();
 
@@ -37,4 +37,8 @@ interface FieldConnectorInterface
      * @return eZContentClassAttribute
      */
     public function getAttribute();
+
+    public function setContent($content);
+
+    public function getContent();
 }

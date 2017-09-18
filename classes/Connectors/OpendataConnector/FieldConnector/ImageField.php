@@ -9,8 +9,9 @@ use eZFSFileHandler;
 
 class ImageField extends UploadFieldConnector
 {
-    public function getData($rawContent)
+    public function getData()
     {
+        $rawContent = $this->getContent();
         $thumbnail = false;
         $original = false;
         $attribute = eZContentObjectAttribute::fetch($rawContent['id'], $rawContent['version']);

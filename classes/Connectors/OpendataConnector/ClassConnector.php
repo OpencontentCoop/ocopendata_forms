@@ -46,11 +46,8 @@ class ClassConnector implements ClassConnectorInterface
     public function getData()
     {
         $content = array();
-        $rawContent = $this->getContent();
-        if ($rawContent) {
-            foreach ($this->getFieldConnectors() as $identifier => $connector) {
-                $content[$identifier] = $connector->getData($rawContent[$identifier]);
-            }
+        foreach ($this->getFieldConnectors() as $identifier => $connector) {
+            $content[$identifier] = $connector->getData();
         }
 
         return $content;
@@ -272,6 +269,12 @@ class ClassConnector implements ClassConnectorInterface
         return $this->fieldConnectors;
     }
 
+    public function getFieldConnector($identifier)
+    {
+        $this->getFieldConnectors();
+        return isset($this->fieldConnectors[$identifier]) ? $this->fieldConnectors[$identifier] : null;
+    }
+
     protected function getFieldCategories()
     {
         if ($this->fieldCategories === null){
@@ -351,6 +354,11 @@ class ClassConnector implements ClassConnectorInterface
     public function setContent($content)
     {
         $this->content = $content;
+        if (is_array($this->content)) {
+            foreach ($this->getFieldConnectors() as $identifier => $connector) {
+                $content[$identifier] = $connector->setContent($this->content[$identifier]);
+            }
+        }
     }
 
     /**

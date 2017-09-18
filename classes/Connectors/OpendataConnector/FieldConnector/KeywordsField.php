@@ -6,9 +6,9 @@ use Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector;
 
 class KeywordsField extends FieldConnector
 {
-    public function getData($rawContent)
+    public function getData()
     {
-        return implode(', ', $rawContent['content']);
+        return implode(', ', $this->getContent());
     }
 
     public function getOptions()

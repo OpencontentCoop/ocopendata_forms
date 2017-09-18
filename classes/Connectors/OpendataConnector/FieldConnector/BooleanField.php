@@ -6,9 +6,9 @@ use Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector;
 
 class BooleanField extends FieldConnector
 {
-    public function getData($rawContent)
+    public function getData()
     {
-        return (bool)$rawContent['content'];
+        return (bool)$this->getContent();
     }
 
     public function getSchema()

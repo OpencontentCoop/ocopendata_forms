@@ -21,9 +21,9 @@ class CountryField extends FieldConnector
         }
     }
 
-    public function getData($rawContent)
+    public function getData()
     {
-        return explode(',', $rawContent['content']);
+        return explode(',', $this->getContent());
     }
 
     public function getSchema()

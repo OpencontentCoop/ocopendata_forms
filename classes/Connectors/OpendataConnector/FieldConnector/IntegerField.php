@@ -7,9 +7,9 @@ use eZIntegerType;
 
 class IntegerField extends FieldConnector
 {
-    public function getData($rawContent)
+    public function getData()
     {
-        return (int)$rawContent['content'];
+        return (int)$this->getContent();
     }
 
     public function getOptions()

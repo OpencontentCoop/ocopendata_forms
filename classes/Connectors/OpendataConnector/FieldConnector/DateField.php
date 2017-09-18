@@ -9,9 +9,9 @@ class DateField extends FieldConnector
 {
     //@todo usare eZLocale per il formato delle date
 
-    public function getData($rawContent)
+    public function getData()
     {
-        return date('d/m/Y', strtotime($rawContent['content']));
+        return date('d/m/Y', strtotime($this->getContent()));
     }
 
     public function getSchema()

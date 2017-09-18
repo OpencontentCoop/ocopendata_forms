@@ -23,6 +23,8 @@ interface ClassConnectorInterface
 
     public function getFieldConnectors();
 
+    public function getFieldConnector($identifier);
+
     public function setContent($content);
 
     public function getContent();

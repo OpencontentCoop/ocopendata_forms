@@ -8,9 +8,9 @@ class TimeField extends FieldConnector
 {
     //@todo usare eZLocale per il formato delle date
 
-    public function getData($rawContent)
+    public function getData()
     {
-        return date('H:i', strtotime($rawContent));
+        return date('H:i', strtotime($this->getContent()));
     }
 
     public function getSchema()
