@@ -59,7 +59,7 @@ class OpendataConnector extends AbstractBaseConnector
                 if ($this->object instanceof eZContentObject) {
                     $this->class = $this->object->contentClass();
                     $parents = $this->object->assignedNodes(false);
-                    $parentsIdList = array_column($parents, 'node_id');
+                    $parentsIdList = array_column($parents, 'parent_node_id');
                     $this->getHelper()->setParameter('parent', $parentsIdList);
                 }
             }
