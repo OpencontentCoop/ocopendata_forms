@@ -58,13 +58,7 @@
                 this.resetBrowseParameters();
                 this.buildSearchSelect();
                 this.searchInput.trigger('keyup');
-            }
-
-            $(document).keypress(function(e) {
-                if(e.which == 13) {
-                    e.preventDefault();
-                }
-            });
+            }            
         },   
 
         resetBrowseParameters: function(){
