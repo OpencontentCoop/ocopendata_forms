@@ -34,4 +34,22 @@ class MatrixField extends FieldConnector
     {
         return array("type" => "table");
     }
+
+    public function setPayload($postData)
+    {
+        $definition = $this->attribute->attribute('content');
+        $columns = $definition->attribute('columns');
+        $fixedPostData = array();
+        if(is_array($postData)){
+            foreach ($postData as $item) {
+                foreach ($columns as $column) {
+                    if (!isset($item[$column['identifier']])){
+                        $item[$column['identifier']] = '';
+                    }
+                }
+                $fixedPostData[] = $item;
+            }
+        }
+        return $fixedPostData;
+    }
 }
