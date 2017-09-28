@@ -485,7 +485,35 @@
                 self.buildTreeSelect();
                 e.preventDefault();
             });
-            var listItem = $('<li class="list-group-item"></li>');                      
+            var listItem = $('<li class="list-group-item"></li>');
+            if (typeof $.fn.alpaca != 'undefined') {
+                var detail = $('<a href="#" data-object_id="' + item.contentobject_id + '" style="display:table-cell;" class="btn btn-xs btn-info pull-right"><small>ANTEPRIMA</small></a>');
+                detail.bind('click', function (e) {
+                    var objectId = $(this).data('object_id');
+                    var panelContent = $(this).parents('.panel-content');
+                    var previewContainer = $('<div class="panel-content" style="margin: 5px"></div>');
+
+                    var closePreviewButton = $('<a class="btn btn-xs btn-info pull-right" href="#">CHIUDI ANTEPRIMA</a>');
+                    closePreviewButton.bind('click', function (e) {
+                        panelContent.show();
+                        previewContainer.remove();
+                        e.preventDefault();
+                    }).prependTo(previewContainer);
+                    panelContent.hide();
+                    previewContainer.insertBefore(panelContent);
+
+                    var d = new Date();
+                    var queryStringParameter = '&nocache='+d.getTime();
+                    previewContainer.alpaca('destroy').alpaca({
+                        "dataSource": "/forms/connector/" + self.settings.createSettings.connector + "/data?view=display&object=" + objectId+queryStringParameter,
+                        "schemaSource": "/forms/connector/" + self.settings.createSettings.connector + "/schema?view=display&object=" + objectId+queryStringParameter,
+                        "optionsSource": "/forms/connector/" + self.settings.createSettings.connector + "/options?view=display&object=" + objectId+queryStringParameter,
+                        "viewSource": "/forms/connector/" + self.settings.createSettings.connector + "/view?view=display&object=" + objectId+queryStringParameter
+                    });
+                    e.preventDefault();
+                });
+                listItem.append(detail);
+            }
             var input = '';
             if (self.isSelectable(item)){
                 if (!self.isInSelection(item)){
@@ -502,8 +530,10 @@
             }else{                
                 input = $('<span class="glyphicon glyphicon-ban-circle text-muted pull-left" data-selection="'+item.contentobject_id+'" style="'+self.iconStyle+'"></span>');                
             }
+
             listItem.append(input);
-            listItem.append(name); 
+            listItem.append(name);
+
 
             return listItem;
         },  

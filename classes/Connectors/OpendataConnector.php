@@ -38,6 +38,7 @@ class OpendataConnector extends AbstractBaseConnector
         'delete',
         'parent',
         'from',
+        'view',
     );
 
     protected function load()
@@ -152,6 +153,7 @@ class OpendataConnector extends AbstractBaseConnector
             array(
                 "form" => array(
                     "attributes" => array(
+                        "class" => 'opendata-connector',
                         "action" => $this->getHelper()->getServiceUrl('action', $this->getHelper()->getParameters()),
                         "method" => "post",
                         "enctype" => "multipart/form-data"

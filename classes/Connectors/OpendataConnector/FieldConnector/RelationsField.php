@@ -117,7 +117,8 @@ class RelationsField extends FieldConnector
                 "subtree" => $this->defaultPlacement,
                 "classes" => $this->classConstraintList,
                 "selectionType" => 'multiple',
-                "addCloseButton" => true
+                "addCloseButton" => true,
+                "addCreateButton" => !empty($this->classConstraintList) && $this->defaultPlacement
             );
         }
 

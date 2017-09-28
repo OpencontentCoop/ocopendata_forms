@@ -17,10 +17,20 @@ class ClassConnectorFactory
     {
         $settings = eZINI::instance('ocopendata_connectors.ini')->group('ClassSettings');
 
+        $classConnectorName = $settings['DefaultClassConnector'];
+
         if (isset( $settings['ClassConnectors'][$class->attribute('identifier')] )) {
             $classConnectorName = $settings['ClassConnectors'][$class->attribute('identifier')];
         }else{
-            $classConnectorName = $settings['DefaultClassConnector'];
+            if (isset($settings['ClassGroupConnectors']) && count($settings['ClassGroupConnectors']) > 0){
+                $classGroups = $class->fetchGroupIDList();
+                foreach($settings['ClassGroupConnectors'] as $groupId => $groupClassConnector){
+                    if (in_array($groupId, $classGroups)){
+                        $classConnectorName = $groupClassConnector;
+                        break;
+                    }
+                }
+            }
         }
 
         return self::instance($classConnectorName, $class, $helper);
