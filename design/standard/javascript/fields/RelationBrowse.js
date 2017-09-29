@@ -84,6 +84,7 @@
             self.browser.on('opendata.browse.close', function (event, opendataBrowse) {
                 self.browser.hide();
                 $(toolbarEl).show();
+                event.stopPropagation();
             });
 
             self.browser.on('opendata.browse.select', function (event, opendataBrowse) {
@@ -133,6 +134,7 @@
 
                 });
                 opendataBrowse.reset();
+                event.stopPropagation();
             });
         },
 
