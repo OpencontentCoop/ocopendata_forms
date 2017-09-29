@@ -490,7 +490,7 @@
                 var detail = $('<a href="#" data-object_id="' + item.contentobject_id + '" style="display:table-cell;" class="btn btn-xs btn-info pull-right"><small>ANTEPRIMA</small></a>');
                 detail.bind('click', function (e) {
                     var objectId = $(this).data('object_id');
-                    var panelContent = $(this).parents('.panel-content');
+                    var panelContent = $(this).closest('.panel-content');
                     var previewContainer = $('<div class="panel-content" style="margin: 5px"></div>');
 
                     var closePreviewButton = $('<a class="btn btn-xs btn-info pull-right" href="#">CHIUDI ANTEPRIMA</a>');
@@ -570,7 +570,7 @@
                     input.bind('click', function(e){
                         self.removeFromSelection($(this).data('item'));
                         $(self.browserContainer).find('[data-selection="'+$(this).data('item').contentobject_id+'"]').removeClass('glyphicon-check').addClass('glyphicon-unchecked');
-                        $(this).parents('li').remove();
+                        $(this).closest('li').remove();
                         self.refreshSelection();
                     });
                     listItem.append(input);
