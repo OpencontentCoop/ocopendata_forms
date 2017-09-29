@@ -130,6 +130,7 @@
                         });
                     });
                     opendataBrowse.reset();
+                    event.stopPropagation();
                 });
             }
         },
