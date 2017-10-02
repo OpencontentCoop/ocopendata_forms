@@ -19,6 +19,12 @@ class SelectionField extends FieldConnector
         }
     }
 
+    public function getData()
+    {
+        $rawContent = $this->getContent();
+        return $rawContent && !empty($rawContent['content']) && $rawContent['content'][0] != '' ? $rawContent['content'] : null;
+    }
+    
     public function getSchema()
     {
         $schema = array(
