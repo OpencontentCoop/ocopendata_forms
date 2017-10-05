@@ -6,6 +6,23 @@ use Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector;
 
 class RelationField extends FieldConnector
 {
+    const MODE_LIST_BROWSE = 0;
+
+    const MODE_LIST_DROP_DOWN = 1;
+
+    private $selectionType;
+
+    private $defaultPlacement;
+
+    public function __construct($attribute, $class, $helper)
+    {
+        parent::__construct($attribute, $class, $helper);
+
+        $classContent = $this->attribute->dataType()->classAttributeContent($this->attribute);
+        $this->selectionType = (int)$classContent['selection_type'];
+        $this->defaultPlacement = $classContent['default_selection_node'] ? $classContent['default_selection_node'] : null;
+    }
+
     public function getData()
     {
         $data = array();
@@ -14,17 +31,21 @@ class RelationField extends FieldConnector
 
                 $language = $this->getHelper()->getSetting('language');
                 $itemName = $item['name'];
-                $name = isset($itemName[$language]) ? $itemName[$language] : current($itemName);
+                $name = isset( $itemName[$language] ) ? $itemName[$language] : current($itemName);
 
-                $data[] = array(
-                    'id' => $item['id'],
-                    'name' => $name,
-                    'class' => $item['classIdentifier'],
-                );
+                if ($this->selectionType == self::MODE_LIST_BROWSE) {
+                    $data[] = array(
+                        'id' => $item['id'],
+                        'name' => $name,
+                        'class' => $item['classIdentifier'],
+                    );
+                } else {
+                    $data[] = (string)$item['id'];
+                }
             }
         }
 
-        return empty($data) ? null : $data;
+        return empty( $data ) ? null : $data;
     }
 
     public function getSchema()
@@ -32,31 +53,40 @@ class RelationField extends FieldConnector
         $schema = array(
             "title" => $this->attribute->attribute('name'),
             'required' => (bool)$this->attribute->attribute('is_required'),
-            'type' => 'array',
-            'minItems' => (bool)$this->attribute->attribute('is_required') ? 1 : 0,
-            'maxItems' => 1
+            'relation_mode' => $this->selectionType
         );
+        if ($this->selectionType == self::MODE_LIST_BROWSE) {
+            $schema['type'] = 'array';
+            $schema['minItems'] = (bool)$this->attribute->attribute('is_required') ? 1 : 0;
+            $schema['maxItems'] = 1;
+        } else {
+            $schema['enum'] = array();
+        }
 
         return $schema;
     }
 
     public function getOptions()
     {
-        $classContent = $this->attribute->dataType()->classAttributeContent($this->attribute);
-        $defaultPlacement = $classContent['default_selection_node'] ? $classContent['default_selection_node'] : null;
-
         $options = array(
             "helper" => $this->attribute->attribute('description'),
-            'type' => 'relationbrowse',
-            'browse' => array(
-                "selectionType" => 'single',
-                "addCloseButton" => true
-            ),
         );
 
-        if ($defaultPlacement){
-            $options['browse']["subtree"] = $defaultPlacement;
+        if ($this->selectionType == self::MODE_LIST_BROWSE) {
+            $options["type"] = 'relationbrowse';
+            $options["browse"] = array(
+                "selectionType" => 'single',
+                "addCloseButton" => true,
+                "subtree" => $this->defaultPlacement ? $this->defaultPlacement : null
+            );
+        } else {
+            $options["type"] = "select";
+            $options["showMessages"] = false;
+            $options["hideNone"] = false;
+            $options["dataSource"] = $this->getDataSourceUrl();
+            $options["multiple"] = false;
         }
+
 
         return $options;
     }
@@ -64,11 +94,26 @@ class RelationField extends FieldConnector
     public function setPayload($postData)
     {
         $postData = (array)$postData;
-        foreach($postData as $item){
-            if(is_array($item) && isset($item['id'])){
+        foreach ($postData as $item) {
+            if (is_array($item) && isset( $item['id'] )) {
                 return array((int)$item['id']);
+            } elseif (is_numeric($item)) {
+                return array((int)$item);
             }
         }
+
         return null;
+    }
+
+    private function getDataSourceUrl($fields = '[metadata.id=>metadata.name]')
+    {
+        $query = "select-fields $fields";
+        if ($this->defaultPlacement) {
+            $query .= " subtree [" . $this->defaultPlacement . "] and raw[meta_main_node_id_si] != $this->defaultPlacement";
+        }
+
+        $query .= " sort [name=>asc] limit 300";
+
+        return "/opendata/api/content/search/?q=" . $query;
     }
 }
