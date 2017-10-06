@@ -2,38 +2,38 @@
 
 
 {ezscript_require(array(
-'ezjsc::jquery',
-'ezjsc::jqueryUI',
-'bootstrap/bootstrap.min.js',
-'handlebars.min.js',
-'moment-with-locales.min.js',
-'bootstrap-datetimepicker.min.js',
-'jquery.fileupload.js',
-'jquery.fileupload-process.js',
-'jquery.fileupload-ui.js',
-'alpaca.js',
-'leaflet/leaflet.0.7.2.js',
-'leaflet/Control.Geocoder.js',
-'leaflet/Control.Loading.js',
-'leaflet/Leaflet.MakiMarkers.js',
-'leaflet/leaflet.activearea.js',
-'leaflet/leaflet.markercluster.js',
-'jquery.price_format.min.js',
-'jquery.opendatabrowse.js',
-'fields/OpenStreetMap.js',
-'fields/RelationBrowse.js',
-'fields/LocationBrowse.js'
+    'ezjsc::jquery',
+    'ezjsc::jqueryUI',
+    'bootstrap/bootstrap.min.js',
+    'handlebars.min.js',
+    'moment-with-locales.min.js',
+    'bootstrap-datetimepicker.min.js',
+    'jquery.fileupload.js',
+    'jquery.fileupload-process.js',
+    'jquery.fileupload-ui.js',
+    'alpaca.js',
+    'leaflet/leaflet.0.7.2.js',
+    'leaflet/Control.Geocoder.js',
+    'leaflet/Control.Loading.js',
+    'leaflet/Leaflet.MakiMarkers.js',
+    'leaflet/leaflet.activearea.js',
+    'leaflet/leaflet.markercluster.js',
+    'jquery.price_format.min.js',
+    'jquery.opendatabrowse.js',
+    'fields/OpenStreetMap.js',
+    'fields/RelationBrowse.js',
+    'fields/LocationBrowse.js'
 ))}
 
 {ezcss_require(array(
-'alpaca.min.css',
-'leaflet/leaflet.0.7.2.css',
-'leaflet/Control.Loading.css',
-'leaflet/MarkerCluster.css',
-'leaflet/MarkerCluster.Default.css',
-'bootstrap-datetimepicker.min.css',
-'jquery.fileupload.css',
-'alpaca-custom.css'
+    'alpaca.min.css',
+    'leaflet/leaflet.0.7.2.css',
+    'leaflet/Control.Loading.css',
+    'leaflet/MarkerCluster.css',
+    'leaflet/MarkerCluster.Default.css',
+    'bootstrap-datetimepicker.min.css',
+    'jquery.fileupload.css',
+    'alpaca-custom.css'
 ))}
 
 <div id="modal" class="modal fade">
@@ -51,13 +51,15 @@
 
 <h1>Opendata Forms Demo</h1>
 
-<p class="lead">Implementazione di <a href="http://www.alpacajs.org/">alpacajs <i class="fa fa-external-link"></i> </a> per eZPublish con OpenContentOpendata</p>
+<p class="lead">Implementazione di <a href="http://www.alpacajs.org/">alpacajs <i class="fa fa-external-link"></i> </a>
+    per eZPublish con OpenContentOpendata</p>
 
 <h2>Demo form</h2>
-<p>Form dimostrativo: non utitlizza nessun valore dinamico e non salva alcun dato. E' l'implemetazione del tutorial di <a href="http://www.alpacajs.org/tutorial.html">alpacajs <i class="fa fa-external-link"></i> </a></p>
+<p>Form dimostrativo: non utitlizza nessun valore dinamico e non salva alcun dato. E' l'implemetazione del tutorial di
+    <a href="http://www.alpacajs.org/tutorial.html">alpacajs <i class="fa fa-external-link"></i> </a></p>
 <button id="showdemo" class="btn btn-lg btn-success">Open Demo Form</button>
 <div id="staticform"></div>
-<hr />
+<hr/>
 <p>Utilizza la classe <code>\Opencontent\Ocopendata\Forms\Connectors\DemoConnector</code></p>
 
 <h2>Class form</h2>
@@ -88,7 +90,7 @@
     </div>
     <div class="row" id="demo-contents-containers">
         <div class="col-sm-12">
-            <hr />
+            <hr/>
             <p>In questa tabella puoi vedere i contenuti che gengeri in questa sessione di demo</p>
             <table class="table table-striped">
                 <thead>
@@ -106,87 +108,114 @@
         </div>
     </div>
 </div>
-<hr />
-<p>Utilizza la classe <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector</code> che richiama l'handler di default <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\ClassConnector</code></p>
+<hr/>
+<p>Utilizza la classe <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector</code> che richiama l'handler di
+    default <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\ClassConnector</code></p>
 <p>Sono mappati gli attibuti di tipo;</p>
 <table class="table">
     <tr>
-        <td>ezselection</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\SelectionField</code></td>
+        <td>ezselection</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\SelectionField</code></td>
     </tr>
     <tr>
-        <td>ezprice</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\PriceField</code></td>
+        <td>ezprice</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\PriceField</code></td>
     </tr>
     <tr>
-        <td>ezkeyword</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\KeywordsField</code></td>
+        <td>ezkeyword</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\KeywordsField</code></td>
     </tr>
     <tr>
-        <td>eztags</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\TagsField</code></td>
+        <td>eztags</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\TagsField</code></td>
     </tr>
     <tr>
-        <td>ezgmaplocation</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\GeoField</code></td>
+        <td>ezgmaplocation</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\GeoField</code></td>
     </tr>
     <tr>
-        <td>ezdate</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\DateField</code></td>
+        <td>ezdate</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\DateField</code></td>
     </tr>
     <tr>
-        <td>ezdatetime</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\DateTimeField</code></td>
+        <td>ezdatetime</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\DateTimeField</code></td>
     </tr>
     <tr>
-        <td>eztime</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\TimeField</code></td>
+        <td>eztime</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\TimeField</code></td>
     </tr>
     <tr>
-        <td>ezmatrix</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\MatrixField</code></td>
+        <td>ezmatrix</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\MatrixField</code></td>
     </tr>
     <tr>
-        <td>ezxmltext</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\EzXmlField</code></td>
+        <td>ezxmltext</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\EzXmlField</code></td>
     </tr>
     <tr>
-        <td>ezauthor</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\AuthorField</code></td>
+        <td>ezauthor</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\AuthorField</code></td>
     </tr>
     <tr>
-        <td>ezobjectrelation</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\RelationField</code></td>
+        <td>ezobjectrelation</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\RelationField</code></td>
     </tr>
     <tr>
-        <td>ezobjectrelationlist</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\RelationsField</code></td>
+        <td>ezobjectrelationlist</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\RelationsField</code></td>
     </tr>
     <tr>
-        <td>ezbinaryfile</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\FileField</code></td>
+        <td>ezbinaryfile</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\FileField</code></td>
     </tr>
     <tr>
-        <td>ezimage</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\ImageField</code></td>
+        <td>ezimage</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\ImageField</code></td>
     </tr>
     <tr>
-        <td>ezpage</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\PageField</code></td>
+        <td>ezpage</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\PageField</code></td>
     </tr>
     <tr>
-        <td>ezboolean</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\BooleanField</code></td>
+        <td>ezboolean</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\BooleanField</code></td>
     </tr>
     <tr>
-        <td>ezuser</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\UserField</code></td>
+        <td>ezuser</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\UserField</code></td>
     </tr>
     <tr>
-        <td>ezfloat</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\FloatField</code></td>
+        <td>ezfloat</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\FloatField</code></td>
     </tr>
     <tr>
-        <td>ezinteger</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\IntegerField</code></td>
+        <td>ezinteger</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\IntegerField</code></td>
     </tr>
     <tr>
-        <td>ezstring</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\StringField</code></td>
+        <td>ezstring</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\StringField</code></td>
     </tr>
     <tr>
-        <td>ezsrrating</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\RatingField</code></td>
+        <td>ezsrrating</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\RatingField</code></td>
     </tr>
     <tr>
-        <td>ezemail</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\EmailField</code></td>
+        <td>ezemail</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\EmailField</code></td>
     </tr>
     <tr>
-        <td>ezcountry</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\CountryField</code></td>
+        <td>ezcountry</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\CountryField</code></td>
     </tr>
     <tr>
-        <td>ezurl</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\UrlField</code></td>
+        <td>ezurl</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\UrlField</code></td>
     </tr>
     <tr>
-        <td>eztext</td><td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\TextField</code></td>
+        <td>eztext</td>
+        <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\TextField</code></td>
     </tr>
 </table>
 
