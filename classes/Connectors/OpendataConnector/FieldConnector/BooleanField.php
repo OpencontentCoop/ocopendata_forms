@@ -29,7 +29,7 @@ class BooleanField extends FieldConnector
     }
 
     public function setPayload($postData)
-    {
-        return (bool)$postData;
+    {        
+        return $postData === 'true';
     }
 }
