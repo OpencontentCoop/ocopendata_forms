@@ -65,6 +65,13 @@ class ClassConnector implements ClassConnectorInterface
 
         foreach ($this->getFieldConnectors() as $identifier => $fieldConnector) {
             $data["properties"][$identifier] = $fieldConnector->getSchema();
+            if ($this->isDisplay()){
+                if (empty($fieldConnector->getData())){
+                    unset($data["properties"][$identifier]);
+                }else {
+                    unset( $data["properties"][$identifier]["required"] );
+                }
+            }
         }
 
         if (!$this->getHelper()->hasParameter('parent')) {
@@ -90,6 +97,9 @@ class ClassConnector implements ClassConnectorInterface
             $data["fields"][$identifier] = $fieldConnector->getOptions();
             if (empty($data["fields"][$identifier])){
                 unset($data["fields"][$identifier]);
+            }
+            if ($this->isDisplay()){
+                unset($data["fields"][$identifier]["helper"]);
             }
         }
 
@@ -168,6 +178,11 @@ class ClassConnector implements ClassConnectorInterface
     protected function isUpdate()
     {
         return $this->getHelper()->hasParameter('object');
+    }
+
+    protected function isDisplay()
+    {
+        return $this->getHelper()->hasParameter('view') && $this->getHelper()->getParameter('view') == 'display';
     }
 
     protected function getPayloadFromPostData()

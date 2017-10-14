@@ -5,6 +5,17 @@ use Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector;
 
 class GeoField extends FieldConnector
 {
+    public function getData()
+    {
+        $rawContent = $this->getContent();
+        $content = $rawContent ? $rawContent['content'] : null;
+        if ($content && $content['latitude'] == 0 && $content['longitude'] == 0 && $content['address'] == ''){
+            return null;
+        }
+
+        return $content;
+    }
+
     public function getSchema()
     {
         return array(

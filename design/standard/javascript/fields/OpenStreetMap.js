@@ -21,25 +21,27 @@
             setup: function () {
                 this.base();
 
-                this.schema = {
-                    "type": "object",
-                    "properties": {
-                        "address": {
-                            "title": "Address",
-                            "type": "string"
-                        },
-                        "latitude": {
-                            "title": "Latitude",
-                            "minimum": -180,
-                            "maximum": 180
-                        },
-                        "longitude": {
-                            "title": "Longitude",
-                            "minimum": -180,
-                            "maximum": 180
+                if(!this.isDisplayOnly()) {
+                    this.schema = {
+                        "type": "object",
+                        "properties": {
+                            "address": {
+                                "title": "Address",
+                                "type": "string"
+                            },
+                            "latitude": {
+                                "title": "Latitude",
+                                "minimum": -180,
+                                "maximum": 180
+                            },
+                            "longitude": {
+                                "title": "Longitude",
+                                "minimum": -180,
+                                "maximum": 180
+                            }
                         }
-                    }
-                };
+                    };
+                }
 
                 Alpaca.merge(this.options, {
                     "fields": {
@@ -62,17 +64,7 @@
 
                 this.base(model, function() {
                     var container = self.getContainerEl();
-                    var mapContainer = $('<div id="osm-'+self.getId()+'" style="width: 100%; min-width:200px; max-width:100%; height: 280px; margin-top: 2px;"></div>').prependTo(container);
-
-                    var inputGroup = $('<div class="input-group"></div>');
-                    var searchInput = $('<input class="form-control osm-search-map" type="text" placeholder="" value=""/>').appendTo(inputGroup);
-                    var inputGroupButtonContainer = $('<div class="input-group-btn"></div>');
-                    var searchButton = $('<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>').appendTo(inputGroupButtonContainer);
-                    var locationButton = $('<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-map-marker"></span></button>').appendTo(inputGroupButtonContainer);
-                    var mapButton = $('<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-resize-vertical"></span></button>').appendTo(inputGroupButtonContainer);
-                    inputGroupButtonContainer.appendTo(inputGroup);
-                    inputGroup.prependTo(container);
-
+                    var mapContainer = $('<div id="osm-' + self.getId() + '" style="width: 100%; min-width:200px; max-width:100%; height: 280px; margin-top: 2px;"></div>').prependTo(container);
                     // init map
                     var map = new L.Map(mapContainer[0], {loadingControl: true});
                     L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -80,74 +72,91 @@
                     }).addTo(map);
                     map.setView(new L.latLng(0, 0), 1);
 
-                    mapContainer.hide();
                     var userMarker = self.getUserMarker().init(map);
-
-                    if (self.data && self.data.latitude){
+                    if (self.data && self.data.latitude) {
                         userMarker.set(self.data.latitude, self.data.longitude);
                     }
 
-                    mapButton.bind('click', function(e){
-                        e.preventDefault();
-                        mapContainer.toggle();
-                        map.invalidateSize(false);
-                    });
+                    if(!self.isDisplayOnly()) {
 
-                    searchButton.bind('click', function(e){
-                        //mapContainer.hide();
-                        e.preventDefault();
-                        var query = searchInput.val();
-                        userMarker.search(query, function (results) {
-                            userMarker.resetMakers();
-                            if(results.length > 1) {
-                                mapContainer.show();
-                                map.invalidateSize(false);
-                                $.each(results, function (index, result) {
-                                    var number = index + 1;
-                                    var latLng = new L.latLng(result.center.lat, result.center.lng);
-                                    var marker = new L.marker(latLng, {
-                                        icon: new L.MakiMarkers.icon({
-                                            icon: "star",
-                                            color: "#000"
-                                        })
-                                    });
-                                    marker.on('click', function(e){
-                                        if (e.latlng !== undefined) {
-                                            userMarker.moveIn(e.latlng.lat, e.latlng.lng);
-                                        }
-                                    });
-                                    userMarker.addMarker(marker, false);
-                                });
-                                userMarker.fitBounds();
-                            }else{
-                                mapContainer.hide();
-                                self.displayMessage('Nessun risultato cercando "'+query+'", prova a affinare la ricerca');
-                            }
+                        var inputGroup = $('<div class="input-group"></div>');
+                        var searchInput = $('<input class="form-control osm-search-map" type="text" placeholder="" value=""/>').appendTo(inputGroup);
+                        var inputGroupButtonContainer = $('<div class="input-group-btn"></div>');
+                        var searchButton = $('<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>').appendTo(inputGroupButtonContainer);
+                        var locationButton = $('<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-map-marker"></span></button>').appendTo(inputGroupButtonContainer);
+                        var mapButton = $('<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-resize-vertical"></span></button>').appendTo(inputGroupButtonContainer);
+                        inputGroupButtonContainer.appendTo(inputGroup);
+                        inputGroup.prependTo(container);
+
+                        mapContainer.hide();
+
+                        mapButton.bind('click', function (e) {
+                            e.preventDefault();
+                            mapContainer.toggle();
+                            map.invalidateSize(false);
                         });
-                    });
-                    var locationerror = false;
-                    locationButton.bind('click', function(e){
-                        map.loadingControl.addLoader('lc');
-                        map.locate({setView: true, watch: false})
-                            .on('locationfound', function (e) {
-                                map.loadingControl.removeLoader('lc');
-                                mapContainer.show();
-                                map.invalidateSize(false);
-                                userMarker.moveIn(e.latitude, e.longitude);
-                            })
-                            .on('locationerror', function (e) {
-                                map.loadingControl.removeLoader('lc');
-                                if (!locationerror){
-                                    locationerror = true;
-                                    self.displayMessage(e.message);
+
+                        searchButton.bind('click', function (e) {
+                            //mapContainer.hide();
+                            e.preventDefault();
+                            var query = searchInput.val();
+                            userMarker.search(query, function (results) {
+                                userMarker.resetMakers();
+                                if (results.length > 1) {
+                                    mapContainer.show();
+                                    map.invalidateSize(false);
+                                    $.each(results, function (index, result) {
+                                        var number = index + 1;
+                                        var latLng = new L.latLng(result.center.lat, result.center.lng);
+                                        var marker = new L.marker(latLng, {
+                                            icon: new L.MakiMarkers.icon({
+                                                icon: "star",
+                                                color: "#000"
+                                            })
+                                        });
+                                        marker.on('click', function (e) {
+                                            if (e.latlng !== undefined) {
+                                                userMarker.moveIn(e.latlng.lat, e.latlng.lng);
+                                            }
+                                        });
+                                        userMarker.addMarker(marker, false);
+                                    });
+                                    userMarker.fitBounds();
+                                } else {
+                                    mapContainer.hide();
+                                    self.displayMessage('Nessun risultato cercando "' + query + '", prova a affinare la ricerca');
                                 }
                             });
-                        e.preventDefault();
-                    });
+                        });
 
-                    map.on('click', function (e) {
-                        userMarker.moveIn(e.latlng.lat,e.latlng.lng);
-                    });
+                        var locationerror = false;
+                        locationButton.bind('click', function (e) {
+                            map.loadingControl.addLoader('lc');
+                            map.locate({setView: true, watch: false})
+                                .on('locationfound', function (e) {
+                                    map.loadingControl.removeLoader('lc');
+                                    mapContainer.show();
+                                    map.invalidateSize(false);
+                                    userMarker.moveIn(e.latitude, e.longitude);
+                                })
+                                .on('locationerror', function (e) {
+                                    map.loadingControl.removeLoader('lc');
+                                    if (!locationerror) {
+                                        locationerror = true;
+                                        self.displayMessage(e.message);
+                                    }
+                                });
+                            e.preventDefault();
+                        });
+
+                        map.on('click', function (e) {
+                            userMarker.moveIn(e.latlng.lat, e.latlng.lng);
+                        });
+                    }else{
+                        map.on('click', function (e) {
+                            map.invalidateSize(false);
+                        });
+                    }
 
                     callback();
 
