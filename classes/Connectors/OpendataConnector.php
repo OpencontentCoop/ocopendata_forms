@@ -74,10 +74,10 @@ class OpendataConnector extends AbstractBaseConnector
 
             if ($this->object instanceof eZContentObject) {
                 if (!$this->object->canRead()) {
-                    throw new \Exception("User can not read object #" . $this->getParameter('object'));
+                    throw new \Exception("User can not read object #" . $this->object->attribute('id'));
                 }
-                if (!$this->object->canEdit()) {
-                    throw new \Exception("User can not edit object #" . $this->getParameter('object'));
+                if (!$this->object->canEdit() && $this->getHelper()->getParameter('view') != 'display') {
+                    throw new \Exception("User can not edit object #" . $this->object->attribute('id'));
                 }
             }
 
