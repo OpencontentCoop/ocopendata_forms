@@ -13,6 +13,8 @@ class KeywordsField extends FieldConnector
 
     public function getOptions()
     {
-        return array();
+        return array(
+        	"helper" => $this->attribute->attribute('description')
+    	);
     }
 }

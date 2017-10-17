@@ -15,7 +15,8 @@ class FloatField extends FieldConnector
     public function getOptions()
     {
         $options = array(
-            "type" => "number"
+            "type" => "number",
+            "helper" => $this->attribute->attribute('description')
         );
 
         return $options;

@@ -32,7 +32,10 @@ class MatrixField extends FieldConnector
 
     public function getOptions()
     {
-        return array("type" => "table");
+        return array(
+            "helper" => $this->attribute->attribute('description'),
+            "type" => "table"
+        );
     }
 
     public function setPayload($postData)

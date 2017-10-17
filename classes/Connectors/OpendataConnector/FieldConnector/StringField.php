@@ -9,7 +9,9 @@ class StringField extends FieldConnector
 {
     public function getOptions()
     {
-        $options = array();
+        $options = array(
+            "helper" => $this->attribute->attribute('description')
+        );
 
         return $options;
     }
