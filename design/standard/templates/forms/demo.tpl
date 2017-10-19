@@ -4,7 +4,7 @@
 {ezscript_require(array(
     'ezjsc::jquery',
     'ezjsc::jqueryUI',
-    'bootstrap/bootstrap.min.js',
+    'bootstrap.min.js',
     'handlebars.min.js',
     'moment-with-locales.min.js',
     'bootstrap-datetimepicker.min.js',
@@ -22,7 +22,8 @@
     'jquery.opendatabrowse.js',
     'fields/OpenStreetMap.js',
     'fields/RelationBrowse.js',
-    'fields/LocationBrowse.js'
+    'fields/LocationBrowse.js',
+    'jquery.opendataform.js'
 ))}
 
 {ezcss_require(array(
@@ -227,171 +228,90 @@
 
 {literal}
 <script type="text/javascript">
+$(document).ready(function () {
 
-    // bug in DateTime field?
-    Alpaca.defaultDateFormat = "DD/MM/YYYY";
-    Alpaca.defaultTimeFormat = "HH:mm";
-
-    // bug in Tag field?
-    Array.prototype.toLowerCase = function () {
-        var i = this.length;
-        while (--i >= 0) {
-            if (typeof this[i] === "string") {
-                this[i] = this[i].toLowerCase();
-            }
+    $.opendataFormSetup({
+        onBeforeCreate: function(){
+            $('#modal').modal('show')
+        },
+        onSuccess: function(data){
+            $('#modal').modal('hide');
         }
-        return this;
+    });
+
+    $('#demo-contents-containers').hide();
+
+    var classSelect = $('#selectclass');
+
+    var showDemoForm = function () {
+        $('#modal').modal('show');
+        $("#form").alpaca('destroy').alpaca({
+            "dataSource": "{/literal}{'/forms/connector/demo/data?demo=1'|ezurl(no)}{literal}",
+            "schemaSource": "{/literal}{'/forms/connector/demo/schema'|ezurl(no)}{literal}",
+            "optionsSource": "{/literal}{'/forms/connector/demo/options'|ezurl(no)}{literal}",
+            "viewSource": "{/literal}{'/forms/connector/demo/view'|ezurl(no)}{literal}"
+        });
     };
 
-    $(document).ready(function () {
+    var appendNewData = function(data){
+        $('#demo-contents-containers').show();
+        var language = 'ita-IT';
+        var newRow = $('<tr></tr>');
+        newRow.append($('<td>'+data.content.metadata.id+'</td>'));
+        newRow.append($('<td><a href="">'+data.content.metadata.name[language]+'</a></td>'));
+        newRow.append($('<td><a href="">'+data.content.metadata.classIdentifier+'</a></td>'));
+        var buttonCell = $('<td></td>');
+        $('<button class="btn btn-default" data-object="'+data.content.metadata.id+'"><i class="fa fa-edit"></i></button>')
+            .bind('click', function(e){
+                $('#form').opendataFormEdit({object: data.content.metadata.id});
+                e.preventDefault();
+            }).appendTo(buttonCell);
+        $('<button class="btn btn-default" data-object="'+data.content.metadata.id+'"><i class="fa fa-eye"></i></button>')
+            .bind('click', function(e){
+                $('#form').opendataFormView({object: data.content.metadata.id});
+                e.preventDefault();
+            }).appendTo(buttonCell);
+        buttonCell.appendTo(newRow);
+        $('#demo-contents').append(newRow);
+    }
 
-        $('#demo-contents-containers').hide();
-
-        var classSelect = $('#selectclass');
-        var editObjectForm = function (objectId, containerId) {
-            var d = new Date();
-            $('#modal').modal('show');
-            $(containerId).alpaca('destroy').alpaca({
-                "dataSource": "{/literal}{'/forms/connector/full/data?object='|ezurl(no)}{literal}" + objectId + '&nocache=' + d.getTime(),
-                "schemaSource": "{/literal}{'/forms/connector/full/schema?object='|ezurl(no)}{literal}" + objectId + '&nocache=' + d.getTime(),
-                "optionsSource": "{/literal}{'/forms/connector/full/options?object='|ezurl(no)}{literal}" + objectId + '&nocache=' + d.getTime(),
-                "viewSource": "{/literal}{'/forms/connector/full/view?object='|ezurl(no)}{literal}" + objectId + '&nocache=' + d.getTime(),
-                "options": {
-                    "form": {
-                        "buttons": {
-                            "submit": {
-                                "click": function () {
-                                    var button = $('#form-submit');
-                                    this.refreshValidationState(true);
-                                    if (this.isValid(true)) {
-                                        button.hide();
-                                        var promise = this.ajaxSubmit();
-                                        promise.done(function (data) {
-                                            if (data.error){
-                                                alert(data.error);
-                                                button.show();
-                                            }else{
-                                                $('#modal').modal('hide');
-                                            }
-                                        });
-                                        promise.fail(function (error) {
-                                            alert(error);
-                                            button.show();
-                                        });
-                                    }
-                                },
-                                "id": 'form-submit'
-                            }
-                        }
-                    }
-                }
-            });
-        };
-        var showClassForm = function (classIdentifier, containerId) {
-            var d = new Date();
-            $('#modal').modal('show');
-            $(containerId).alpaca('destroy').alpaca({
-                "dataSource": "{/literal}{'/forms/connector/full/data?class='|ezurl(no)}{literal}" + classIdentifier + '&nocache=' + d.getTime(),
-                "schemaSource": "{/literal}{'/forms/connector/full/schema?class='|ezurl(no)}{literal}" + classIdentifier + '&nocache=' + d.getTime(),
-                "optionsSource": "{/literal}{'/forms/connector/full/options?class='|ezurl(no)}{literal}" + classIdentifier + '&nocache=' + d.getTime(),
-                "viewSource": "{/literal}{'/forms/connector/full/view?class='|ezurl(no)}{literal}" + classIdentifier + '&nocache=' + d.getTime(),
-                "options": {
-                    "form": {
-                        "buttons": {
-//                            "validate": {
-//                                "title": "Validate and view JSON!",
-//                                "click": function () {
-//                                    this.refreshValidationState(true);
-//                                    if (this.isValid(true)) {
-//                                        var value = this.getValue();
-//                                        alert(JSON.stringify(value));
-//                                    }
-//                                }
-//                            },
-                            "submit": {
-                                "click": function () {
-                                    var button = $('#form-submit');
-                                    this.refreshValidationState(true);
-                                    if (this.isValid(true)) {
-                                        button.hide();
-                                        var promise = this.ajaxSubmit();
-                                        promise.done(function (data) {
-                                            if (data.error){
-                                                alert(data.error);
-                                                button.show();
-                                            }else{
-                                                $('#demo-contents-containers').show();
-                                                $('#modal').modal('hide');
-                                                var language = 'ita-IT';
-                                                var newRow = $('<tr></tr>');
-                                                newRow.append($('<td>'+data.content.metadata.id+'</td>'));
-                                                newRow.append($('<td><a href="">'+data.content.metadata.name[language]+'</a></td>'));
-                                                newRow.append($('<td><a href="">'+data.content.metadata.classIdentifier+'</a></td>'));
-                                                var buttonCell = $('<td></td>');
-                                                var edit = $('<button class="btn btn-default" data-object="'+data.content.metadata.id+'"><i class="fa fa-edit"></i></button>')
-                                                        .bind('click', function(e){
-                                                            editObjectForm($(this).data('object'), '#form');
-                                                            e.preventDefault();
-                                                        }).appendTo(buttonCell);
-                                                buttonCell.appendTo(newRow);
-                                                $('#demo-contents').append(newRow);
-                                            }
-                                        });
-                                        promise.fail(function (error) {
-                                            alert(error);
-                                            button.show();
-                                        });
-                                    }
-                                },
-                                "id": 'form-submit'
-                            }
-                        }
-                    }
-                }
-            });
-        };
-
-        var showDemoForm = function () {
-            $('#modal').modal('show');
-            $("#form").alpaca('destroy').alpaca({
-                "dataSource": "{/literal}{'/forms/connector/demo/data?demo=1'|ezurl(no)}{literal}",
-                "schemaSource": "{/literal}{'/forms/connector/demo/schema'|ezurl(no)}{literal}",
-                "optionsSource": "{/literal}{'/forms/connector/demo/options'|ezurl(no)}{literal}",
-                "viewSource": "{/literal}{'/forms/connector/demo/view'|ezurl(no)}{literal}"
-            });
-        };
-
-        $('#showclass').on('click', function (e) {
-            showClassForm(classSelect.val(), '#form');
-            e.preventDefault();
+    $('#showclass').on('click', function (e) {
+        $('#form').opendataFormCreate({class: classSelect.val()}, {
+            onSuccess: function(data){
+                appendNewData(data);
+                $('#modal').modal('hide');
+            }
         });
 
-        $('#showdemo').on('click', function (e) {
-            showDemoForm();
-            e.preventDefault();
-        });
-
-        $('#editobject').on('click', function (e) {
-            editObjectForm($('#selectobject').val(), '#form');
-            e.preventDefault();
-        });
-
-        $('#browse').opendataBrowse({
-            'subtree': 43,
-            'addCloseButton': true,
-            'addCreateButton': true,
-            'classes': ['folder','image']
-        }).on('opendata.browse.select', function (event, opendataBrowse) {
-            alert(JSON.stringify(opendataBrowse.selection));
-        }).on('opendata.browse.close', function (event, opendataBrowse) {
-            $('#browse').toggle();
-        }).hide();
-
-        $('#showdemobrowse').on('click', function (e) {
-            $('#browse').toggle();
-        });
-
-
+        e.preventDefault();
     });
+
+    $('#showdemo').on('click', function (e) {
+        showDemoForm();
+        e.preventDefault();
+    });
+
+    $('#editobject').on('click', function (e) {
+        $('#form').opendataFormEdit({object: $('#selectobject').val()});
+        e.preventDefault();
+    });
+
+    $('#browse').opendataBrowse({
+        'subtree': 43,
+        'addCloseButton': true,
+        'addCreateButton': true,
+        'classes': ['folder','image']
+    }).on('opendata.browse.select', function (event, opendataBrowse) {
+        alert(JSON.stringify(opendataBrowse.selection));
+    }).on('opendata.browse.close', function (event, opendataBrowse) {
+        $('#browse').toggle();
+    }).hide();
+
+    $('#showdemobrowse').on('click', function (e) {
+        $('#browse').toggle();
+    });
+
+
+});
 </script>
 {/literal}
