@@ -29,9 +29,7 @@ Array.prototype.toLowerCase = function () {
                 throw new Error('Missing class/object parameter');
             }
 
-            params = $.extend({}, {
-                connector: options.connector,
-            }, params);
+            var connector = options.connector;
 
             if (options.nocache) {
                 var d = new Date();
@@ -56,10 +54,10 @@ Array.prototype.toLowerCase = function () {
                 };
 
                 var alpacaOptions = $.extend(true, {
-                    "dataSource": "/forms/connector/" + params.connector + "/data?" + $.param(params),
-                    "schemaSource": "/forms/connector/" + params.connector + "/schema?" + $.param(params),
-                    "optionsSource": "/forms/connector/" + params.connector + "/options?" + $.param(params),
-                    "viewSource": "/forms/connector/" + params.connector + "/view?" + $.param(params),
+                    "dataSource": "/forms/connector/" + connector + "/data?" + $.param(params),
+                    "schemaSource": "/forms/connector/" + connector + "/schema?" + $.param(params),
+                    "optionsSource": "/forms/connector/" + connector + "/options?" + $.param(params),
+                    "viewSource": "/forms/connector/" + connector + "/view?" + $.param(params),
                     "options": {
                         "form": {
                             "buttons": {
@@ -136,9 +134,7 @@ Array.prototype.toLowerCase = function () {
                 throw new Error('Missing object parameter');
             }
 
-            params = $.extend({}, {
-                connector: options.connector
-            }, params);
+            var connector = options.connector;
 
             if (options.nocache) {
                 var d = new Date();
@@ -150,10 +146,10 @@ Array.prototype.toLowerCase = function () {
             return $(this).each(function() {
 
                 var alpacaOptions = $.extend(true, {
-                    "dataSource": "/forms/connector/" + params.connector + "/data?" + $.param(params),
-                    "schemaSource": "/forms/connector/" + params.connector + "/schema?" + $.param(params),
-                    "optionsSource": "/forms/connector/" + params.connector + "/options?" + $.param(params),
-                    "viewSource": "/forms/connector/" + params.connector + "/view?" + $.param(params),
+                    "dataSource": "/forms/connector/" + connector + "/data?" + $.param(params),
+                    "schemaSource": "/forms/connector/" + connector + "/schema?" + $.param(params),
+                    "optionsSource": "/forms/connector/" + connector + "/options?" + $.param(params),
+                    "viewSource": "/forms/connector/" + connector + "/view?" + $.param(params),
                     "options": {
                         "form": {
                             "buttons": {
