@@ -5,9 +5,13 @@ namespace Opencontent\Ocopendata\Forms\Connectors;
 use eZContentObject;
 use eZContentOperationCollection;
 use eZOperationHandler;
+use Exception;
 
 class DeleteObjectConnector extends AbstractBaseConnector
 {
+    /**
+     * @var eZContentObject
+     */
     private $object;
 
     public function runService($serviceIdentifier)
