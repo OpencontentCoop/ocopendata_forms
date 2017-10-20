@@ -31,6 +31,11 @@ Array.prototype.toLowerCase = function () {
 
             var connector = options.connector;
 
+            var tokenNode = document.getElementById('ezxform_token_js');
+            if ( tokenNode ){
+                Alpaca.CSRF_TOKEN = tokenNode.getAttribute('title');
+            }
+
             if (options.nocache) {
                 var d = new Date();
                 params.nocache = d.getTime();
