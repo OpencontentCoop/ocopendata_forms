@@ -66,7 +66,8 @@ class ClassConnector implements ClassConnectorInterface
         foreach ($this->getFieldConnectors() as $identifier => $fieldConnector) {
             $data["properties"][$identifier] = $fieldConnector->getSchema();
             if ($this->isDisplay()){
-                if (empty($fieldConnector->getData())){
+                $data = $fieldConnector->getData();
+                if (empty($data)){
                     unset($data["properties"][$identifier]);
                 }else {
                     unset( $data["properties"][$identifier]["required"] );
