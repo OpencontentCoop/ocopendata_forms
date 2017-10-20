@@ -2,16 +2,16 @@
 Alpaca.defaultDateFormat = "DD/MM/YYYY";
 Alpaca.defaultTimeFormat = "HH:mm";
 
-// bug in Tag field?
-Array.prototype.toLowerCase = function () {
-    var i = this.length;
-    while (--i >= 0) {
-        if (typeof this[i] === "string") {
-            this[i] = this[i].toLowerCase();
-        }
-    }
-    return this;
-};
+//// bug in Tag field?
+//Array.prototype.toLowerCase = function () {
+//    var i = this.length;
+//    while (--i >= 0) {
+//        if (typeof this[i] === "string") {
+//            this[i] = this[i].toLowerCase();
+//        }
+//    }
+//    return this;
+//};
 
 ;(function(defaults, $, window, document, undefined) {
     'use strict';
