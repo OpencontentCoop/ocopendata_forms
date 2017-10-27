@@ -65,11 +65,11 @@ class ClassConnector implements ClassConnectorInterface
 
         foreach ($this->getFieldConnectors() as $identifier => $fieldConnector) {
             $data["properties"][$identifier] = $fieldConnector->getSchema();
-            if ($this->isDisplay()){
-                $data = $fieldConnector->getData();
-                if (empty($data)){
-                    unset($data["properties"][$identifier]);
-                }else {
+            if ($this->isDisplay()) {
+                $connectorData = $fieldConnector->getData();
+                if (empty( $connectorData )) {
+                    unset( $data["properties"][$identifier] );
+                } else {
                     unset( $data["properties"][$identifier]["required"] );
                 }
             }
@@ -96,11 +96,11 @@ class ClassConnector implements ClassConnectorInterface
 
         foreach ($this->getFieldConnectors() as $identifier => $fieldConnector) {
             $data["fields"][$identifier] = $fieldConnector->getOptions();
-            if (empty($data["fields"][$identifier])){
-                unset($data["fields"][$identifier]);
+            if (empty( $data["fields"][$identifier] )) {
+                unset( $data["fields"][$identifier] );
             }
-            if ($this->isDisplay()){
-                unset($data["fields"][$identifier]["helper"]);
+            if ($this->isDisplay()) {
+                unset( $data["fields"][$identifier]["helper"] );
             }
         }
 
@@ -117,11 +117,11 @@ class ClassConnector implements ClassConnectorInterface
     public function getView()
     {
         $baseView = 'create';
-        if ($this->getHelper()->hasParameter('object') || $this->getHelper()->hasParameter('from')){
+        if ($this->getHelper()->hasParameter('object') || $this->getHelper()->hasParameter('from')) {
             $baseView = 'edit';
         }
 
-        if ($this->getHelper()->hasParameter('view')){
+        if ($this->getHelper()->hasParameter('view')) {
             $baseView = $this->getHelper()->getParameter('view');
         }
 
@@ -156,9 +156,9 @@ class ClassConnector implements ClassConnectorInterface
         $contentRepository = new ContentRepository();
         $contentRepository->setEnvironment(EnvironmentLoader::loadPreset('content'));
 
-        if ($this->isUpdate()){
+        if ($this->isUpdate()) {
             $result = $contentRepository->update($payload->getArrayCopy());
-        }else{
+        } else {
             $result = $contentRepository->create($payload->getArrayCopy());
         }
 
@@ -170,7 +170,7 @@ class ClassConnector implements ClassConnectorInterface
     protected function cleanup()
     {
         foreach ($this->getFieldConnectors() as $identifier => $connector) {
-            if ($connector instanceof UploadFieldConnector){
+            if ($connector instanceof UploadFieldConnector) {
                 $connector->cleanup();
             }
         }
@@ -204,21 +204,21 @@ class ClassConnector implements ClassConnectorInterface
 
         if ($this->getHelper()->hasParameter('parent')) {
             $parent = $this->getHelper()->getParameter('parent');
-            if (is_numeric($parent)){
+            if (is_numeric($parent)) {
                 $payload->setParentNode((int)$parent);
-            }elseif(is_array($parent)){
+            } elseif (is_array($parent)) {
                 $parent = array_map('intval', $parent);
                 $payload->setParentNodes($parent);
             }
-        }elseif(isset($data[self::SELECT_PARENT_FIELD_IDENTIFIER])){
+        } elseif (isset( $data[self::SELECT_PARENT_FIELD_IDENTIFIER] )) {
             $parentData = $data[self::SELECT_PARENT_FIELD_IDENTIFIER];
-            foreach($parentData as $item){
+            foreach ($parentData as $item) {
                 $payload->setParentNode((int)$item['node_id']);
             }
         }
 
         foreach ($this->getFieldConnectors() as $identifier => $connector) {
-            $postData = isset($data[$identifier]) ? $data[$identifier] : null;
+            $postData = isset( $data[$identifier] ) ? $data[$identifier] : null;
             if ($postData) {
                 $payloadData = $connector->setPayload($postData);
                 if ($payloadData !== null) {
@@ -236,12 +236,12 @@ class ClassConnector implements ClassConnectorInterface
 
     public function upload()
     {
-        if ($this->getHelper()->hasParameter('attribute')){
+        if ($this->getHelper()->hasParameter('attribute')) {
             $identifier = $this->getHelper()->getParameter('attribute');
             $connectors = $this->getFieldConnectors();
-            if (isset($connectors[$identifier])){
+            if (isset( $connectors[$identifier] )) {
                 $connector = $connectors[$identifier];
-                if ($connector instanceof UploadFieldConnector){
+                if ($connector instanceof UploadFieldConnector) {
                     return $connector->handleUpload();
                 }
             }
@@ -259,7 +259,7 @@ class ClassConnector implements ClassConnectorInterface
             foreach ($classDataMap as $identifier => $attribute) {
 
                 $category = $attribute->attribute('category');
-                if (empty($category)){
+                if (empty( $category )) {
                     $category = $defaultCategory;
                 }
 
@@ -269,11 +269,11 @@ class ClassConnector implements ClassConnectorInterface
                     $add = (bool)$attribute->attribute('is_required');
                 }
 
-                if ($add == true && $this->getHelper()->hasSetting('ShowCategories')){
+                if ($add == true && $this->getHelper()->hasSetting('ShowCategories')) {
                     $add = in_array($category, (array)$this->getHelper()->getSetting('Categories'));
                 }
 
-                if ($add == true && $this->getHelper()->hasSetting('HideCategories')){
+                if ($add == true && $this->getHelper()->hasSetting('HideCategories')) {
                     $add = !in_array($category, (array)$this->getHelper()->getSetting('HideCategories'));
                 }
 
@@ -293,25 +293,26 @@ class ClassConnector implements ClassConnectorInterface
     public function getFieldConnector($identifier)
     {
         $this->getFieldConnectors();
-        return isset($this->fieldConnectors[$identifier]) ? $this->fieldConnectors[$identifier] : null;
+
+        return isset( $this->fieldConnectors[$identifier] ) ? $this->fieldConnectors[$identifier] : null;
     }
 
     protected function getFieldCategories()
     {
-        if ($this->fieldCategories === null){
+        if ($this->fieldCategories === null) {
 
             $this->fieldCategories = array();
 
-            if ($this->getHelper()->hasSetting('SplitAttributeCategories')){
+            if ($this->getHelper()->hasSetting('SplitAttributeCategories')) {
                 $defaultCategory = \eZINI::instance('content.ini')->variable('ClassAttributeSettings', 'DefaultCategory');
                 $categoryNames = \eZINI::instance('content.ini')->variable('ClassAttributeSettings', 'CategoryList');
 
                 foreach ($this->getFieldConnectors() as $identifier => $fieldConnector) {
                     $category = $fieldConnector->getAttribute()->attribute('category');
-                    if (empty($category)){
+                    if (empty( $category )) {
                         $category = $defaultCategory;
                     }
-                    if (!isset($this->fieldCategories[$category])){
+                    if (!isset( $this->fieldCategories[$category] )) {
                         $this->fieldCategories[$category] = array(
                             'name' => $categoryNames[$category],
                             'identifiers' => array()
@@ -338,7 +339,7 @@ class ClassConnector implements ClassConnectorInterface
             $panelClass = $i == 0 ? ' active' : '';
             $tabs .= '<li' . $tabClass . '><a data-toggle="tab" href="#attribute-group-' . $identifier . '">' . $category['name'] . '</a></li>';
             $panels .= '<div class="clearfix tab-pane' . $panelClass . '" id="attribute-group-' . $identifier . '"></div>';
-            foreach($category['identifiers'] as $field){
+            foreach ($category['identifiers'] as $field) {
                 $bindings[$field] = 'attribute-group-' . $identifier;
             }
             $i++;
@@ -351,7 +352,7 @@ class ClassConnector implements ClassConnectorInterface
             $bindings[self::SELECT_PARENT_FIELD_IDENTIFIER] = 'attribute-group-' . self::SELECT_PARENT_FIELD_IDENTIFIER;
         }
 
-        if (count($categories) == 1){
+        if (count($categories) == 1) {
             $tabs = '';
         }
 
@@ -377,7 +378,7 @@ class ClassConnector implements ClassConnectorInterface
         $this->content = $content;
         if (is_array($this->content)) {
             foreach ($this->getFieldConnectors() as $identifier => $connector) {
-                if (isset($this->content[$identifier])){
+                if (isset( $this->content[$identifier] )) {
                     $connector->setContent($this->content[$identifier]);
                 }
             }
