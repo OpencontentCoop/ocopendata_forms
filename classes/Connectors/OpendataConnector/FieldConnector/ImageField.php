@@ -96,9 +96,9 @@ class ImageField extends UploadFieldConnector
         );
     }
 
-    protected function getUploadParamName()
+    protected function getUploadParamNameSuffix()
     {
-        return $this->getIdentifier() . '_image_files';
+        return '_image_files';
     }
 
     public function setPayload($postData)

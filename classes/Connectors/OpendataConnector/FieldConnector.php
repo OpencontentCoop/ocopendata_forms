@@ -80,7 +80,7 @@ class FieldConnector implements FieldConnectorInterface
     protected function getServiceUrl($serviceIdentifier, $extraParameters = array())
     {
         $actionParameters = $this->getHelper()->getParameters();
-        $actionParameters['attribute'] = $this->attribute->attribute('identifier');
+        $actionParameters['attribute'] = $this->attribute->attribute('id');
 
         return $this->getHelper()->getServiceUrl(
             $serviceIdentifier,
