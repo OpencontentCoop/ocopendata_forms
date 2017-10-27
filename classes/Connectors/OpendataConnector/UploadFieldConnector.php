@@ -10,9 +10,14 @@ use eZExecution;
 
 abstract class UploadFieldConnector extends FieldConnector
 {
-    abstract protected function getUploadParamName();
+    abstract protected function getUploadParamNameSuffix();
 
-    public function handleUpload()
+    public function __construct($attribute, $class, $helper)
+    {
+        parent::__construct($attribute, $class, $helper);
+    }
+
+    public function handleUpload($paramNamePrefix = null)
     {
         if ($this->getHelper()->hasParameter('preview')) {
             return $this->doPreview();
@@ -21,18 +26,28 @@ abstract class UploadFieldConnector extends FieldConnector
             return $this->doDelete();
 
         } else {
-            return $this->doUpload();
+            return $this->doUpload($paramNamePrefix);
         }
     }
 
-    private function doUpload()
+    private function doUpload($paramNamePrefix)
     {
         $this->cleanup();
+
+        $paramName = $this->getIdentifier() . $this->getUploadParamNameSuffix();
+        if ($paramNamePrefix){
+            $fileNames = array_keys($_FILES);
+            foreach($fileNames as $fileName){
+                if (strpos($fileName, $paramNamePrefix) === 0 && strpos($fileName, $paramName) !== false){
+                    $paramName = $fileName;
+                }
+            }
+        }
 
         $options = array();
         $options['upload_dir'] = $this->getUploadDir();
         $options['download_via_php'] = true;
-        $options['param_name'] = $this->getUploadParamName();
+        $options['param_name'] = $paramName;
 
         /** @var UploadHandler $uploadHandler */
         $uploadHandler = new UploadHandler($options, false);
@@ -62,7 +77,7 @@ abstract class UploadFieldConnector extends FieldConnector
 
     private function doDelete()
     {
-        $fileName = $this->getHelper()->getParameter('preview');
+        $fileName = $this->getHelper()->getParameter('delete');
 
         $filePath = $this->getUploadDir() . $fileName;
         $file = new eZFSFileHandler($filePath);
@@ -112,7 +127,7 @@ abstract class UploadFieldConnector extends FieldConnector
 
     protected function getUploadDir()
     {
-        $directory = md5(\eZUser::currentUserID() . $this->class->attribute('identifier') . $this->getIdentifier() . $this->getUploadParamName());
+        $directory = md5(\eZUser::currentUserID() . $this->class->attribute('identifier') . $this->getIdentifier() . $this->getUploadParamNameSuffix());
 
         return eZSys::cacheDirectory() . '/fileupload/' . $directory . '/';
     }

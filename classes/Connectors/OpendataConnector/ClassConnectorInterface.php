@@ -21,8 +21,16 @@ interface ClassConnectorInterface
 
     public function upload();
 
+    /**
+     * @return FieldConnectorInterface[]
+     */
     public function getFieldConnectors();
 
+    /**
+     * @param $identifier
+     *
+     * @return FieldConnectorInterface
+     */
     public function getFieldConnector($identifier);
 
     public function setContent($content);

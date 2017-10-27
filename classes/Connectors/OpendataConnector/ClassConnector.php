@@ -237,12 +237,15 @@ class ClassConnector implements ClassConnectorInterface
     public function upload()
     {
         if ($this->getHelper()->hasParameter('attribute')) {
-            $identifier = $this->getHelper()->getParameter('attribute');
+            $id = $this->getHelper()->getParameter('attribute');
             $connectors = $this->getFieldConnectors();
-            if (isset( $connectors[$identifier] )) {
-                $connector = $connectors[$identifier];
-                if ($connector instanceof UploadFieldConnector) {
-                    return $connector->handleUpload();
+            foreach($connectors as $connector) {
+                if ($connector->getAttribute()->attribute('id') == $id) {
+                    if ($connector instanceof UploadFieldConnector) {
+                        return $connector->handleUpload(
+                            $this->getHelper()->getSetting('upload_param_name_prefix')
+                        );
+                    }
                 }
             }
         }

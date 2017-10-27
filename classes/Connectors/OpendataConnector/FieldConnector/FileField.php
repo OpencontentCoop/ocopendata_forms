@@ -63,9 +63,9 @@ class FileField extends UploadFieldConnector
         );
     }
 
-    protected function getUploadParamName()
+    protected function getUploadParamNameSuffix()
     {
-        return $this->getIdentifier() . '_files';
+        return '_files';
     }
 
     public function setPayload($files)
