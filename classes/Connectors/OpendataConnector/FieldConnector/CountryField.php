@@ -23,7 +23,12 @@ class CountryField extends FieldConnector
 
     public function getData()
     {
-        return explode(',', parent::getData());
+        $data = explode(',', parent::getData());
+        if (count($data) == 1 && empty( $data[0] )) {
+            return null;
+        }
+
+        return $data;
     }
 
     public function getSchema()
@@ -36,7 +41,7 @@ class CountryField extends FieldConnector
 
         $classContent = $this->attribute->dataType()->classAttributeContent($this->attribute);
         $default = $classContent['default_countries'];
-        if (!empty($default)){
+        if (!empty( $default )) {
             $schema['default'] = array_keys($default);
         }
 
@@ -49,7 +54,7 @@ class CountryField extends FieldConnector
             "label" => $this->attribute->attribute('name'),
             "helper" => $this->attribute->attribute('description'),
             "optionLabels" => array_values($this->values),
-            "hideNone" => false,
+            "hideNone" => (bool)$this->attribute->attribute(eZCountryType::MULTIPLE_CHOICE_FIELD),
             "showMessages" => false,
             "type" => "select",
             "multiple" => (bool)$this->attribute->attribute(eZCountryType::MULTIPLE_CHOICE_FIELD),
