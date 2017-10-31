@@ -28,9 +28,9 @@ class OpendataConnector extends AbstractBaseConnector
 
     protected $language;
 
-    private static $isLoaded;
+    protected static $isLoaded;
 
-    private static $availableParameters = array(
+    protected static $availableParameters = array(
         'class',
         'object',
         'attribute',
