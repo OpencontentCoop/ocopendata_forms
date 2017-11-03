@@ -300,6 +300,8 @@ class ClassConnector implements ClassConnectorInterface
                         $this->class,
                         $this->getHelper()
                     );
+                }else{
+                    $this->copyFieldFromPrevVersion($identifier);
                 }
             }
         }
