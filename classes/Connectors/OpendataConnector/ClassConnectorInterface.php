@@ -15,6 +15,9 @@ interface ClassConnectorInterface
 
     public function getView();
 
+    /**
+     * @return ConnectorHelper
+     */
     public function getHelper();
 
     public function submit();

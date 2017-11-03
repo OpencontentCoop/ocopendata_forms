@@ -15,7 +15,13 @@ try {
     }
     $data = $connector->runService($Service);
 } catch (Exception $e) {
-    $data = array('error' => $e->getMessage());
+    $data = array(
+        'error' => $e->getMessage(),
+//        'file' => $e->getFile(),
+//        'line' => $e->getLine(),
+//        'trace' => explode("\n", $e->getTraceAsString()),
+//        'prev' => $e->getPrevious()
+    );
 }
 
 if ($http->hasGetVariable('debug')) {

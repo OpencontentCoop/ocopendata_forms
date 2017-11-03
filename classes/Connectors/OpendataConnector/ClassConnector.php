@@ -36,12 +36,18 @@ class ClassConnector implements ClassConnectorInterface
 
     protected $submitData;
 
+    protected $copyFieldsFromPrevVersion = array();
+
     public function __construct(eZContentClass $class, $helper)
     {
         $this->class = $class;
         $this->helper = $helper;
     }
 
+    protected function copyFieldFromPrevVersion($identifier)
+    {
+        $this->copyFieldsFromPrevVersion[$identifier] = $identifier;
+    }
 
     public function getData()
     {
@@ -176,6 +182,11 @@ class ClassConnector implements ClassConnectorInterface
         }
     }
 
+    protected function isCreate()
+    {
+        return $this->getHelper()->hasParameter('object') === false;
+    }
+
     protected function isUpdate()
     {
         return $this->getHelper()->hasParameter('object');
@@ -230,6 +241,9 @@ class ClassConnector implements ClassConnectorInterface
                 }
             }
         }
+
+        $payload->setOption('update_null_field', true);
+        $payload->setOption('copy_prev_version_fields', $this->copyFieldsFromPrevVersion);
 
         return $payload;
     }
