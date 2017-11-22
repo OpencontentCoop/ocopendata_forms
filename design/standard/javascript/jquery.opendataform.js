@@ -82,7 +82,7 @@ Alpaca.defaultTimeFormat = "HH:mm";
                                             });
                                             promise.fail(function(error) {
                                                 if ($.isFunction(options.onError)) {
-                                                    options.onError(data);
+                                                    options.onError(error);
                                                 }
                                                 showButtons();
                                             });
@@ -257,20 +257,13 @@ Alpaca.defaultTimeFormat = "HH:mm";
                                             hideButtons();
                                             var promise = this.ajaxSubmit();
                                             promise.done(function (data) {
-                                                if (data.error) {
-                                                    if ($.isFunction(options.onError)) {
-                                                        options.onError(data);
-                                                    }
-                                                    showButtons();
-                                                } else {                                        
-                                                    if ($.isFunction(options.onSuccess)) {
-                                                        options.onSuccess(data);
-                                                    }                                                    
-                                                }
+                                                if ($.isFunction(options.onSuccess)) {
+                                                    options.onSuccess(data);
+                                                }                                                    
                                             });
                                             promise.fail(function (error) {
                                                 if ($.isFunction(options.onError)) {
-                                                    options.onError(data);
+                                                    options.onError(error);
                                                 }
                                                 showButtons();
                                             });
