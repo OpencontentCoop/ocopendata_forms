@@ -269,7 +269,7 @@
             newRow.append($('<td>'+data.content.metadata.id+'</td>'));
             newRow.append($('<td><a href="">'+data.content.metadata.name[language]+'</a></td>'));
             newRow.append($('<td><a href="">'+data.content.metadata.classIdentifier+'</a></td>'));
-            var buttonCell = $('<td width="1"></td>');
+            var buttonCell = $('<td width="1" style="white-space:nowrap"></td>');
             $('<button class="btn btn-warning" data-object="'+data.content.metadata.id+'"><i class="fa fa-edit"></i></button>')
                 .bind('click', function(e){
                     $('#form').opendataFormEdit({object: $(this).data('object')});

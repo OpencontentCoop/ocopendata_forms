@@ -309,10 +309,10 @@
                 "schemaSource": "/forms/connector/"+self.settings.createSettings.connector+"/schema?class="+classIdentifier+queryStringParameter,
                 "optionsSource": "/forms/connector/"+self.settings.createSettings.connector+"/options?class="+classIdentifier+queryStringParameter,
                 "viewSource": "/forms/connector/"+self.settings.createSettings.connector+"/view?class="+classIdentifier+queryStringParameter,
-                "options": {
+                "options": {                    
                     "form": {
                         "buttons": {
-                            "submit": {
+                            "sub-submit": { //avoid recursion in disableSubmitButton
                                 "click": function () {
                                     this.refreshValidationState(true);
                                     if (this.isValid(true)) {
