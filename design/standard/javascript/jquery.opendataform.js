@@ -21,13 +21,9 @@ Alpaca.defaultTimeFormat = "HH:mm";
         }
     }).fn.extend({
 
-        opendataFormEdit: function(params, options) {
+        opendataForm: function(params, options) {
 
             options = $.extend({}, defaults, options);
-
-            if (jQuery.type(params.class) == 'undefined' && jQuery.type(params.object) == 'undefined') {
-                throw new Error('Missing class/object parameter');
-            }
 
             var connector = options.connector;
 
@@ -92,7 +88,6 @@ Alpaca.defaultTimeFormat = "HH:mm";
                                             });
                                         }
                                     },
-                                    "id": 'form-submit',
                                     "value": "Salva",
                                     "styles": "btn btn-lg btn-success pull-right"
                                 }
@@ -116,13 +111,33 @@ Alpaca.defaultTimeFormat = "HH:mm";
             });
         },
 
+        opendataFormEdit: function(params, options) {
+            
+            if (jQuery.type(params.class) == 'undefined' && jQuery.type(params.object) == 'undefined') {
+                throw new Error('Missing class/object parameter');
+            }
+
+            return $(this).opendataForm(params, options);
+        },
+
         opendataFormCreate: function(params, options) {
 
             if (jQuery.type(params.class) == 'undefined') {
                 throw new Error('Missing class parameter');
             }
 
-            return $(this).opendataFormEdit(params, options);
+            return $(this).opendataForm(params, options);
+        },
+
+        opendataFormManageLocation: function(params, options) {
+
+            if (jQuery.type(params.source) == 'undefined' && jQuery.type(params.destination) == 'undefined') {
+                throw new Error('Missing source/destination parameter');
+            }
+            options = $.extend({}, defaults, options);
+            options.connector = 'manage-location';
+
+            return $(this).opendataForm(params, options);
         },
 
         opendataFormView: function(params, options) {
@@ -174,7 +189,107 @@ Alpaca.defaultTimeFormat = "HH:mm";
                 }
                 $(this).alpaca('destroy').alpaca(alpacaOptions);
             });
-        }
+        },
+
+        opendataFormDelete: function(params, options) {
+
+            options = $.extend({}, defaults, options);
+
+            if (jQuery.type(params) == 'string' || jQuery.type(params) == 'number') {
+                params = {
+                    object: params
+                };
+            }
+
+            if (jQuery.type(params.object) == 'undefined') {
+                throw new Error('Missing object parameter');
+            }
+
+            var connector = 'delete-object';
+
+            if (options.nocache) {
+                var d = new Date();
+                params.nocache = d.getTime();
+            }
+
+            params.view = 'display';
+
+            return $(this).each(function() {
+
+                var hideButtons = function() {
+                    $.each(alpacaOptions.options.form.buttons, function() {
+                        var button = $('#' + this.id);
+                        button.data('original-text', button.text());
+                        button.text('Salvataggio in corso....');
+                        button.attr('disabled', 'disabled');
+                    });
+                };
+                var showButtons = function() {
+                    $.each(alpacaOptions.options.form.buttons, function() {
+                        var button = $('#' + this.id);
+                        button.text(button.data('original-text'));
+                        button.attr('disabled', false);
+                    });
+                };
+
+                var alpacaOptions = $.extend(true, {
+                    "dataSource": "/forms/connector/" + connector + "/data?" + $.param(params),
+                    "schemaSource": "/forms/connector/" + connector + "/schema?" + $.param(params),
+                    "optionsSource": "/forms/connector/" + connector + "/options?" + $.param(params),
+                    "viewSource": "/forms/connector/" + connector + "/view?" + $.param(params),
+                    "options": {
+                        "form": {
+                            "buttons": {
+                                "reset": {
+                                    "click": function () {                            
+                                        if ($.isFunction(onSuccess)){
+                                            onSuccess();
+                                        }
+                                        self.css('background', 'transparent');
+                                    },
+                                    "value": "Annulla eliminazione",
+                                    "styles": "btn btn-lg btn-danger pull-left"
+                                },
+                                "submit": {
+                                    "click": function () {
+                                        this.refreshValidationState(true);
+                                        if (this.isValid(true)) {
+                                            hideButtons();
+                                            var promise = this.ajaxSubmit();
+                                            promise.done(function (data) {
+                                                if (data.error) {
+                                                    if ($.isFunction(options.onError)) {
+                                                        options.onError(data);
+                                                    }
+                                                    showButtons();
+                                                } else {                                        
+                                                    if ($.isFunction(options.onSuccess)) {
+                                                        options.onSuccess(data);
+                                                    }                                                    
+                                                }
+                                            });
+                                            promise.fail(function (error) {
+                                                if ($.isFunction(options.onError)) {
+                                                    options.onError(data);
+                                                }
+                                                showButtons();
+                                            });
+                                        }
+                                    },
+                                    "value": "Conferma eliminazione",
+                                    "styles": "btn btn-lg btn-success pull-right"
+                                }
+                            }
+                        }
+                    }
+                }, options.alpaca);
+
+                if ($.isFunction(options.onBeforeCreate)) {
+                    options.onBeforeCreate();
+                }
+                $(this).alpaca('destroy').alpaca(alpacaOptions);
+            });
+        },
     });
 })({
     nocache: true,

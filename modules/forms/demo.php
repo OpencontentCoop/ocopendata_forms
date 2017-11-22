@@ -18,5 +18,7 @@ $Result['path'] = array(
         'url' => false
     )
 );
-$Result['content'] = $tpl->fetch( 'design:forms/demo.tpl' );
+echo $tpl->fetch( 'design:forms/demo.tpl' );
+eZDisplayDebug();
+eZExecution::cleanExit();
 

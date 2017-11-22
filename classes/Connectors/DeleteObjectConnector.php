@@ -6,6 +6,7 @@ use eZContentObject;
 use eZContentOperationCollection;
 use eZOperationHandler;
 use Exception;
+use eZUser;
 
 class DeleteObjectConnector extends AbstractBaseConnector
 {
@@ -55,9 +56,9 @@ class DeleteObjectConnector extends AbstractBaseConnector
     }
 
     protected function getSchema()
-    {
+    {               
         return array(
-            "title" => "Sei sicuro di voler eliminare il contenuto " . $this->object->attribute('name') . '?',            
+            "title" => "Sei sicuro di voler eliminare il contenuto (" . $this->object->attribute('class_name') . ') ' . $this->object->attribute('name') . '?',            
             "type" => "object",
             "properties" => array(
             	"trash" => array(                    
@@ -69,6 +70,21 @@ class DeleteObjectConnector extends AbstractBaseConnector
 
     protected function getOptions()
     {
+        $isUser = in_array($this->object->attribute('contentclass_id'), eZUser::contentClassIDs());
+        $isUserLabel = $isUser ? ' (non è possibile usare il cestino per contenuti di tipo ' . $this->object->attribute('class_name') . ')' : '';
+
+        $locationDescription = '';
+        $locations = $this->object->assignedNodes();
+        $countLocations = count($locations);
+        if ($countLocations > 1){
+            $locationDescription = "Verranno eliminate tutte le $countLocations collocazioni del contenuto: <ol>";
+            $locationsNames = array();
+            foreach ($locations as $location) {
+                $locationsNames[] = '<li><a class="help-block" target="_blank" href="' . $location->attribute('url_alias') . '">' . $location->attribute('url_alias') . '</a></li>';
+            }
+            $locationDescription .= implode('', $locationsNames) . '</ol>';
+        } 
+
         return array(
             "form" => array(
                 "attributes" => array(
@@ -81,8 +97,10 @@ class DeleteObjectConnector extends AbstractBaseConnector
             ),
             "fields" => array(
                 "trash" => array(                    
+                    "helper" => $locationDescription,
                     "type" => "checkbox",
-                    "rightLabel" => 'Sposta nel cestino'
+                    "rightLabel" => 'Sposta nel cestino' . $isUserLabel,
+                    'disabled' => $isUser
                 ),
             ),
         );
@@ -99,18 +117,23 @@ class DeleteObjectConnector extends AbstractBaseConnector
     protected function submit()
     {
         $moveToTrash = $_POST['trash'] == 'true';
-        $deleteIDArray = array($this->object->mainNodeID());
-        if (eZOperationHandler::operationIsAvailable('content_delete')) {
-	        eZOperationHandler::execute('content',
-	            'delete',
-	            array(
-	                'node_id_list' => $deleteIDArray,
-	                'move_to_trash' => $moveToTrash
-	            ),
-	            null, true);
-	    } else {
-	        eZContentOperationCollection::deleteObject($deleteIDArray, $moveToTrash);
-	    }
+        $deleteIDArray = array();
+        foreach ($this->object->assignedNodes() as $node) {
+            $deleteIDArray[] = $node->attribute('node_id');
+        }
+        if (!empty($deleteIDArray)){
+            if (eZOperationHandler::operationIsAvailable('content_delete')) {
+    	        eZOperationHandler::execute('content',
+    	            'delete',
+    	            array(
+    	                'node_id_list' => $deleteIDArray,
+    	                'move_to_trash' => $moveToTrash
+    	            ),
+    	            null, true);
+    	    } else {
+    	        eZContentOperationCollection::deleteObject($deleteIDArray, $moveToTrash);
+    	    }
+        }
 
 	    return true;
     }
