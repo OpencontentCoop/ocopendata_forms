@@ -132,8 +132,8 @@ class ClassConnector implements ClassConnectorInterface
         }
 
         $view = array(
-            "parent" => "bootstrap-{$baseView}",
-            "locale" => "it_IT"
+            "parent" => $this->getAlpacaBaseDesign() . "-" . $baseView,
+            "locale" => $this->getAlpacaLocale()
         );
 
         if ($this->getHelper()->hasSetting('SplitAttributeCategories')) {
@@ -418,6 +418,37 @@ class ClassConnector implements ClassConnectorInterface
     public function setSubmitData($submitData)
     {
         $this->submitData = $submitData;
+    }
+
+    protected function getAlpacaLocale()
+    {
+        $localeMap = array(
+            'chi-CN' => 'zh_CN',
+            'cze-CZ' => 'cs_CZ',
+            'cro-HR' => 'hr_HR',
+            'dut-NL' => 'nl_BE',
+            'fin-FI' => 'fi_FI',
+            'fre-FR' => 'fr_FR',
+            //'ger-DE' => 'de_AT',
+            'ger-DE' => 'de_DE',
+            'ell-GR' => 'el_GR',
+            'ita-IT' => 'it_IT',
+            'jpn-JP' => 'ja_JP',
+            'nor-NO' => 'nb_NO',
+            'pol-PL' => 'pl_PL',
+            'por-BR' => 'pt_BR',
+            'esl-ES' => 'es_ES',
+            'swe-SE' => 'sv_SE',
+        );
+
+        $currentLanguage = $this->getHelper()->getSetting('language');
+
+        return isset($localeMap[$currentLanguage]) ? $localeMap[$currentLanguage] : "it_IT";
+    }
+
+    protected function getAlpacaBaseDesign()
+    {
+        return "bootstrap";
     }
 
 }
