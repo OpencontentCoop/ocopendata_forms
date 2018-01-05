@@ -246,9 +246,9 @@ Alpaca.defaultTimeFormat = "HH:mm";
                         "form": {
                             "buttons": {
                                 "reset": {
-                                    "click": function () {                            
-                                        if ($.isFunction(onSuccess)){
-                                            onSuccess();
+                                    "click": function () {
+                                        if ($.isFunction(options.onSuccess)) {
+                                            options.onSuccess();
                                         }
                                         self.css('background', 'transparent');
                                     },
