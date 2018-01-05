@@ -10,9 +10,9 @@ class RelationField extends FieldConnector
 
     const MODE_LIST_DROP_DOWN = 1;
 
-    private $selectionType;
+    protected $selectionType;
 
-    private $defaultPlacement;
+    protected $defaultPlacement;
 
     public function __construct($attribute, $class, $helper)
     {

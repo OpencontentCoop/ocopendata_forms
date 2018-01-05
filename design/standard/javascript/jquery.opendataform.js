@@ -23,6 +23,11 @@ Alpaca.defaultTimeFormat = "HH:mm";
 
         opendataForm: function(params, options) {
 
+            var prefix = '/';
+            if ($.isFunction($.ez)){
+                prefix = $.ez.root_url;
+            }
+
             options = $.extend({}, defaults, options);
 
             var connector = options.connector;
@@ -55,10 +60,10 @@ Alpaca.defaultTimeFormat = "HH:mm";
                 };
 
                 var alpacaOptions = $.extend(true, {
-                    "dataSource": "/forms/connector/" + connector + "/data?" + $.param(params),
-                    "schemaSource": "/forms/connector/" + connector + "/schema?" + $.param(params),
-                    "optionsSource": "/forms/connector/" + connector + "/options?" + $.param(params),
-                    "viewSource": "/forms/connector/" + connector + "/view?" + $.param(params),
+                    "dataSource": prefix+"forms/connector/" + connector + "/data?" + $.param(params),
+                    "schemaSource": prefix+"forms/connector/" + connector + "/schema?" + $.param(params),
+                    "optionsSource": prefix+"forms/connector/" + connector + "/options?" + $.param(params),
+                    "viewSource": prefix+"forms/connector/" + connector + "/view?" + $.param(params),
                     "options": {
                         "form": {
                             "buttons": {
@@ -163,13 +168,18 @@ Alpaca.defaultTimeFormat = "HH:mm";
 
             params.view = 'display';
 
+            var prefix = '/';
+            if ($.isFunction($.ez)){
+                prefix = $.ez.root_url;
+            }
+
             return $(this).each(function() {
 
                 var alpacaOptions = $.extend(true, {
-                    "dataSource": "/forms/connector/" + connector + "/data?" + $.param(params),
-                    "schemaSource": "/forms/connector/" + connector + "/schema?" + $.param(params),
-                    "optionsSource": "/forms/connector/" + connector + "/options?" + $.param(params),
-                    "viewSource": "/forms/connector/" + connector + "/view?" + $.param(params),
+                    "dataSource": prefix+"forms/connector/" + connector + "/data?" + $.param(params),
+                    "schemaSource": prefix+"forms/connector/" + connector + "/schema?" + $.param(params),
+                    "optionsSource": prefix+"forms/connector/" + connector + "/options?" + $.param(params),
+                    "viewSource": prefix+"forms/connector/" + connector + "/view?" + $.param(params),
                     "options": {
                         "form": {
                             "buttons": {

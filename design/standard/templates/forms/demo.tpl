@@ -6,6 +6,7 @@
     {ezscript_load(array(
         'ezjsc::jquery',
         'ezjsc::jqueryUI',
+        'ezjsc::jqueryio',
         'bootstrap.min.js',
         'handlebars.min.js',
         'moment-with-locales.min.js',
@@ -29,8 +30,8 @@
     ))}
     <script type="text/javascript" src={'javascript/tinymce/tinymce.min.js'|ezdesign()} charset="utf-8"></script>
 
-    {include uri='design:page_head_style.tpl'}
-    {ezcss_load(array(
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    {ezcss_load(array(        
         'alpaca.min.css',
         'leaflet/leaflet.0.7.2.css',
         'leaflet/Control.Loading.css',
