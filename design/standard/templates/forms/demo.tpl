@@ -14,6 +14,8 @@
         'jquery.fileupload.js',
         'jquery.fileupload-process.js',
         'jquery.fileupload-ui.js',
+        'jquery.caret.min.js',
+        'jquery.tag-editor.js',
         'alpaca.js',
         'leaflet/leaflet.0.7.2.js',
         'leaflet/Control.Geocoder.js',
@@ -26,6 +28,7 @@
         'fields/OpenStreetMap.js',
         'fields/RelationBrowse.js',
         'fields/LocationBrowse.js',
+        'fields/Tags.js',
         'jquery.opendataform.js'
     ))}
     <script type="text/javascript" src={'javascript/tinymce/tinymce.min.js'|ezdesign()} charset="utf-8"></script>
@@ -39,6 +42,7 @@
         'leaflet/MarkerCluster.Default.css',
         'bootstrap-datetimepicker.min.css',
         'jquery.fileupload.css',
+        'jquery.tag-editor.css',
         'alpaca-custom.css'
     ))}
 
