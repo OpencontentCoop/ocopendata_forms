@@ -2,31 +2,41 @@
 namespace Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector;
 
 use Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector;
+use eZTagsObject;
 
 class TagsField extends FieldConnector
 {
 
-    private $selectionType;
+    const SUBTREE_LIMIT_FIELD = 'data_int1';
+    const HIDE_ROOT_TAG_FIELD = 'data_int3';
+    const MAX_TAGS_FIELD = 'data_int4';
+    const EDIT_VIEW_FIELD = 'data_text1';
 
-    private $defaultPlacement;
+    const MODE_LIST_SELECT = 'Select';
+
+    private $subtreeLimit;
+    private $maxTagsNumber;
+    private $selectionType;
 
     public function __construct($attribute, $class, $helper)
     {
-
-        /*echo '<pre>';
-        print_r($attribute);
-        print_r($class);
-        print_r($helper);
-        exit;*/
-
         parent::__construct($attribute, $class, $helper);
-
-        $classdataType = $this->attribute->dataType();
+        $this->subtreeLimit =  $attribute->attribute(self::SUBTREE_LIMIT_FIELD);
+        $this->maxTagsNumber =  $attribute->attribute(self::MAX_TAGS_FIELD);
+        $this->selectionType =  $attribute->attribute(self::EDIT_VIEW_FIELD);
     }
 
     public function getData()
     {
-        return implode(', ', (array)parent::getData());
+        \eZLog::write(__METHOD__, 'tags.log');
+        \eZLog::write(print_r(parent::getData(), 1), 'tags.log');
+        /*if ($this->subtreeLimit && $this->selectionType == self::MODE_LIST_SELECT )
+        {
+            return parent::getData();
+        }
+        return implode(', ', (array)parent::getData());*/
+
+        return parent::getData();
     }
 
     public function setContent($content)
@@ -36,10 +46,20 @@ class TagsField extends FieldConnector
 
     public function getSchema()
     {
-        return array(
+        $schema =  array(
+            "type"     => 'string',
             "title"    => $this->attribute->attribute('name'),
             'required' => (bool)$this->attribute->attribute('is_required')
         );
+
+        if ($this->subtreeLimit)
+        {
+            $schema['type'] = 'array';
+            $schema["enum"] = $this->getDataSource( $this->subtreeLimit );
+        }
+
+        return $schema;
+
     }
 
     public function getOptions()
@@ -48,26 +68,50 @@ class TagsField extends FieldConnector
         $options = array(
             "helper" => $this->attribute->attribute('description'),
         );
-        $options["label"] = $this->attribute->attribute('name');
-        $options["name"] = $this->getIdentifier();
-        $options["type"] = "eztags";
+        $options["label"]  = $this->attribute->attribute('name');
+        $options["name"]   = $this->getIdentifier();
+        $options["subtree_limit"] = $this->subtreeLimit;
 
+        if ( $this->subtreeLimit )
+        {
+
+            $options["multiple"] = $this->maxTagsNumber != 1;
+            $options["type"] = $this->maxTagsNumber != 1 ? "checkbox" : "radio";
+        }
+        else
+        {
+            $options["locale"] = \eZINI::instance()->variable('RegionalSettings', 'ContentLocale');;
+            $options["type"]   = "eztags";
+        }
         return $options;
 
     }
 
-    /*private function getDataSourceUrl()
+    private function getDataSource( $tagID )
     {
+        $result = array();
+        $tag = eZTagsObject::fetch( $tagID );
+        if ( !$tag instanceof eZTagsObject )
+        {
+            return $result;
+        }
+        $tags = eZTagsObject::fetchByParentID($tagID);
 
-        //ezjscore/call/ezjsctagschildren::tagsChildren::291?ContentType=json&amp;&offset=0&limit=50&sortby=keyword&sortdirection=asc
-        return "ezjscore/call/ezjsctagschildren::tagsChildren::291?ContentType=json&amp;&offset=0&limit=50&sortby=keyword&sortdirection=asc";
+        foreach ($tags as $t )
+        {
+            $result []= $t->getKeyword();
+        }
+        return $result;
     }
 
     public function setPayload($postData)
     {
-        $postData = (array)$postData;
-        return 'pippo';
-        return empty( $postData ) ? null : implode(',', $postData);
-
-    }*/
+        /*\eZLog::write(__METHOD__, 'tags.log');
+        \eZLog::write(print_r($postData, 1), 'tags.log');*/
+        if (is_array($postData))
+        {
+            return empty($postData) ? null : $postData;
+        }
+        return explode(',', $postData);
+    }
 }

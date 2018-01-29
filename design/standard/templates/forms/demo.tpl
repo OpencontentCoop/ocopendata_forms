@@ -16,6 +16,7 @@
         'jquery.fileupload-ui.js',
         'jquery.caret.min.js',
         'jquery.tag-editor.js',
+        'popper.min.js',
         'alpaca.js',
         'leaflet/leaflet.0.7.2.js',
         'leaflet/Control.Geocoder.js',
@@ -32,6 +33,7 @@
         'jquery.opendataform.js'
     ))}
     <script type="text/javascript" src={'javascript/tinymce/tinymce.min.js'|ezdesign()} charset="utf-8"></script>
+    <script type="text/javascript" src={'javascript/summernote/summernote-bs4.js'|ezdesign()} charset="utf-8"></script>
 
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     {ezcss_load(array(        
@@ -42,6 +44,7 @@
         'leaflet/MarkerCluster.Default.css',
         'bootstrap-datetimepicker.min.css',
         'jquery.fileupload.css',
+        'summernote/summernote-bs4.css',
         'jquery.tag-editor.css',
         'alpaca-custom.css'
     ))}

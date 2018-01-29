@@ -7,9 +7,6 @@
             return "eztags";
         },
 
-
-
-
         beforeRenderControl: function(model, callback)
         {
             //this.field.css("position", "relative");
@@ -30,13 +27,13 @@
                 self.getControlEl().tagEditor({
                     forceLowercase: false,
                     onChange: function(field, editor, tags) {
-                        self.getControlEl().attr('value', tags.join());
+                        self.getControlEl().attr('value', tags.join(', '));
                     },
                     beforeTagSave: function(field, editor, tags, tag, val) {
-                        self.getControlEl().attr('value', tags.join());
+                        self.getControlEl().attr('value', tags.join(', '));
                     },
                     beforeTagDelete: function(field, editor, tags, val) {
-                        self.getControlEl().attr('value', tags.join());
+                        self.getControlEl().attr('value', tags.join(', '));
                     },
                     autocomplete: {
                         minLength: 1,
@@ -47,15 +44,13 @@
                                 type:"POST",
                                 data: {
                                     search_string: request.term,
-                                    // Todo: recuperare locale e subtree limit dalle opzioni
-                                    subtree_limit: 0,
+                                    subtree_limit: self.options.subtree_limit,
                                     hide_root_tag: 0,
-                                    locale: 'ita-IT',
+                                    locale: self.options.locale,
                                     ezjscServer_function_arguments: 'ezjsctags::autocomplete',
                                     ezxform_token: ''
                                 },
                                 success: function( data ) {
-                                    console.log(data);
                                     response( $.map( data.content.tags, function( item ) {
                                         return {
                                             label: item.name,
