@@ -482,6 +482,7 @@
             var name = $('<a href="#" data-node_id="'+item.node_id+'" style="display:table-cell;"> '+item.name+ ' <small>' +item.class_name + '</small></a>');
             name.bind('click', function(e){
                 self.browseParameters.subtree = $(this).data('node_id');
+                self.browseParameters.offset = 0;
                 self.buildTreeSelect();
                 e.preventDefault();
             });
