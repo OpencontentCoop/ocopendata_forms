@@ -156,6 +156,7 @@ $(document).on('keydown', 'input, select, checkbox', function(e){
                                             });
                                         }
                                     },
+                                    'id': "save-"+options.connector+"button",
                                     "value": "Salva",
                                     "styles": "btn btn-lg btn-success pull-right"
                                 }
@@ -164,17 +165,16 @@ $(document).on('keydown', 'input, select, checkbox', function(e){
                     }
                 }, options.alpaca);
 
-                if (params.view == 'display') {
-                    $.each(options.options.form.buttons, function() {
-                        options.options.form.buttons.styles += ' hide';
+                if (params.view && params.view === 'display') {
+                    $.each(alpacaOptions.options.form.buttons, function() {
+                        alpacaOptions.options.form.buttons.styles += ' hide';
                     })
                 }
 
                 if ($.isFunction(options.onBeforeCreate)) {
                     options.onBeforeCreate();
                 }
-
-                $(this).alpaca('destroy').addClass('clearfix').alpaca(alpacaOptions);
+                $(this).alpaca('destroy').html('').addClass('clearfix').alpaca(alpacaOptions);
 
             });
         },
@@ -344,6 +344,7 @@ $(document).on('keydown', 'input, select, checkbox', function(e){
                                             });
                                         }
                                     },
+                                    'id': "confirm-"+connector+"button",
                                     "value": "Conferma eliminazione",
                                     "styles": "btn btn-lg btn-success pull-right"
                                 }

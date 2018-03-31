@@ -30,11 +30,19 @@
         'fields/RelationBrowse.js',
         'fields/LocationBrowse.js',
         'fields/Tags.js',
-        ezini('JavascriptSettings', 'IncludeScriptList', 'ocopendata_connectors.ini'),
+        'fields/Ezxml.js',
         'jquery.opendataform.js'
-    ))}    
-    <script type="text/javascript" src={'javascript/tinymce/tinymce.min.js'|ezdesign()} charset="utf-8"></script>
-    <script type="text/javascript" src={'javascript/summernote/summernote-bs4.js'|ezdesign()} charset="utf-8"></script>
+    ))}
+
+    {def $plugin_list = ezini('EditorSettings', 'Plugins', 'ezoe.ini',,true() )
+         $ez_locale = ezini( 'RegionalSettings', 'Locale', 'site.ini')
+         $language = '-'|concat( $ez_locale )
+         $dependency_js_list = array( 'ezoe::i18n::'|concat( $language ) )}
+    {foreach $plugin_list as $plugin}
+        {set $dependency_js_list = $dependency_js_list|append( concat( 'plugins/', $plugin|trim, '/editor_plugin.js' ))}
+    {/foreach}
+    <script id="tinymce_script_loader" type="text/javascript" src={"javascript/tiny_mce_jquery.js"|ezdesign} charset="utf-8"></script>
+    {ezscript( $dependency_js_list )}
 
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     {ezcss_load(array(        
@@ -66,7 +74,7 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="container" style="margin-bottom: 30px">
         <h1>Opendata Forms Demo</h1>
 
         <p class="lead">Implementazione di <a href="http://www.alpacajs.org/">alpacajs <i class="fa fa-external-link"></i> </a>
@@ -127,115 +135,34 @@
             </div>
         </div>
         <hr/>
-        <p>Utilizza la classe <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector</code> che richiama l'handler di
-            default <code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\ClassConnector</code></p>
-        <p>Sono mappati gli attibuti di tipo;</p>
-        <table class="table">
-            <tr>
-                <td>ezselection</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\SelectionField</code></td>
-            </tr>
-            <tr>
-                <td>ezprice</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\PriceField</code></td>
-            </tr>
-            <tr>
-                <td>ezkeyword</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\KeywordsField</code></td>
-            </tr>
-            <tr>
-                <td>eztags</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\TagsField</code></td>
-            </tr>
-            <tr>
-                <td>ezgmaplocation</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\GeoField</code></td>
-            </tr>
-            <tr>
-                <td>ezdate</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\DateField</code></td>
-            </tr>
-            <tr>
-                <td>ezdatetime</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\DateTimeField</code></td>
-            </tr>
-            <tr>
-                <td>eztime</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\TimeField</code></td>
-            </tr>
-            <tr>
-                <td>ezmatrix</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\MatrixField</code></td>
-            </tr>
-            <tr>
-                <td>ezxmltext</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\EzXmlField</code></td>
-            </tr>
-            <tr>
-                <td>ezauthor</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\AuthorField</code></td>
-            </tr>
-            <tr>
-                <td>ezobjectrelation</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\RelationField</code></td>
-            </tr>
-            <tr>
-                <td>ezobjectrelationlist</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\RelationsField</code></td>
-            </tr>
-            <tr>
-                <td>ezbinaryfile</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\FileField</code></td>
-            </tr>
-            <tr>
-                <td>ezimage</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\ImageField</code></td>
-            </tr>
-            <tr>
-                <td>ezpage</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\PageField</code></td>
-            </tr>
-            <tr>
-                <td>ezboolean</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\BooleanField</code></td>
-            </tr>
-            <tr>
-                <td>ezuser</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\UserField</code></td>
-            </tr>
-            <tr>
-                <td>ezfloat</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\FloatField</code></td>
-            </tr>
-            <tr>
-                <td>ezinteger</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\IntegerField</code></td>
-            </tr>
-            <tr>
-                <td>ezstring</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\StringField</code></td>
-            </tr>
-            <tr>
-                <td>ezsrrating</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\RatingField</code></td>
-            </tr>
-            <tr>
-                <td>ezemail</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\EmailField</code></td>
-            </tr>
-            <tr>
-                <td>ezcountry</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\CountryField</code></td>
-            </tr>
-            <tr>
-                <td>ezurl</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\UrlField</code></td>
-            </tr>
-            <tr>
-                <td>eztext</td>
-                <td><code>\Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector\TextField</code></td>
-            </tr>
-        </table>
+        <p>Connettore: <code>Opencontent\Ocopendata\Forms\Connectors\OpendataConnector</code></p>
+        <p>Handler: <code>Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\ClassConnector</code></p>
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#mapped" aria-controls="mapped" role="tab" data-toggle="tab">Datatype mappati</a></li>
+            <li role="presentation"><a href="#unmapped" aria-controls="unmapped" role="tab" data-toggle="tab">Datatype non mappati</a></li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="mapped">
+                <table class="table">
+                    {foreach $connector_by_datatype as $datatype => $connector}
+                        <tr>
+                            <td>{$datatype|wash()}</td>
+                            <td><code>{$connector|wash()}</code></td>
+                        </tr>
+                    {/foreach}
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="unmapped">
+                <table class="table">
+                    {foreach $not_found_connector_by_datatype as $datatype => $connector}
+                        <tr>
+                            <td>{$datatype|wash()}</td>
+                        </tr>
+                    {/foreach}
+                </table>
+            </div>
+        </div>
+
 
 
         <h2>Browse demo</h2>
@@ -291,7 +218,7 @@
                 }).appendTo(buttonCell);
             $('<button class="btn btn-danger" data-object="'+data.content.metadata.id+'"><i class="fa fa-trash"></i></button>')
                 .bind('click', function(e){
-                    var object = $(this).data('object')
+                    var object = $(this).data('object');
                     $('#form').opendataFormDelete({object: object},{
                         onSuccess: function(data){
                             $('#demo-contents-containers').find('#object-'+object).remove();
@@ -302,13 +229,13 @@
                 }).appendTo(buttonCell);
             $('<button class="btn btn-info" data-node="'+data.content.metadata.mainNodeId+'"><i class="fa fa-code-fork"></i></button>')
                 .bind('click', function(e){
-                    var node = $(this).data('node')
+                    var node = $(this).data('node');
                     $('#form').opendataFormManageLocation({source: node});
                     e.preventDefault();
                 }).appendTo(buttonCell);    
             buttonCell.appendTo(newRow);
             $('#demo-contents').append(newRow);
-        }
+        };
 
         $('#showclass').on('click', function (e) {
             $('#form').opendataFormCreate({class: classSelect.val()}, {
@@ -332,7 +259,7 @@
         });
 
         $('#browse').opendataBrowse({
-            'subtree': 43,
+            'subtree': {/literal}{ezini('NodeSettings', 'RootNode', 'content.ini')}{literal},
             'addCloseButton': true,
             'addCreateButton': true,
             'classes': ['folder','image']
