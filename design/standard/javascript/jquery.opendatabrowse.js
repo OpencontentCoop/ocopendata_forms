@@ -11,13 +11,15 @@
             browsePaginationLimit: 10,
             browseSort: 'published',
             browseOrder: '0',
+            allowAllBrowse: true,
             openInSearchMode: false,
             addCloseButton: false,
             addCreateButton: false,
             createSettings: {
                 'connector': 'default',
                 'options': {}
-            }
+            },
+            initOnCreate: true
         };
 
     function Plugin(element, options) {
@@ -28,17 +30,86 @@
         this.iconStyle = 'line-height: 0.7;display:table-cell;padding-right:5px;font-size:1.5em';
         this.selection = [];
         this.browseParameters = {};
+        this.rootNode = 'undefined';
 
         if (
             this.settings.classes == false
             || typeof $.fn.alpaca == 'undefined'
         ){
             this.settings.addCreateButton = false;
+            var OpenContentOcopendataInBrowseConnector = Alpaca.Connector.extend({
+                loadAll: function (resources, onSuccess, onError){
+                    var self = this;   
+                    
+                    var resourceUri = self._buildResourceUri();
+                    
+                    var onConnectSuccess = function() {
+                        
+                        var loaded = {};
+
+                        var doMerge = function(p, v1, v2){
+                            loaded[p] = v1;
+
+                            if (v2){
+                                if ((typeof(loaded[p]) === "object") && (typeof(v2) === "object")){
+                                    Alpaca.mergeObject(loaded[p], v2);
+                                }else{
+                                    loaded[p] = v2;
+                                }
+                            }
+                        };
+
+                        self._handleLoadJsonResource(
+                            resourceUri, 
+                            function(response){
+                                doMerge("data", resources.data, response.data);
+                                doMerge("options", resources.options, response.options);
+                                doMerge("schema", resources.schema, response.schema);
+                                doMerge("view", resources.view, response.view);                    
+                                onSuccess(loaded.data, loaded.options, loaded.schema, loaded.view);
+                            }, 
+                            function (loadError){
+                                if (onError && Alpaca.isFunction(onError)){
+                                    onError(loadError);
+                                }
+                            }
+                        );
+                    };        
+
+                    var onConnectError  = function(err) {
+                        if (onError && Alpaca.isFunction(onError)) {
+                            onError(err);
+                        }
+                    };
+
+                    self.connect(onConnectSuccess, onConnectError); 
+                },    
+                _buildResourceUri: function(){
+                    var self = this; 
+
+                    var prefix = '/';
+                    if ($.isFunction($.ez)){
+                        prefix = $.ez.root_url;
+                    }else if(self.config.prefix){
+                        prefix = self.config.prefix;
+                    }
+
+                    return prefix+"forms/connector/" + self.config.connector + "/?" + $.param(self.config.params);
+                }
+            });
+            Alpaca.registerConnectorClass("opendataforminbrowse", OpenContentOcopendataInBrowseConnector);
         }
 
         this.resetBrowseParameters();
 
-        this.init();
+        this.isInit = false;
+        if(this.settings.initOnCreate){
+            this.doInit();
+        }
+        
+        this.init = function(){
+            this.doInit();
+        };
 
         this.reset = function(){
             this.emptySelection();            
@@ -50,15 +121,18 @@
     // Avoid Plugin.prototype conflicts
     $.extend(Plugin.prototype, {
         
-        init: function () {            
-            this.browserContainer = $('<div></div>').appendTo($(this.element));
-            this.selectionContainer = $('<div></div>').appendTo($(this.element));   
-            this.buildTreeSelect();
-            if (this.settings.openInSearchMode){
-                this.resetBrowseParameters();
-                this.buildSearchSelect();
-                this.searchInput.trigger('keyup');
-            }            
+        doInit: function () {            
+            if (!this.isInit){
+                this.browserContainer = $('<div></div>').appendTo($(this.element));                
+                this.selectionContainer = $('<div></div>').appendTo($(this.element));   
+                this.buildTreeSelect();
+                if (this.settings.openInSearchMode){
+                    this.resetBrowseParameters();
+                    this.buildSearchSelect();
+                    this.searchInput.trigger('keyup');
+                }
+                this.isInit = true;
+            }
         },   
 
         resetBrowseParameters: function(){
@@ -68,7 +142,7 @@
                 offset: 0,
                 sort: this.settings.browseSort || 'priority',
                 order: this.settings.browseOrder || 1
-            };
+            };            
         },
 
         buildPanelHeader: function(panel,isTree,isSearch,isCreate){
@@ -171,6 +245,19 @@
             return panelHeading;
         },
 
+        allowUpBrowse: function(current){
+            if(!this.settings.allowAllBrowse){                
+                if (this.settings.subtree != current.node_id){
+                    console.log(current.path_identification_string.search(this.rootNode.path_identification_string));
+                    return current.path_identification_string.search(this.rootNode.path_identification_string) > -1;
+                }
+                
+                return false;
+            }
+
+            return true;
+        },
+
         buildTreeSelect: function () {
             var self = this;
 
@@ -186,12 +273,19 @@
                     if (data.error_text == ''){
                         var name = $('<h3 class="panel-title" style="line-height: 2.5em;"></h3>');
                         var itemName = (data.content.name.length > 50) ? data.content.name.substring(0,47)+'...' : data.content.name;
-                        var back = $('<a href="#" data-node_id="'+data.content.parent_node_id+'"><span class="glyphicon glyphicon-circle-arrow-up" style="vertical-align:sub;font-size:1.5em"></span> '+itemName+'</a>').prependTo(name);
-                        back.bind('click', function(e){
-                            self.browseParameters.subtree = $(this).data('node_id');
-                            self.buildTreeSelect();
-                            e.preventDefault();
-                        });                                                
+                        if (self.settings.subtree == self.browseParameters.subtree){
+                            self.rootNode = data.content;
+                        }                        
+                        if (self.allowUpBrowse(data.content)){
+                            var back = $('<a href="#" data-node_id="'+data.content.parent_node_id+'"><span class="glyphicon glyphicon-circle-arrow-up" style="vertical-align:sub;font-size:1.5em"></span> '+itemName+'</a>').prependTo(name);
+                            back.bind('click', function(e){
+                                self.browseParameters.subtree = $(this).data('node_id');
+                                self.buildTreeSelect();
+                                e.preventDefault();
+                            });
+                        }else{
+                            $(name).html(itemName);
+                        }
                         panelHeading.append(name);
                     }else{
                         alert(data.error_text);
@@ -296,19 +390,24 @@
             var panelHeading = self.buildPanelHeader(panel, false, false, true);
             panelHeading.append('<h3 class="panel-title" style="line-height: 2.5em;">Crea nuovo</h3>');
 
-            var queryStringParameter = '';
+            var params = {
+                class: classIdentifier
+            };
             if (self.settings.subtree != 1){
-                queryStringParameter = '&parent='+self.settings.subtree;
+                params.parent = self.settings.subtree;
             }
 
             var d = new Date();
-            queryStringParameter += '&nocache='+d.getTime();
+            params.nocache= d.getTime();
 
             var options = $.extend(true, {
-                "dataSource": "/forms/connector/"+self.settings.createSettings.connector+"/data?class="+classIdentifier+queryStringParameter,
-                "schemaSource": "/forms/connector/"+self.settings.createSettings.connector+"/schema?class="+classIdentifier+queryStringParameter,
-                "optionsSource": "/forms/connector/"+self.settings.createSettings.connector+"/options?class="+classIdentifier+queryStringParameter,
-                "viewSource": "/forms/connector/"+self.settings.createSettings.connector+"/view?class="+classIdentifier+queryStringParameter,
+                "connector":{
+                    "id": "opendataforminbrowse",
+                    "config": {
+                        "connector": self.settings.createSettings.connector,
+                        "params": params
+                    }
+                },
                 "options": {                    
                     "form": {
                         "buttons": {

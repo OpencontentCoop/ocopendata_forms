@@ -81,6 +81,10 @@ class ManageLocationConnector extends AbstractBaseConnector
 
         } elseif ($serviceIdentifier == 'action') {
             return $this->submit();
+        
+        } elseif ($serviceIdentifier == '') {
+            return $this->getAll();
+
         }
 
         throw new \Exception("Connector service $serviceIdentifier not handled");

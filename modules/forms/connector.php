@@ -13,7 +13,25 @@ try {
     foreach($_GET as $key => $value){
         $connector->setParameter($key, $value);
     }
-    $data = $connector->runService($Service);
+    
+    try {
+        $data = $connector->runService($Service);
+    } catch (Exception $e) {
+        
+        // Backward compatibility: l'interpretazione del $Service vuoto è stata aggiunta dopo la versione 1.1
+        // I connettori custom potrebbero non essere aggiornati: vedi AbstractBaseConnector::runService riga 54
+        if (empty($Service)){
+            $data = array(
+                'data' => $connector->runService('data'),
+                'options' => $connector->runService('options'),
+                'schema' => $connector->runService('schema'),
+                'view' => $connector->runService('view'),
+            );
+        }else{
+            throw $e;
+        }
+    }
+
 } catch (Exception $e) {
     $data = array(
         'error' => $e->getMessage(),

@@ -50,9 +50,22 @@ abstract class AbstractBaseConnector implements ConnectorInterface
         } elseif ($serviceIdentifier == 'upload') {
             return $this->upload();
 
+        } elseif ($serviceIdentifier == '') {
+            return $this->getAll();
+
         }
 
         throw new \Exception("Connector service $serviceIdentifier not handled");
+    }
+
+    protected function getAll()
+    {
+        return array(
+            'data' => $this->getData(),
+            'options' => $this->getOptions(),
+            'schema' => $this->getSchema(),
+            'view' => $this->getView(),
+        );
     }
 
     /**

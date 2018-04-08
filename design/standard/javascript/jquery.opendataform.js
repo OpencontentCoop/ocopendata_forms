@@ -13,6 +13,68 @@ Alpaca.defaultTimeFormat = "HH:mm";
 //    return this;
 //};
 
+var OpenContentOcopendataConnector = Alpaca.Connector.extend({
+    loadAll: function (resources, onSuccess, onError){
+        var self = this;   
+        
+        var resourceUri = self._buildResourceUri();
+        
+        var onConnectSuccess = function() {
+            
+            var loaded = {};
+
+            var doMerge = function(p, v1, v2){
+                loaded[p] = v1;
+
+                if (v2){
+                    if ((typeof(loaded[p]) === "object") && (typeof(v2) === "object")){
+                        Alpaca.mergeObject(loaded[p], v2);
+                    }else{
+                        loaded[p] = v2;
+                    }
+                }
+            };
+
+            self._handleLoadJsonResource(
+                resourceUri, 
+                function(response){
+                    doMerge("data", resources.data, response.data);
+                    doMerge("options", resources.options, response.options);
+                    doMerge("schema", resources.schema, response.schema);
+                    doMerge("view", resources.view, response.view);                    
+                    onSuccess(loaded.data, loaded.options, loaded.schema, loaded.view);
+                }, 
+                function (loadError){
+                    if (onError && Alpaca.isFunction(onError)){
+                        onError(loadError);
+                    }
+                }
+            );
+        };        
+
+        var onConnectError  = function(err) {
+            if (onError && Alpaca.isFunction(onError)) {
+                onError(err);
+            }
+        };
+
+        self.connect(onConnectSuccess, onConnectError); 
+    },    
+    _buildResourceUri: function(){
+        var self = this; 
+
+        var prefix = '/';
+        if ($.isFunction($.ez)){
+            prefix = $.ez.root_url;
+        }else if(self.config.prefix){
+            prefix = self.config.prefix;
+        }
+
+        return prefix+"forms/connector/" + self.config.connector + "/?" + $.param(self.config.params);
+    }
+});
+Alpaca.registerConnectorClass("opendataform", OpenContentOcopendataConnector);
+
 ;(function(defaults, $, window, document, undefined) {
     'use strict';
     $.extend({
@@ -23,14 +85,7 @@ Alpaca.defaultTimeFormat = "HH:mm";
 
         opendataForm: function(params, options) {
 
-            var prefix = '/';
-            if ($.isFunction($.ez)){
-                prefix = $.ez.root_url;
-            }
-
             options = $.extend({}, defaults, options);
-
-            var connector = options.connector;
 
             var tokenNode = document.getElementById('ezxform_token_js');
             if ( tokenNode ){
@@ -60,10 +115,13 @@ Alpaca.defaultTimeFormat = "HH:mm";
                 };
 
                 var alpacaOptions = $.extend(true, {
-                    "dataSource": prefix+"forms/connector/" + connector + "/data?" + $.param(params),
-                    "schemaSource": prefix+"forms/connector/" + connector + "/schema?" + $.param(params),
-                    "optionsSource": prefix+"forms/connector/" + connector + "/options?" + $.param(params),
-                    "viewSource": prefix+"forms/connector/" + connector + "/view?" + $.param(params),
+                    "connector":{
+                        "id": "opendataform",
+                        "config": {
+                            "connector": options.connector,
+                            "params": params
+                        }
+                    },
                     "options": {
                         "form": {
                             "buttons": {
@@ -159,8 +217,6 @@ Alpaca.defaultTimeFormat = "HH:mm";
                 throw new Error('Missing object parameter');
             }
 
-            var connector = options.connector;
-
             if (options.nocache) {
                 var d = new Date();
                 params.nocache = d.getTime();
@@ -168,18 +224,16 @@ Alpaca.defaultTimeFormat = "HH:mm";
 
             params.view = 'display';
 
-            var prefix = '/';
-            if ($.isFunction($.ez)){
-                prefix = $.ez.root_url;
-            }
-
             return $(this).each(function() {
 
-                var alpacaOptions = $.extend(true, {
-                    "dataSource": prefix+"forms/connector/" + connector + "/data?" + $.param(params),
-                    "schemaSource": prefix+"forms/connector/" + connector + "/schema?" + $.param(params),
-                    "optionsSource": prefix+"forms/connector/" + connector + "/options?" + $.param(params),
-                    "viewSource": prefix+"forms/connector/" + connector + "/view?" + $.param(params),
+                var alpacaOptions = $.extend(true, {                    
+                    "connector":{
+                        "id": "opendataform",
+                        "config": {
+                            "connector": options.connector,
+                            "params": params
+                        }
+                    },
                     "options": {
                         "form": {
                             "buttons": {
@@ -215,8 +269,6 @@ Alpaca.defaultTimeFormat = "HH:mm";
                 throw new Error('Missing object parameter');
             }
 
-            var connector = 'delete-object';
-
             var tokenNode = document.getElementById('ezxform_token_js');
             if ( tokenNode ){
                 Alpaca.CSRF_TOKEN = tokenNode.getAttribute('title');
@@ -248,10 +300,13 @@ Alpaca.defaultTimeFormat = "HH:mm";
                 };
 
                 var alpacaOptions = $.extend(true, {
-                    "dataSource": "/forms/connector/" + connector + "/data?" + $.param(params),
-                    "schemaSource": "/forms/connector/" + connector + "/schema?" + $.param(params),
-                    "optionsSource": "/forms/connector/" + connector + "/options?" + $.param(params),
-                    "viewSource": "/forms/connector/" + connector + "/view?" + $.param(params),
+                    "connector":{
+                        "id": "opendataform",
+                        "config": {
+                            "connector": 'delete-object',
+                            "params": params
+                        }
+                    },
                     "options": {
                         "form": {
                             "buttons": {
