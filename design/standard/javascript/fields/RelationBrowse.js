@@ -49,6 +49,9 @@
 
             this.base(model, function () {
                 var container = self.getContainerEl();
+
+                self.options.browse.initOnCreate = false;
+
                 self.browser = $('<div></div>')
                     .prependTo(container)
                     .opendataBrowse(self.options.browse)
@@ -78,7 +81,9 @@
             var toolbarEl = $(self.getFieldEl()).find(".alpaca-array-toolbar[data-alpaca-array-toolbar-field-id='" + self.getId() + "']");
 
 
-            self.browser.show();
+            self.browser.show('fast', function(){
+                self.browser.data('plugin_opendataBrowse').init();
+            });
             $(toolbarEl).hide();
 
             self.browser.on('opendata.browse.close', function (event, opendataBrowse) {

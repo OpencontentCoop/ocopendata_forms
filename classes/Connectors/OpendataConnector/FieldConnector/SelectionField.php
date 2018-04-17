@@ -22,7 +22,12 @@ class SelectionField extends FieldConnector
     public function getData()
     {
         $rawContent = $this->getContent();
-        return $rawContent && !empty($rawContent['content']) && $rawContent['content'][0] != '' ? $rawContent['content'] : null;
+        if ($rawContent && !empty($rawContent['content']) && $rawContent['content'][0] != ''){
+            return $rawContent['content'];
+        }elseif($this->attribute->attribute('is_required')){
+            return array($this->values[0]);
+        }
+        return null;
     }
     
     public function getSchema()
