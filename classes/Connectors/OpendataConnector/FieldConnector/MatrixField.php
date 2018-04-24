@@ -45,12 +45,15 @@ class MatrixField extends FieldConnector
         $fixedPostData = array();
         if(is_array($postData)){
             foreach ($postData as $item) {
-                foreach ($columns as $column) {
+                $fixedItem = array();
+                foreach ($columns as $column) {                    
                     if (!isset($item[$column['identifier']])){
-                        $item[$column['identifier']] = '';
+                        $fixedItem[$column['identifier']] = '';
+                    }else{
+                        $fixedItem[$column['identifier']] = $item[$column['identifier']];
                     }
                 }
-                $fixedPostData[] = $item;
+                $fixedPostData[] = $fixedItem;
             }
         }
         return $fixedPostData;
