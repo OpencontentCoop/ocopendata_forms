@@ -32,7 +32,7 @@ abstract class UploadFieldConnector extends FieldConnector
 
     private function doUpload($paramNamePrefix)
     {
-        $this->cleanup();
+        //$this->cleanup();
 
         $paramName = $this->getIdentifier() . $this->getUploadParamNameSuffix();
         if ($paramNamePrefix) {
@@ -92,11 +92,15 @@ abstract class UploadFieldConnector extends FieldConnector
         $file = new eZFSFileHandler($filePath);
         if ($file->exists()) {
             $file->delete();
-
-            return true;
         }
 
-        return false;
+        return array(
+            'files' => array(
+                array(
+                    $fileName => true
+                )
+            )
+        );
     }
 
     private function doPreview()

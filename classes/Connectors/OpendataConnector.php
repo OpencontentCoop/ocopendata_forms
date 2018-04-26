@@ -6,8 +6,7 @@ use Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\ClassConnectorInte
 use Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\ClassConnectorFactory;
 use eZContentClass;
 use eZContentObject;
-use Opencontent\Opendata\Api\EnvironmentLoader;
-use Opencontent\Opendata\Api\ContentRepository;
+use Opencontent\Opendata\Api\Values\Content;
 
 class OpendataConnector extends AbstractBaseConnector
 {
@@ -73,7 +72,7 @@ class OpendataConnector extends AbstractBaseConnector
             }
 
             if ($this->object instanceof eZContentObject) {
-                if (!$this->object->canRead()) {
+                if (!$this->object->canRead()) {                    
                     throw new \Exception("User can not read object #" . $this->object->attribute('id'));
                 }
                 if (!$this->object->canEdit() && $this->getHelper()->getParameter('view') != 'display') {
@@ -91,12 +90,8 @@ class OpendataConnector extends AbstractBaseConnector
                 $this->classConnector = ClassConnectorFactory::load($this->class, $this->getHelper());
             }
 
-            if ($this->object instanceof eZContentObject) {
-                $contentRepository = new ContentRepository();
-                $currentEnvironment = EnvironmentLoader::loadPreset('full');
-                $contentRepository->setEnvironment($currentEnvironment);
-
-                $data = (array)$contentRepository->read( $this->object->attribute('id') );
+            if ($this->object instanceof eZContentObject) {                
+                $data = (array)Content::createFromEzContentObject($this->object);
                 $locale = \eZLocale::currentLocaleCode();
                 if (isset($data['data'][$locale])){
                     $this->classConnector->setContent($data['data'][$locale]);

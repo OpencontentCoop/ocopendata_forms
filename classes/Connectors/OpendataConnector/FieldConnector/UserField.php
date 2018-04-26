@@ -3,6 +3,9 @@
 namespace Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector;
 
 use Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector;
+use eZUser;
+use eZContentObject;
+use Exception;
 
 class UserField extends FieldConnector
 {
@@ -19,8 +22,7 @@ class UserField extends FieldConnector
                 ),
                 "email" => array(
                     "title" => \ezpI18n::tr( 'design/standard/content/datatype', 'Email' ),
-                    "format" => "email",
-                    "readonly" => $this->getHelper()->hasParameter('object'),
+                    "format" => "email"
                 )
             ),
             'required' => (bool)$this->attribute->attribute('is_required')
@@ -37,8 +39,7 @@ class UserField extends FieldConnector
                     "disabled" => $this->getHelper()->hasParameter('object'),
                 ),
                 "email" => array(
-                    "autocomplete" => 'off',
-                    "disabled" => $this->getHelper()->hasParameter('object'),
+                    "autocomplete" => 'off'
                 )
             )
 
@@ -47,6 +48,40 @@ class UserField extends FieldConnector
 
     public function setPayload($postData)
     {
+        // workaround per permettere modifica email
+        if ($this->getHelper()->hasParameter('object') && isset($postData['email'])){
+            $user = eZUser::fetch((int)$this->getHelper()->getParameter('object'));
+            if ($user instanceof eZUser && $user->attribute('email') !== $postData['email']){
+                $alreadyExists = eZUser::fetchByEmail($postData['email']);
+                if ($alreadyExists instanceof eZUser){
+                    throw new Exception("Indirizzo email già in uso", 1);
+                }else{                    
+                    $user->setAttribute('email', $postData['email']);                    
+                    $userObject = eZContentObject::fetch($user->id());
+                    if ($userObject instanceof eZContentObject){
+                        foreach ($userObject->attribute( 'contentobject_attributes' ) as $contentObjectAttribute){
+                            if ($contentObjectAttribute->attribute( 'data_type_string' ) === 'ezuser'){
+                                $contentObjectAttribute->setAttribute('data_text', $this->serializeDraft( $user ));
+                                $user->store();
+                                $contentObjectAttribute->store();
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return $this->getHelper()->hasParameter('object') ? null : $postData;
+    }
+
+    private function serializeDraft(eZUser $user)
+    {
+        return json_encode(
+            array(
+                 'login' => $user->attribute( 'login' ),
+                 'password_hash' => $user->attribute( 'password_hash' ),
+                 'email' => $user->attribute( 'email' ),
+                 'password_hash_type' => $user->attribute( 'password_hash_type' )
+            )
+        );
     }
 }

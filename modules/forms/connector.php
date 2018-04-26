@@ -34,12 +34,16 @@ try {
 
 } catch (Exception $e) {
     $data = array(
-        'error' => $e->getMessage(),
-//        'file' => $e->getFile(),
-//        'line' => $e->getLine(),
-//        'trace' => explode("\n", $e->getTraceAsString()),
-//        'prev' => $e->getPrevious()
+        'error' => $e->getMessage(),       
     );
+    if ($http->hasGetVariable('debug')) {
+        $data = array_merge($data, array(
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => explode("\n", $e->getTraceAsString()),
+            'prev' => $e->getPrevious()
+        ));
+    }
 }
 
 if ($http->hasGetVariable('debug')) {
