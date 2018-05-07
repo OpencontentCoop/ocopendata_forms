@@ -80,7 +80,6 @@
             var self = this;
             var toolbarEl = $(self.getFieldEl()).find(".alpaca-array-toolbar[data-alpaca-array-toolbar-field-id='" + self.getId() + "']");
 
-
             self.browser.show('fast', function(){
                 self.browser.data('plugin_opendataBrowse').init();
             });
@@ -88,7 +87,9 @@
 
             self.browser.on('opendata.browse.close', function (event, opendataBrowse) {
                 self.browser.hide();
-                $(toolbarEl).show();
+                if (self.children.length === 0){
+                    $(toolbarEl).show();
+                }
                 event.stopPropagation();
             });
 

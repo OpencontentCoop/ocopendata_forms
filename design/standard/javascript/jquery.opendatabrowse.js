@@ -216,7 +216,7 @@
                             self.rootNode = data.content;
                         }                        
                         if (self.allowUpBrowse(data.content)){
-                            var back = $('<a href="#" data-node_id="'+data.content.parent_node_id+'"><span class="glyphicon glyphicon-circle-arrow-up" style="vertical-align:sub;font-size:1.5em"></span> '+itemName+'</a>').prependTo(name);
+                            var back = $('<a class="browse-back" href="#" data-node_id="'+data.content.parent_node_id+'"><span class="glyphicon glyphicon-circle-arrow-up" style="vertical-align:sub;font-size:1.5em"></span> '+itemName+'</a>').prependTo(name);
                             back.bind('click', function(e){
                                 self.browseParameters.subtree = $(this).data('node_id');
                                 self.buildTreeSelect();
@@ -255,7 +255,13 @@
                         list.appendTo(panelContent);
 
                     }else{
-                       panelContent.append($('<div class="panel-body">Nessun contenuto</div>'));
+                        var nullContent = $('<div class="panel-body">Nessun contenuto. </div>');
+                        var goBack = $('<a href="#"><small>Torna indietro</small></a>');
+                        goBack.bind('click', function(e){
+                            panelHeading.find('.browse-back').trigger('click');
+                            e.preventDefault();
+                        }).appendTo(nullContent);
+                        panelContent.append(nullContent);
                     }
 
                     if(data.content.offset > 0){
@@ -646,12 +652,14 @@
         },      
 
         appendToSelection: function (item){
-            if (this.settings.selectionType != 'multiple'){
-                this.emptySelection();
-                $(this.browserContainer).find('[data-selection="'+item.contentobject_id+'"]').removeClass('glyphicon-unchecked').addClass('glyphicon-check');
+            if (!this.isInSelection(item)) {
+                if (this.settings.selectionType != 'multiple') {
+                    this.emptySelection();
+                    $(this.browserContainer).find('[data-selection="' + item.contentobject_id + '"]').removeClass('glyphicon-unchecked').addClass('glyphicon-check');
+                }
+                this.selection.push(item);
+                this.refreshSelection();
             }
-            this.selection.push(item);
-            this.refreshSelection();
         },
 
         refreshSelection: function(){

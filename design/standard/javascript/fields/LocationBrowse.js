@@ -49,6 +49,9 @@
 
             this.base(model, function() {
                 var container = self.getContainerEl();
+
+                self.options.browse.initOnCreate = false;
+
                 self.browser = $('<div></div>')
                     .prependTo(container)
                     .opendataBrowse(self.options.browse)
@@ -82,8 +85,18 @@
 
             if (self._validateEqualMaxItems())
             {
-                self.browser.show();
+                self.browser.show('fast', function(){
+                    self.browser.data('plugin_opendataBrowse').init();
+                });
                 $(toolbarEl).hide();
+
+                self.browser.on('opendata.browse.close', function (event, opendataBrowse) {
+                    self.browser.hide();
+                    if (self.children.length === 0){
+                        $(toolbarEl).show();
+                    }
+                    event.stopPropagation();
+                });
 
                 self.browser.on('opendata.browse.select', function(event, opendataBrowse){
 
