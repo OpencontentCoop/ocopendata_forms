@@ -75,6 +75,11 @@ var OpenContentOcopendataConnector = Alpaca.Connector.extend({
 });
 Alpaca.registerConnectorClass("opendataform", OpenContentOcopendataConnector);
 
+$(document).on('keydown', 'input, select, checkbox', function(e){
+    if(e.keyCode === 13)
+        e.preventDefault();
+});
+
 ;(function(defaults, $, window, document, undefined) {
     'use strict';
     $.extend({
