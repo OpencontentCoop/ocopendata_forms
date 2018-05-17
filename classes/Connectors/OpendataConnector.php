@@ -102,9 +102,14 @@ class OpendataConnector extends AbstractBaseConnector
         }
     }
 
+    protected function getAvailableParameters()
+    {
+        return self::$availableParameters;
+    }
+
     public function setParameter($key, $value)
     {
-        if (in_array($key, self::$availableParameters)){
+        if (in_array($key, $this->getAvailableParameters())){
             parent::setParameter($key, $value);
         }
     }
