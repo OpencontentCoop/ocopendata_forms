@@ -19,7 +19,8 @@
                 'connector': 'default',
                 'options': {}
             },
-            initOnCreate: true
+            initOnCreate: true,
+            useTooltip: $.isFunction($.fn.tooltip)
         };
 
     function Plugin(element, options) {
@@ -89,7 +90,8 @@
             var panelHeading = $('<div class="panel-heading clearfix" style="padding: 5px 15px 0"></div>').appendTo(panel);
 
             if (self.settings.addCloseButton) {
-                var closeButton = $('<a class="btn btn-lg btn-link pull-right" href="#"><span class="glyphicon glyphicon-remove"></span></a>');
+                var closeButton = $('<a class="btn btn-lg btn-link pull-right" href="#" data-toggle="tooltip" title="Clicca per chiudere la finestra"><span class="glyphicon glyphicon-remove"></span></a>');
+                if (self.settings.useTooltip) closeButton.tooltip();
                 closeButton.bind('click', function (e) {
                     if (isCreate){
                         if (self.settings.openInSearchMode){
@@ -108,7 +110,8 @@
             }
 
             if (isTree || isCreate) {
-                var searchButton = $('<a class="btn btn-lg btn-link pull-right" href="#"><span class="glyphicon glyphicon-search"></span></a>');
+                var searchButton = $('<a class="btn btn-lg btn-link pull-right" href="#" data-toggle="tooltip" title="Clicca per aprire il motore di ricerca"><span class="glyphicon glyphicon-search"></span></a>');
+                if (self.settings.useTooltip) searchButton.tooltip();
                 searchButton.bind('click', function (e) {
                     self.resetBrowseParameters();
                     self.buildSearchSelect();
@@ -118,7 +121,8 @@
             }
 
             if (isSearch || isCreate){
-                var treeButton = $('<a class="btn btn-lg btn-link pull-right" href="#"><span class="glyphicon glyphicon-th-list"></span></a>');
+                var treeButton = $('<a class="btn btn-lg btn-link pull-right" href="#" data-toggle="tooltip" title="Clicca per navigare nell\'alberatura dei contenuti"><span class="glyphicon glyphicon-th-list"></span></a>');
+                if (self.settings.useTooltip) treeButton.tooltip();
                 treeButton.bind('click', function(e){
                     self.resetBrowseParameters();
                     self.buildTreeSelect();
@@ -216,7 +220,8 @@
                             self.rootNode = data.content;
                         }                        
                         if (self.allowUpBrowse(data.content)){
-                            var back = $('<a class="browse-back" href="#" data-node_id="'+data.content.parent_node_id+'"><span class="glyphicon glyphicon-circle-arrow-up" style="vertical-align:sub;font-size:1.5em"></span> '+itemName+'</a>').prependTo(name);
+                            var back = $('<a class="browse-back" href="#" data-node_id="'+data.content.parent_node_id+'" data-toggle="tooltip" title="Clicca per accedere al ramo superiore dell\'alberatura"><span class="glyphicon glyphicon-circle-arrow-up" style="vertical-align:sub;font-size:1.5em"></span> '+itemName+'</a>').prependTo(name);
+                            if (self.settings.useTooltip) back.tooltip();
                             back.bind('click', function(e){
                                 self.browseParameters.subtree = $(this).data('node_id');
                                 self.buildTreeSelect();
@@ -266,25 +271,27 @@
 
                     if(data.content.offset > 0){
                         var prevPaginationOffset = self.browseParameters.offset - self.browseParameters.limit;
-                        var prevButton = $('<a href="#" class="pull-left"><span class="glyphicon glyphicon-chevron-left" style="font-size:1.5em"></span></a>')
+                        var prevButton = $('<a href="#" class="pull-left" data-toggle="tooltip" title="Vai alla pagina precedente"><span class="glyphicon glyphicon-chevron-left" style="font-size:1.5em"></span></a>')
                             .bind('click', function(e){
                                 self.browseParameters.offset = prevPaginationOffset;
                                 self.buildTreeSelect();
                                 e.preventDefault();
                             })
                             .appendTo(panelFooter);
+                        if (self.settings.useTooltip) prevButton.tooltip();    
                         panelFooter.appendTo(panel);
                     }
 
                     if(data.content.total_count > data.content.list.length + self.browseParameters.offset){
                         var nextPaginationOffset = self.browseParameters.offset + self.browseParameters.limit;
-                        var nextButton = $('<a href="#" class="pull-right"><span class="glyphicon glyphicon-chevron-right" style="font-size:1.5em"></span></a>')
+                        var nextButton = $('<a href="#" class="pull-right" data-toggle="tooltip" title="Vai alla pagina successiva"><span class="glyphicon glyphicon-chevron-right" style="font-size:1.5em"></span></a>')
                             .bind('click', function(e){
                                 self.browseParameters.offset = nextPaginationOffset;
                                 self.buildTreeSelect();
                                 e.preventDefault();
                             })
                             .appendTo(panelFooter);
+                        if (self.settings.useTooltip) nextButton.tooltip();
                         panelFooter.appendTo(panel);
                     }
 
@@ -549,7 +556,7 @@
 
                         if(self.browseParameters.offset > 0){
                             var prevPaginationOffset = self.browseParameters.offset - self.browseParameters.limit;
-                            var prevButton = $('<a href="#" class="pull-left"><span class="glyphicon glyphicon-chevron-left" style="font-size:1.5em"></span></a>')
+                            var prevButton = $('<a href="#" class="pull-left" data-toggle="tooltip" title="Vai alla pagina precedente"><span class="glyphicon glyphicon-chevron-left" style="font-size:1.5em"></span></a>')
                                 .bind('click', function(e){                                    
                                     self.browseParameters.offset = prevPaginationOffset;
                                     var query = self.buildQuery();
@@ -557,17 +564,19 @@
                                     e.preventDefault();
                                 })
                                 .appendTo(panelFooter);
+                            if (self.settings.useTooltip) prevButton.tooltip();                                    
                             panelFooter.show();                            
                         }
 
                         if(data.nextPageQuery){                            
-                            var nextButton = $('<a href="#" class="pull-right"><span class="glyphicon glyphicon-chevron-right" style="font-size:1.5em"></span></a>')
+                            var nextButton = $('<a href="#" class="pull-right" data-toggle="tooltip" title="Vai alla pagina successiva"><span class="glyphicon glyphicon-chevron-right" style="font-size:1.5em"></span></a>')
                                 .bind('click', function(e){                                    
                                     self.browseParameters.offset += self.browseParameters.limit;
                                     self.doSearch(data.nextPageQuery, panelContent, panelFooter);
                                     e.preventDefault();
                                 })
                                 .appendTo(panelFooter);  
+                            if (self.settings.useTooltip) nextButton.tooltip();    
                             panelFooter.show();                          
                         }
                     }
@@ -585,7 +594,8 @@
         makeListItem: function(item){        
             var self = this;
 
-            var name = $('<a href="#" data-node_id="'+item.node_id+'" style="display:table-cell;"> '+item.name+ ' <small>' +item.class_name + '</small></a>');
+            var name = $('<a data-toggle="tooltip" title="Clicca per accedere agli elementi contenuti" href="#" data-node_id="'+item.node_id+'" style="display:table-cell;"> '+item.name+ ' <small>' +item.class_name + '</small></a>');
+            if (self.settings.useTooltip) name.tooltip();
             name.bind('click', function(e){
                 self.browseParameters.subtree = $(this).data('node_id');
                 self.browseParameters.offset = 0;
@@ -594,7 +604,8 @@
             });
             var listItem = $('<li class="list-group-item"></li>');
             if (typeof $.fn.alpaca != 'undefined') {
-                var detail = $('<a href="#" data-object_id="' + item.contentobject_id + '" style="display:table-cell;" class="btn btn-xs btn-info pull-right"><small>ANTEPRIMA</small></a>');
+                var detail = $('<a href="#" data-object_id="' + item.contentobject_id + '" style="display:table-cell;" class="btn btn-xs btn-info pull-right" data-toggle="tooltip" title="Visualizza l\'anteprima contenuto"><small>ANTEPRIMA</small></a>');
+                if (self.settings.useTooltip) detail.tooltip();
                 detail.bind('click', function (e) {
                     var objectId = $(this).data('object_id');
                     var panelContent = $(this).closest('.panel-content');
@@ -624,7 +635,7 @@
             var input = '';
             if (self.isSelectable(item)){
                 if (!self.isInSelection(item)){
-                    input = $('<span class="glyphicon glyphicon-unchecked pull-left" data-selection="'+item.contentobject_id+'" style="cursor:pointer;'+self.iconStyle+'"></span>');
+                    input = $('<span data-toggle="tooltip" title="Aggiungi alla selezione" class="glyphicon glyphicon-unchecked pull-left" data-selection="'+item.contentobject_id+'" style="cursor:pointer;'+self.iconStyle+'"></span>');
                     input.data('item', item);
                     input.bind('click', function(e){
                         e.preventDefault();
@@ -637,7 +648,7 @@
             }else{                
                 input = $('<span class="glyphicon glyphicon-ban-circle text-muted pull-left" data-selection="'+item.contentobject_id+'" style="'+self.iconStyle+'"></span>');                
             }
-
+            if (self.settings.useTooltip) input.tooltip();
             listItem.append(input);
             listItem.append(name);
 
@@ -674,7 +685,7 @@
                 $.each(this.selection, function(){
                     var name = '<span style="display: table-cell;">' + this.name + ' <small>' +this.class_name + '</small></span>';
                     var listItem = $('<li class="list-group-item"></li>');                        
-                    var input = $('<span class="glyphicon glyphicon-remove" style="cursor:pointer;'+self.iconStyle+'"></span>');
+                    var input = $('<span class="glyphicon glyphicon-remove pull-left" data-toggle="tooltip" title="Rimuovi dalla selezione" style="cursor:pointer;'+self.iconStyle+'"></span>');
                     input.data('item', this);
                     input.bind('click', function(e){
                         self.removeFromSelection($(this).data('item'));
@@ -682,6 +693,7 @@
                         $(this).closest('li').remove();
                         self.refreshSelection();
                     });
+                    if (self.settings.useTooltip) input.tooltip();
                     listItem.append(input);
                     listItem.append(name);                
                     listItem.appendTo(list);

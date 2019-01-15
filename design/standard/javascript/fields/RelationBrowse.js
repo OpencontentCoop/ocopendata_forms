@@ -30,7 +30,8 @@
                     "fields": {
                         "id": {
                             "view": "bootstrap-display",
-                            "type": "hidden"
+                            "type": "hidden",
+                            "fieldClass": "hide"
                         },
                         "name": {"view": "bootstrap-display"}
                     }
@@ -50,9 +51,12 @@
             this.base(model, function () {
                 var container = self.getContainerEl();
 
+                if (!self.options.browse){
+                    self.options.browse = {};
+                }
                 self.options.browse.initOnCreate = false;
 
-                self.browser = $('<div></div>')
+                self.browser = $('<div class="relationbrowse-container"></div>')
                     .prependTo(container)
                     .opendataBrowse(self.options.browse)
                     .hide();

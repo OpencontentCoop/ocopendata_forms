@@ -24310,7 +24310,7 @@ this["HandlebarsPrecompiled"]["bootstrap-edit"]["message"] = Handlebars.template
                 }
             }
 
-            if (typeof(data) !== "undefined")
+            if (typeof(data) !== "undefined" && data)
             {
                 data = "" + parseFloat(data).toFixed(options.centsLimit);
             }
