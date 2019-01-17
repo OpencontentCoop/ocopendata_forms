@@ -132,7 +132,7 @@ abstract class UploadFieldConnector extends FieldConnector
         return false;
     }
 
-    protected function getUploadDir()
+    public function getUploadDir()
     {
         $directory = md5(\eZUser::currentUserID() . $this->class->attribute('identifier') . $this->getIdentifier() . $this->getUploadParamNameSuffix());
 

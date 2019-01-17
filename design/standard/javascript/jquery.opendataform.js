@@ -161,7 +161,8 @@ $(document).on('keydown', 'input, select, checkbox', function(e){
                                 }
                             }
                         }
-                    }
+                    },
+                    "postRender": options.postRender
                 }, options.alpaca);
 
                 if (params.view == 'display') {
@@ -250,7 +251,8 @@ $(document).on('keydown', 'input, select, checkbox', function(e){
                                 }
                             }
                         }
-                    }
+                    },
+                    "postRender": options.postRender
                 }, options.alpaca);
 
                 if ($.isFunction(options.onBeforeCreate)) {
@@ -349,7 +351,8 @@ $(document).on('keydown', 'input, select, checkbox', function(e){
                                 }
                             }
                         }
-                    }
+                    },
+                    "postRender": options.postRender
                 }, options.alpaca);
 
                 if ($.isFunction(options.onBeforeCreate)) {
@@ -362,6 +365,7 @@ $(document).on('keydown', 'input, select, checkbox', function(e){
 })({
     nocache: true,
     onSuccess: null,
+    postRender:null,
     onError: function(data) {
         alert(data.error);
     },
