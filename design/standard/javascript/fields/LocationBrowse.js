@@ -50,6 +50,9 @@
             this.base(model, function() {
                 var container = self.getContainerEl();
 
+                if (!self.options.browse){
+                    self.options.browse = {};
+                }
                 self.options.browse.initOnCreate = false;
 
                 self.browser = $('<div></div>')

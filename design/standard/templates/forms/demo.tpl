@@ -30,8 +30,9 @@
         'fields/RelationBrowse.js',
         'fields/LocationBrowse.js',
         'fields/Tags.js',
+        ezini('JavascriptSettings', 'IncludeScriptList', 'ocopendata_connectors.ini'),
         'jquery.opendataform.js'
-    ))}
+    ))}    
     <script type="text/javascript" src={'javascript/tinymce/tinymce.min.js'|ezdesign()} charset="utf-8"></script>
     <script type="text/javascript" src={'javascript/summernote/summernote-bs4.js'|ezdesign()} charset="utf-8"></script>
 
