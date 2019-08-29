@@ -1,4 +1,5 @@
 <?php
+
 namespace Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector;
 
 use Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\UploadFieldConnector;
@@ -104,11 +105,11 @@ class ImageField extends UploadFieldConnector
     public function setPayload($postData)
     {
         $images = isset($postData['image']) ? $postData['image'] : array();
-        if (count($images)){
-            $alt = isset($postData['alt']) ? $postData['alt'] : '';
+        $alt = isset($postData['alt']) ? $postData['alt'] : '';
+        if (count($images)) {
             $image = array_pop($images);
-            if (!is_numeric($image['id'])){
-                $filePath = $this->getUploadDir() .  $image['name'];
+            if (!is_numeric($image['id'])) {
+                $filePath = $this->getUploadDir() . $image['name'];
                 $fileHandler = new eZFSFileHandler($filePath);
                 if ($fileHandler->exists()) {
 
@@ -116,7 +117,16 @@ class ImageField extends UploadFieldConnector
 
                     return array(
                         'file' => $fileContent,
-                        'filename' =>  $image['name'],
+                        'filename' => $image['name'],
+                        'alt' => $alt
+                    );
+                }
+            } else {
+                $data = $this->getData();
+                if (isset($data['image'])) {
+                    return array(
+                        'url' => $data['image']['url'],
+                        'filename' => $data['image']['name'],
                         'alt' => $alt
                     );
                 }
