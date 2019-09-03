@@ -138,7 +138,10 @@ class RelationsField extends FieldConnector
 
         $query .= " sort [name=>asc] limit 300";
 
-        return "/opendata/api/content/search/?q=" . $query;
+        $searchUri = "/opendata/api/content/search/";
+        \eZURI::transformURI($searchUri);
+
+        return  $searchUri . '?q=' . $query;
     }
 
     public function setPayload($postData)
