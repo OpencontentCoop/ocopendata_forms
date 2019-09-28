@@ -188,7 +188,14 @@
             },
             onSuccess: function(data){
                 $('#modal').modal('hide');
-            }
+            },
+            i18n: {{/literal}
+                'store': "{'Store'|i18n('opendata_forms')}",
+                'storeLoading': "{'Loading...'|i18n('opendata_forms')}",
+                'cancelDelete': "{'Cancel deletion'|i18n('opendata_forms')}",
+                'confirmDelete': "{'Confirm deletion'|i18n('opendata_forms')}"
+
+            {literal}}
         });
 
         $('#demo-contents-containers').hide();
@@ -269,7 +276,32 @@
             'subtree': {/literal}{ezini('NodeSettings', 'RootNode', 'content.ini')}{literal},
             'addCloseButton': true,
             'addCreateButton': true,
-            'classes': ['folder','image']
+            'classes': ['folder','image'],
+            'i18n':{{/literal}
+                clickToClose: "{'Click to close'|i18n('opendata_forms')}",
+                clickToOpenSearch: "{'Click to open search engine'|i18n('opendata_forms')}",
+                search: "{'Search'|i18n('opendata_forms')}",
+                clickToBrowse: "{'Click to browse contents'|i18n('opendata_forms')}",
+                browse: "{'Browse'|i18n('opendata_forms')}",
+                createNew: "{'Create new'|i18n('opendata_forms')}",
+                create: "{'Create'|i18n('opendata_forms')}",
+                allContents: "{'All contents'|i18n('opendata_forms')}",
+                clickToBrowseParent: "{'Click to view parent'|i18n('opendata_forms')}",
+                noContents: "{'No contents'|i18n('opendata_forms')}",
+                back: "{'Back'|i18n('opendata_forms')}",
+                goToPreviousPage: "{'Go to previous'|i18n('opendata_forms')}",
+                goToNextPage: "{'Go to next'|i18n('opendata_forms')}",
+                clickToBrowseChildren: "{'Click to view children'|i18n('opendata_forms')}",
+                clickToPreview: "{'Click to preview'|i18n('opendata_forms')}",
+                preview: "{'Preview'|i18n('opendata_forms')}",
+                closePreview: "{'Close preview'|i18n('opendata_forms')}",
+                addItem: "{'Add'|i18n('opendata_forms')}",
+                selectedItems: "{'Selected items'|i18n('opendata_forms')}",
+                removeFromSelection: "{'Remove from selection'|i18n('opendata_forms')}",
+                addToSelection: "{'Add to selection'|i18n('opendata_forms')}",
+                store: "{'Store'|i18n('opendata_forms')}",
+                storeLoading: "{'Loading...'|i18n('opendata_forms')}"
+            {literal}}
         }).on('opendata.browse.select', function (event, opendataBrowse) {
             alert(JSON.stringify(opendataBrowse.selection));
         }).on('opendata.browse.close', function (event, opendataBrowse) {

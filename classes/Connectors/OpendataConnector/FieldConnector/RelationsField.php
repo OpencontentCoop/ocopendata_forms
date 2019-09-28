@@ -118,7 +118,9 @@ class RelationsField extends FieldConnector
                 "classes" => $this->classConstraintList,
                 "selectionType" => 'multiple',
                 "addCloseButton" => true,
-                "addCreateButton" => !empty($this->classConstraintList) && $this->defaultPlacement
+                "addCreateButton" => !empty($this->classConstraintList) && $this->defaultPlacement,
+                "language" => \eZLocale::currentLocaleCode(),
+                "i18n" => RelationField::i18n()
             );
         }
 

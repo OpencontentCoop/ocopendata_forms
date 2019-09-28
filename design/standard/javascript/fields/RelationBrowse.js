@@ -205,14 +205,6 @@
                     }
                 }
             });
-        },
-
-        getMessage: function(key)
-        {
-            if (key == "addItemButtonLabel"){
-                return "Seleziona";
-            }
-            return this.view.getMessage(key, this.view.locale);
         }
     });
 

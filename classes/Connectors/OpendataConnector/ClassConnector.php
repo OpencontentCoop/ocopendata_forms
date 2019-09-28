@@ -423,6 +423,7 @@ class ClassConnector implements ClassConnectorInterface
     protected function getAlpacaLocale()
     {
         $localeMap = array(
+            'eng-GB' => false,
             'chi-CN' => 'zh_CN',
             'cze-CZ' => 'cs_CZ',
             'cro-HR' => 'hr_HR',

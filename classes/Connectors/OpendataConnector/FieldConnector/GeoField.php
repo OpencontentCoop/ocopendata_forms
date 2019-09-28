@@ -29,6 +29,13 @@ class GeoField extends FieldConnector
         return array(
             "helper" => $this->attribute->attribute('description'),
             "type" => 'openstreetmap',
+            "i18n" => [
+                'address' => \ezpI18n::tr('opendata_forms', "Address"),
+                'latitude' => \ezpI18n::tr('opendata_forms', "Latitude"),
+                'longitude' => \ezpI18n::tr('opendata_forms', "Longitude"),
+                'noResultsFinding' => \ezpI18n::tr('opendata_forms', "No results finding"),
+                'tryToRefineYourSearch' => \ezpI18n::tr('opendata_forms', "try to refine your search keywords"),
+            ]
         );
     }
 }

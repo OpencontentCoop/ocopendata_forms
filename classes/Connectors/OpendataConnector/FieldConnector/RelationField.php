@@ -77,7 +77,9 @@ class RelationField extends FieldConnector
             $options["browse"] = array(
                 "selectionType" => 'single',
                 "addCloseButton" => true,
-                "subtree" => $this->defaultPlacement ? $this->defaultPlacement : null
+                "subtree" => $this->defaultPlacement ? $this->defaultPlacement : null,
+                "language" => \eZLocale::currentLocaleCode(),
+                "i18n" => self::i18n()
             );
         } else {
             $options["type"] = "select";
@@ -118,5 +120,33 @@ class RelationField extends FieldConnector
         \eZURI::transformURI($searchUri);
 
         return  $searchUri . '?q=' . $query;
+    }
+
+    public static function i18n()
+    {
+        return [
+            'clickToClose' => \ezpI18n::tr('opendata_forms', "Click to close"),
+            'clickToOpenSearch' => \ezpI18n::tr('opendata_forms', "Click to open search engine"),
+            'search' => \ezpI18n::tr('opendata_forms', "Search"),
+            'clickToBrowse' => \ezpI18n::tr('opendata_forms', "Click to browse contents"),
+            'browse' => \ezpI18n::tr('opendata_forms', "Browse"),
+            'createNew' => \ezpI18n::tr('opendata_forms', "Create new"),
+            'create' => \ezpI18n::tr('opendata_forms', "Create"),
+            'allContents' => \ezpI18n::tr('opendata_forms', "All contents"),
+            'clickToBrowseParent' => \ezpI18n::tr('opendata_forms', "Click to view parent"),
+            'noContents' => \ezpI18n::tr('opendata_forms', "No contents"),
+            'back' => \ezpI18n::tr('opendata_forms', "Back"),
+            'goToPreviousPage' => \ezpI18n::tr('opendata_forms', "Go to previous"),
+            'goToNextPage' => \ezpI18n::tr('opendata_forms', "Go to next"),
+            'clickToBrowseChildren' => \ezpI18n::tr('opendata_forms', "Click to view children"),
+            'clickToPreview' => \ezpI18n::tr('opendata_forms', "Click to preview"),
+            'preview' => \ezpI18n::tr('opendata_forms', "Preview"),
+            'closePreview' => \ezpI18n::tr('opendata_forms', "Close preview"),
+            'addItem' => \ezpI18n::tr('opendata_forms', "Add"),
+            'selectedItems' => \ezpI18n::tr('opendata_forms', "Selected items"),
+            'removeFromSelection' => \ezpI18n::tr('opendata_forms', "Remove from selection"),
+            'addItemToSelection' => \ezpI18n::tr('opendata_forms', "Add to selection"),
+            'store' => \ezpI18n::tr('opendata_forms', "Store"),
+        ];
     }
 }

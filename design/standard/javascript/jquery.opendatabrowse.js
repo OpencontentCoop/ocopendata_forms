@@ -20,7 +20,32 @@
                 'options': {}
             },
             initOnCreate: true,
-            useTooltip: $.isFunction($.fn.tooltip)
+            useTooltip: $.isFunction($.fn.tooltip),
+            i18n:{
+                clickToClose: "Clicca per chiudere la finestra",
+                clickToOpenSearch: "Clicca per aprire il motore di ricerca",
+                search: "Cerca",
+                clickToBrowse: "Clicca per navigare nell'alberatura dei contenuti",
+                browse: "Naviga",
+                createNew: "Crea nuovo",
+                create: "Crea",
+                allContents: "Tutti i contenuti",
+                clickToBrowseParent: "Clicca per accedere al ramo superiore dell'alberatura",
+                noContents: "Nessun contenuto",
+                back: "Torna indietro",
+                goToPreviousPage: "Vai alla pagina precedente",
+                goToNextPage: "Vai alla pagina successiva",
+                clickToBrowseChildren: "Clicca per accedere agli elementi contenuti",
+                clickToPreview: "Visualizza l'anteprima contenuto",
+                preview: "Anteprima",
+                closePreview: "Chiudi anteprima",
+                addItem: "Aggiungi",
+                selectedItems: "Elementi selezionati",
+                removeFromSelection: "Rimuovi dalla selezione",
+                addToSelection: "Aggiungi alla selezione",
+                store: "Salva",
+                storeLoading: "Salvataggio in corso..."
+            }
         };
 
     function Plugin(element, options) {
@@ -33,10 +58,7 @@
         this.browseParameters = {};
         this.rootNode = 'undefined';
 
-        if (
-            this.settings.classes == false
-            || typeof $.fn.alpaca == 'undefined'
-        ){
+        if (this.settings.classes === false || typeof $.fn.alpaca === 'undefined'){
             this.settings.addCreateButton = false;            
         }
 
@@ -90,7 +112,7 @@
             var panelHeading = $('<div class="panel-heading clearfix" style="padding: 5px 15px 0"></div>').appendTo(panel);
 
             if (self.settings.addCloseButton) {
-                var closeButton = $('<a class="btn btn-lg btn-link pull-right" href="#" data-toggle="tooltip" title="Clicca per chiudere la finestra"><span class="glyphicon glyphicon-remove"></span></a>');
+                var closeButton = $('<a class="btn btn-lg btn-link pull-right" href="#" data-toggle="tooltip" title="'+self.settings.i18n.clickToClose+'"><span class="glyphicon glyphicon-remove"></span></a>');
                 if (self.settings.useTooltip) closeButton.tooltip();
                 closeButton.bind('click', function (e) {
                     if (isCreate){
@@ -110,7 +132,7 @@
             }
 
             if (isTree || isCreate) {
-                var searchButton = $('<a class="btn btn-lg btn-link pull-right" href="#" data-toggle="tooltip" title="Clicca per aprire il motore di ricerca"><span class="glyphicon glyphicon-search"></span></a>');
+                var searchButton = $('<a class="btn btn-lg btn-link pull-right" href="#" data-toggle="tooltip" title="'+self.settings.i18n.clickToOpenSearch+'"><span class="glyphicon glyphicon-search"></span></a>');
                 if (self.settings.useTooltip) searchButton.tooltip();
                 searchButton.bind('click', function (e) {
                     self.resetBrowseParameters();
@@ -121,7 +143,7 @@
             }
 
             if (isSearch || isCreate){
-                var treeButton = $('<a class="btn btn-lg btn-link pull-right" href="#" data-toggle="tooltip" title="Clicca per navigare nell\'alberatura dei contenuti"><span class="glyphicon glyphicon-th-list"></span></a>');
+                var treeButton = $('<a class="btn btn-lg btn-link pull-right" href="#" data-toggle="tooltip" title="'+self.settings.i18n.clickToBrowse+'"><span class="glyphicon glyphicon-th-list"></span></a>');
                 if (self.settings.useTooltip) treeButton.tooltip();
                 treeButton.bind('click', function(e){
                     self.resetBrowseParameters();
@@ -131,7 +153,7 @@
                 panelHeading.append(treeButton);
             }
 
-            if (self.settings.addCreateButton == true && !isCreate) {
+            if (self.settings.addCreateButton === true && !isCreate) {
                 var detectError = function(response,jqXHR){
                     if(response.error_message || response.error_code){
                         console.log(response.error_message);
@@ -152,7 +174,6 @@
                         dataType: "json",
                         success: function (response,textStatus,jqXHR) {
                             if (!detectError(response,jqXHR)){
-                                var className = response.name[self.settings.language];
                                 var className = typeof response.name[self.settings.language] != 'undefined' ?
                                     response.name[self.settings.language] :
                                     response.name[Object.keys(response.name)[0]];
@@ -190,7 +211,7 @@
 
         allowUpBrowse: function(current){
             if(!this.settings.allowAllBrowse){                
-                if (this.settings.subtree != current.node_id){
+                if (this.settings.subtree !== current.node_id){
                     console.log(current.path_identification_string.search(this.rootNode.path_identification_string));
                     return current.path_identification_string.search(this.rootNode.path_identification_string) > -1;
                 }
@@ -213,14 +234,14 @@
 
             if (this.browseParameters.subtree > 1){
                 $.getJSON('/ezjscore/call/ezjscnode::load::'+self.browseParameters.subtree, function(data){
-                    if (data.error_text == ''){
+                    if (data.error_text === ''){
                         var name = $('<h3 class="panel-title" style="line-height: 2.5em;"></h3>');
                         var itemName = (data.content.name.length > 50) ? data.content.name.substring(0,47)+'...' : data.content.name;
-                        if (self.settings.subtree == self.browseParameters.subtree){
+                        if (self.settings.subtree === self.browseParameters.subtree){
                             self.rootNode = data.content;
                         }                        
                         if (self.allowUpBrowse(data.content)){
-                            var back = $('<a class="browse-back" href="#" data-node_id="'+data.content.parent_node_id+'" data-toggle="tooltip" title="Clicca per accedere al ramo superiore dell\'alberatura"><span class="glyphicon glyphicon-circle-arrow-up" style="vertical-align:sub;font-size:1.5em"></span> '+itemName+'</a>').prependTo(name);
+                            var back = $('<a class="browse-back" href="#" data-node_id="'+data.content.parent_node_id+'" data-toggle="tooltip" title="'+self.settings.i18n.clickToBrowseParent+'"><span class="glyphicon glyphicon-circle-arrow-up" style="vertical-align:sub;font-size:1.5em"></span> '+itemName+'</a>').prependTo(name);
                             if (self.settings.useTooltip) back.tooltip();
                             back.bind('click', function(e){
                                 self.browseParameters.subtree = $(this).data('node_id');
@@ -236,11 +257,11 @@
                     }
                 });
             }else{
-                panelHeading.append('<h3 class="panel-title" style="line-height: 2.5em;">Nodi di livello principale</h3>');
+                panelHeading.append('<h3 class="panel-title" style="line-height: 2.5em;">'+self.settings.i18n.allContents+'</h3>');
             }
 
             $.getJSON('/ezjscore/call/ezjscnode::subtree::'+self.browseParameters.subtree+'::'+self.browseParameters.limit+'::'+self.browseParameters.offset+'::'+self.browseParameters.sort+'::'+self.browseParameters.order, function(data){                
-                if (data.error_text == ''){
+                if (data.error_text === ''){
                     if (data.content.list.length > 0){
                         var list = $('<ul class="list-group" style="margin-bottom:0"></ul>');
                         
@@ -260,8 +281,8 @@
                         list.appendTo(panelContent);
 
                     }else{
-                        var nullContent = $('<div class="panel-body">Nessun contenuto. </div>');
-                        var goBack = $('<a href="#"><small>Torna indietro</small></a>');
+                        var nullContent = $('<div class="panel-body">'+self.settings.i18n.noContents+' </div>');
+                        var goBack = $('<a href="#"><small>'+self.settings.i18n.back+'</small></a>');
                         goBack.bind('click', function(e){
                             panelHeading.find('.browse-back').trigger('click');
                             e.preventDefault();
@@ -271,7 +292,7 @@
 
                     if(data.content.offset > 0){
                         var prevPaginationOffset = self.browseParameters.offset - self.browseParameters.limit;
-                        var prevButton = $('<a href="#" class="pull-left" data-toggle="tooltip" title="Vai alla pagina precedente"><span class="glyphicon glyphicon-chevron-left" style="font-size:1.5em"></span></a>')
+                        var prevButton = $('<a href="#" class="pull-left" data-toggle="tooltip" title="'+self.settings.i18n.goToPreviousPage+'"><span class="glyphicon glyphicon-chevron-left" style="font-size:1.5em"></span></a>')
                             .bind('click', function(e){
                                 self.browseParameters.offset = prevPaginationOffset;
                                 self.buildTreeSelect();
@@ -284,7 +305,7 @@
 
                     if(data.content.total_count > data.content.list.length + self.browseParameters.offset){
                         var nextPaginationOffset = self.browseParameters.offset + self.browseParameters.limit;
-                        var nextButton = $('<a href="#" class="pull-right" data-toggle="tooltip" title="Vai alla pagina successiva"><span class="glyphicon glyphicon-chevron-right" style="font-size:1.5em"></span></a>')
+                        var nextButton = $('<a href="#" class="pull-right" data-toggle="tooltip" title="'+self.settings.i18n.goToNextPage+'"><span class="glyphicon glyphicon-chevron-right" style="font-size:1.5em"></span></a>')
                             .bind('click', function(e){
                                 self.browseParameters.offset = nextPaginationOffset;
                                 self.buildTreeSelect();
@@ -306,12 +327,12 @@
             $(this.browserContainer).html('');
             var panel = $('<div class="panel panel-default"></div>').appendTo($(this.browserContainer));
             var panelHeading = self.buildPanelHeader(panel, false, true, false);
-            panelHeading.append('<h3 class="panel-title" style="line-height: 2.5em;">Cerca</h3>');
+            panelHeading.append('<h3 class="panel-title" style="line-height: 2.5em;">'+self.settings.i18n.search+'</h3>');
 
             var inputGroup = $('<div class="input-group"></div>');
             this.searchInput = $('<input class="form-control" type="text" placeholder="" value=""/>').appendTo(inputGroup);
             var inputGroupButtonContainer = $('<div class="input-group-btn"></div>');
-            var searchButton = $('<button type="button" class="btn btn-default">Cerca</button>').appendTo(inputGroupButtonContainer);            
+            var searchButton = $('<button type="button" class="btn btn-default">'+self.settings.i18n.search+'</button>').appendTo(inputGroupButtonContainer);
             inputGroupButtonContainer.appendTo(inputGroup);
             inputGroup.appendTo(panel);
             this.searchInput.focus();
@@ -328,7 +349,7 @@
             });
 
             this.searchInput.on('keyup', function (e) {
-                if (e.keyCode == 13) {
+                if (e.keyCode === 13) {
                     searchButton.trigger('click');
                     e.preventDefault();
                 }
@@ -340,7 +361,7 @@
             $(this.browserContainer).html('');
             var panel = $('<div class="panel panel-default"></div>').appendTo($(this.browserContainer));
             var panelHeading = self.buildPanelHeader(panel, false, false, true);
-            panelHeading.append('<h3 class="panel-title" style="line-height: 2.5em;">Crea nuovo</h3>');
+            panelHeading.append('<h3 class="panel-title" style="line-height: 2.5em;">'+self.settings.i18n.createNew+'</h3>');
 
             var OpenContentOcopendataInBrowseConnector = Alpaca.Connector.extend({
                 loadAll: function (resources, onSuccess, onError){
@@ -407,7 +428,7 @@
             var params = {
                 class: classIdentifier
             };
-            if (self.settings.subtree != 1){
+            if (self.settings.subtree !== 1){
                 params.parent = self.settings.subtree;
             }
 
@@ -467,7 +488,7 @@
                                     }
                                 },
                                 "id": 'sub-form-submit',
-                                "value": "Salva",
+                                "value": self.settings.i18n.store,
                                 "styles": "btn btn-success pull-right"
                             }
                         }
@@ -479,7 +500,7 @@
                 $.each(options.options.form.buttons, function(){
                     var button = $('#'+this.id);
                     button.data('original-text', button.text());
-                    button.text('Salvataggio in corso....');
+                    button.text(self.settings.i18n.storeLoading);
                     button.attr('disabled', 'disabled');
                 });
             };
@@ -551,12 +572,12 @@
                             });
                             list.appendTo(panelContent);
                         }else{
-                            panelContent.html($('<div class="panel-body">Nessun contenuto</div>'));
+                            panelContent.html($('<div class="panel-body">'+self.settings.i18n.noContents+'</div>'));
                         }
 
                         if(self.browseParameters.offset > 0){
                             var prevPaginationOffset = self.browseParameters.offset - self.browseParameters.limit;
-                            var prevButton = $('<a href="#" class="pull-left" data-toggle="tooltip" title="Vai alla pagina precedente"><span class="glyphicon glyphicon-chevron-left" style="font-size:1.5em"></span></a>')
+                            var prevButton = $('<a href="#" class="pull-left" data-toggle="tooltip" title="'+self.settings.i18n.goToPreviousPage+'"><span class="glyphicon glyphicon-chevron-left" style="font-size:1.5em"></span></a>')
                                 .bind('click', function(e){                                    
                                     self.browseParameters.offset = prevPaginationOffset;
                                     var query = self.buildQuery();
@@ -569,7 +590,7 @@
                         }
 
                         if(data.nextPageQuery){                            
-                            var nextButton = $('<a href="#" class="pull-right" data-toggle="tooltip" title="Vai alla pagina successiva"><span class="glyphicon glyphicon-chevron-right" style="font-size:1.5em"></span></a>')
+                            var nextButton = $('<a href="#" class="pull-right" data-toggle="tooltip" title="'+self.settings.i18n.goToNextPage+'"><span class="glyphicon glyphicon-chevron-right" style="font-size:1.5em"></span></a>')
                                 .bind('click', function(e){                                    
                                     self.browseParameters.offset += self.browseParameters.limit;
                                     self.doSearch(data.nextPageQuery, panelContent, panelFooter);
@@ -594,7 +615,7 @@
         makeListItem: function(item){        
             var self = this;
 
-            var name = $('<a data-toggle="tooltip" title="Clicca per accedere agli elementi contenuti" href="#" data-node_id="'+item.node_id+'" style="display:table-cell;"> '+item.name+ ' <small>' +item.class_name + '</small></a>');
+            var name = $('<a data-toggle="tooltip" title="'+self.settings.i18n.clickToBrowseChildren+'" href="#" data-node_id="'+item.node_id+'" style="display:table-cell;"> '+item.name+ ' <small>' +item.class_name + '</small></a>');
             if (self.settings.useTooltip) name.tooltip();
             name.bind('click', function(e){
                 self.browseParameters.subtree = $(this).data('node_id');
@@ -604,14 +625,14 @@
             });
             var listItem = $('<li class="list-group-item"></li>');
             if (typeof $.fn.alpaca != 'undefined') {
-                var detail = $('<a href="#" data-object_id="' + item.contentobject_id + '" style="display:table-cell;" class="btn btn-xs btn-info pull-right" data-toggle="tooltip" title="Visualizza l\'anteprima contenuto"><small>ANTEPRIMA</small></a>');
+                var detail = $('<a href="#" data-object_id="' + item.contentobject_id + '" style="display:table-cell;" class="btn btn-xs btn-info pull-right" data-toggle="tooltip" title="'+self.settings.i18n.clickToPreview+'"><small>'+self.settings.i18n.preview+'</small></a>');
                 if (self.settings.useTooltip) detail.tooltip();
                 detail.bind('click', function (e) {
                     var objectId = $(this).data('object_id');
                     var panelContent = $(this).closest('.panel-content');
                     var previewContainer = $('<div class="panel-content" style="margin: 5px"></div>');
 
-                    var closePreviewButton = $('<a class="btn btn-xs btn-info pull-right" href="#">CHIUDI ANTEPRIMA</a>');
+                    var closePreviewButton = $('<a class="btn btn-xs btn-info pull-right" href="#">'+self.settings.i18n.closePreview+'</a>');
                     closePreviewButton.bind('click', function (e) {
                         panelContent.show();
                         previewContainer.remove();
@@ -635,7 +656,7 @@
             var input = '';
             if (self.isSelectable(item)){
                 if (!self.isInSelection(item)){
-                    input = $('<span data-toggle="tooltip" title="Aggiungi alla selezione" class="glyphicon glyphicon-unchecked pull-left" data-selection="'+item.contentobject_id+'" style="cursor:pointer;'+self.iconStyle+'"></span>');
+                    input = $('<span data-toggle="tooltip" title="'+self.settings.i18n.addToSelection+'" class="glyphicon glyphicon-unchecked pull-left" data-selection="'+item.contentobject_id+'" style="cursor:pointer;'+self.iconStyle+'"></span>');
                     input.data('item', item);
                     input.bind('click', function(e){
                         e.preventDefault();
@@ -678,14 +699,14 @@
             this.selectionContainer.html('');
             if (this.selection.length > 0){
                 var panel = $('<div class="panel panel-default"></div>').appendTo($(this.selectionContainer));
-                var panelHeading = $('<div class="panel-heading"><h3 class="panel-title">Elementi selezionati</h3></div>').appendTo(panel); 
+                var panelHeading = $('<div class="panel-heading"><h3 class="panel-title">'+self.settings.i18n.selectedItems+'</h3></div>').appendTo(panel);
                 var panelContent = $('<div class="panel-content"></div>').appendTo(panel); 
                 var list = $('<ul class="list-group" style="margin-bottom:0"></ul>');
                 
                 $.each(this.selection, function(){
                     var name = '<span style="display: table-cell;">' + this.name + ' <small>' +this.class_name + '</small></span>';
                     var listItem = $('<li class="list-group-item"></li>');                        
-                    var input = $('<span class="glyphicon glyphicon-remove pull-left" data-toggle="tooltip" title="Rimuovi dalla selezione" style="cursor:pointer;'+self.iconStyle+'"></span>');
+                    var input = $('<span class="glyphicon glyphicon-remove pull-left" data-toggle="tooltip" title="'+self.settings.i18n.removeFromSelection+'" style="cursor:pointer;'+self.iconStyle+'"></span>');
                     input.data('item', this);
                     input.bind('click', function(e){
                         self.removeFromSelection($(this).data('item'));
@@ -713,7 +734,7 @@
 
         removeFromSelection: function (item){
             for(var i in this.selection){
-                if(this.selection[i].contentobject_id == item.contentobject_id){
+                if(this.selection[i].contentobject_id === item.contentobject_id){
                     this.selection.splice(i,1);
                     break;
                 }
@@ -722,7 +743,7 @@
 
         isInSelection: function (item){            
             for(var i in this.selection){
-                if(this.selection[i].contentobject_id == item.contentobject_id){
+                if(this.selection[i].contentobject_id === item.contentobject_id){
                     return true;
                     break;
                 }

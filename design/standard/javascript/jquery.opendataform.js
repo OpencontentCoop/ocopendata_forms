@@ -107,7 +107,7 @@ $(document).on('keydown', 'input, select, checkbox', function(e){
                     $.each(alpacaOptions.options.form.buttons, function() {
                         var button = $('#' + this.id);
                         button.data('original-text', button.text());
-                        button.text('Salvataggio in corso....');
+                        button.text(options.i18n.storeLoading);
                         button.attr('disabled', 'disabled');
                     });
                 };
@@ -132,6 +132,7 @@ $(document).on('keydown', 'input, select, checkbox', function(e){
                             "buttons": {
                                 "submit": {
                                     "click": function() {
+                                        var self = this;
                                         this.refreshValidationState(true);
                                         if (this.isValid(true)) {
                                             hideButtons();
@@ -139,25 +140,26 @@ $(document).on('keydown', 'input, select, checkbox', function(e){
                                             promise.done(function(data) {
                                                 if (data.error) {
                                                     if ($.isFunction(options.onError)) {
-                                                        options.onError(data);
+                                                        options.onError(data, self, this);
                                                     }
                                                     showButtons();
                                                 } else {
                                                     if ($.isFunction(options.onSuccess)) {
-                                                        options.onSuccess(data);
+                                                        options.onSuccess(data, self, this);
+                                                        showButtons();
                                                     }
                                                 }
                                             });
                                             promise.fail(function(error) {
                                                 if ($.isFunction(options.onError)) {
-                                                    options.onError(error);
+                                                    options.onError(error, self, this);
                                                 }
                                                 showButtons();
                                             });
                                         }
                                     },
                                     'id': "save-"+options.connector+"button",
-                                    "value": "Salva",
+                                    "value": options.i18n.store,
                                     "styles": "btn btn-lg btn-success pull-right"
                                 }
                             }
@@ -292,7 +294,7 @@ $(document).on('keydown', 'input, select, checkbox', function(e){
                     $.each(alpacaOptions.options.form.buttons, function() {
                         var button = $('#' + this.id);
                         button.data('original-text', button.text());
-                        button.text('Salvataggio in corso....');
+                        button.text(options.i18n.storeLoading);
                         button.attr('disabled', 'disabled');
                     });
                 };
@@ -322,30 +324,31 @@ $(document).on('keydown', 'input, select, checkbox', function(e){
                                         }
                                         self.css('background', 'transparent');
                                     },
-                                    "value": "Annulla eliminazione",
+                                    "value": options.i18n.cancelDelete,
                                     "styles": "btn btn-lg btn-danger pull-left"
                                 },
                                 "submit": {
                                     "click": function () {
+                                        var self = this;
                                         this.refreshValidationState(true);
                                         if (this.isValid(true)) {
                                             hideButtons();
                                             var promise = this.ajaxSubmit();
                                             promise.done(function (data) {
                                                 if ($.isFunction(options.onSuccess)) {
-                                                    options.onSuccess(data);
+                                                    options.onSuccess(data, self, this);
                                                 }                                                    
                                             });
                                             promise.fail(function (error) {
                                                 if ($.isFunction(options.onError)) {
-                                                    options.onError(error);
+                                                    options.onError(error, self, this);
                                                 }
                                                 showButtons();
                                             });
                                         }
                                     },
                                     'id': "confirm-remove-"+params.object+"button",
-                                    "value": "Conferma eliminazione",
+                                    "value": options.i18n.confirmDelete,
                                     "styles": "btn btn-lg btn-success pull-right"
                                 }
                             }
@@ -368,5 +371,12 @@ $(document).on('keydown', 'input, select, checkbox', function(e){
     },
     onBeforeCreate: null,
     alpaca: null,
-    connector: 'default'
+    connector: 'default',
+    i18n: {
+        'store': 'Salva',
+        'storeLoading': 'Salvataggio in corso...',
+        'cancelDelete': 'Annulla eliminazione',
+        'confirmDelete': 'Conferma eliminazione'
+
+    }
 }, jQuery, window, document);

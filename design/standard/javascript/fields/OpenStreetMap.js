@@ -26,16 +26,16 @@
                         "type": "object",
                         "properties": {
                             "address": {
-                                "title": "Address",
+                                "title": this.options.i18n.address,
                                 "type": "string"
                             },
                             "latitude": {
-                                "title": "Latitude",
+                                "title": this.options.i18n.latitude,
                                 "minimum": -180,
                                 "maximum": 180
                             },
                             "longitude": {
-                                "title": "Longitude",
+                                "title": this.options.i18n.longitude,
                                 "minimum": -180,
                                 "maximum": 180
                             }
@@ -51,6 +51,13 @@
                         "longitude": {
                             "type": "number"
                         }
+                    },
+                    "i18n":{
+                        'address': 'Address',
+                        'latitude': 'Latitude',
+                        'longitude': 'Longitude',
+                        'noResultsFinding': 'No results finding',
+                        'tryToRefineYourSearch': 'try to refine your search keywords',
                     }
                 });
             },
@@ -124,7 +131,7 @@
                                     userMarker.fitBounds();
                                 } else {
                                     mapContainer.hide();
-                                    self.displayMessage('Nessun risultato cercando "' + query + '", prova a affinare la ricerca');
+                                    self.displayMessage(self.options.i18n.noResultsFinding+' "' + query + '", '+self.options.i18n.tryToRefineYourSearch);
                                 }
                             });
                         });
