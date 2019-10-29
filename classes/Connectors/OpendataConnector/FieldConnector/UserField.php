@@ -70,7 +70,12 @@ class UserField extends FieldConnector
                 }
             }
         }
-        return $this->getHelper()->hasParameter('object') ? null : $postData;
+
+        if ($this->getHelper()->hasParameter('object')){
+            $postData['id'] = $this->getHelper()->getParameter('object');
+        }
+
+        return $postData;
     }
 
     private function serializeDraft(eZUser $user)
