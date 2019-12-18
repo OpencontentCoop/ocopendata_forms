@@ -110,6 +110,10 @@ class RelationsField extends FieldConnector
             $options["dataSource"] = $this->getDataSourceUrl();
             $options["multiple"] = $this->selectionType == self::MODE_LIST_CHECKBOX;
             $options["type"] = $this->selectionType == self::MODE_LIST_CHECKBOX ? "checkbox" : "radio";
+            if ($this->selectionType == self::MODE_LIST_CHECKBOX && $this->getHelper()->hasParameter('view')) {
+                $options["view"] = 'bootstrap-edit';
+                $options["readonly"] = true;
+            }
 
         } elseif ($this->selectionType == self::MODE_LIST_BROWSE) {
             $options["type"] = 'relationbrowse';
