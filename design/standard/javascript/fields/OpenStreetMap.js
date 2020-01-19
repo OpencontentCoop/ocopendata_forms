@@ -163,6 +163,9 @@
                         map.on('click', function (e) {
                             map.invalidateSize(false);
                         });
+                        window.setTimeout(function () {
+                            map.invalidateSize(false);
+                        }, 500);
                     }
 
                     callback();
@@ -240,11 +243,13 @@
                         var that = this;
                         this.geocoder().reverse(latLng, 1, function (result) {
                             that.map.loadingControl.removeLoader('sc');
-                            self.setValue({
-                                address: result[0].name,
-                                latitude: result[0].properties.lat,
-                                longitude: result[0].properties.lon
-                            });
+                            if (result.length > 0) {
+                                self.setValue({
+                                    address: result[0].name,
+                                    latitude: result[0].properties.lat,
+                                    longitude: result[0].properties.lon
+                                });
+                            }
                         });
                         return this;
                     }

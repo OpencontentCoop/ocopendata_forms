@@ -9,6 +9,7 @@
     font-weight: bold;
 }
 
+.alpaca-field-drawmap,
 .alpaca-field-openstreetmap {
     border: 1px #eee solid;
     border-radius: 4px;
