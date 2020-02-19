@@ -5,15 +5,15 @@
     <name>opendata_forms</name>
     <message>
       <source>Store</source>
-      <translation>Κατάστημα</translation>
+      <translation>Αποθήκευση</translation>
     </message>
     <message>
       <source>Cancel</source>
-      <translation>Ματαίωση</translation>
+      <translation>Ακύρωση</translation>
     </message>
     <message>
       <source>Loading...</source>
-      <translation>Φόρτωση...</translation>
+      <translation>Παρακαλώ περιμένετε...</translation>
     </message>
     <message>
       <source>Cancel deletion</source>
@@ -21,27 +21,27 @@
     </message>
     <message>
       <source>Confirm deletion</source>
-      <translation>διαγραφή Επιβεβαίωση</translation>
+      <translation>Επιβεβαίωση διαγραφής</translation>
     </message>
     <message>
       <source>Click to close</source>
-      <translation>Κάντε κλικ για να κοντά</translation>
+      <translation>Πατήστε για κλείσιμο παραθύρου</translation>
     </message>
     <message>
       <source>Click to open search engine</source>
-      <translation>Κάντε κλικ για να ανοικτή μηχανή αναζήτησης</translation>
+      <translation>Πατήστε για άνοιγμα μηχανής αναζήτησης</translation>
     </message>
     <message>
       <source>Search</source>
-      <translation>Ψάξιμο</translation>
+      <translation>Αναζήτηση</translation>
     </message>
     <message>
       <source>Click to browse contents</source>
-      <translation>Κάντε κλικ για να περιηγηθείτε στα περιεχόμενα</translation>
+      <translation>Πατήστε για περιήγηση στα περιεχόμενα</translation>
     </message>
     <message>
       <source>Browse</source>
-      <translation>Ξεφυλλίζω</translation>
+      <translation>Περιήγηση</translation>
     </message>
     <message>
       <source>Create new</source>
@@ -49,7 +49,7 @@
     </message>
     <message>
       <source>Create</source>
-      <translation>Δημιουργώ</translation>
+      <translation>Δημιουργία</translation>
     </message>
     <message>
       <source>All contents</source>
@@ -57,19 +57,19 @@
     </message>
     <message>
       <source>Click to view parent</source>
-      <translation>Κάντε κλικ για να δείτε γονέα</translation>
+      <translation>Πατήστε για εμφάνιση των κατηγοριών</translation>
     </message>
     <message>
       <source>No contents</source>
-      <translation>Δεν περιεχόμενο</translation>
+      <translation>Κανένα περιεχόμενο</translation>
     </message>
     <message>
       <source>Back</source>
-      <translation>Πίσω</translation>
+      <translation>Επιστροφή</translation>
     </message>
     <message>
       <source>Go to previous</source>
-      <translation>Μετάβαση στην προηγούμενη</translation>
+      <translation>Μετάβαση στο προηγούμενο</translation>
     </message>
     <message>
       <source>Go to next</source>
@@ -77,11 +77,11 @@
     </message>
     <message>
       <source>Click to view children</source>
-      <translation>Κάντε κλικ για να δείτε τα παιδιά</translation>
+      <translation>Πατήστε για εμφάνιση των υποκατηγοριών</translation>
     </message>
     <message>
       <source>Click to preview</source>
-      <translation>Κάντε κλικ στο κουμπί για προεπισκόπηση</translation>
+      <translation>Πατήστε για προεπισκόπηση</translation>
     </message>
     <message>
       <source>Preview</source>
@@ -93,7 +93,7 @@
     </message>
     <message>
       <source>Add</source>
-      <translation>Προσθέτω</translation>
+      <translation>Προσθήκη</translation>
     </message>
     <message>
       <source>Selected items</source>
@@ -101,11 +101,11 @@
     </message>
     <message>
       <source>Remove from selection</source>
-      <translation>Αφαίρεση από την επιλογή</translation>
+      <translation>Αφαίρεση από τα επιλεγμένα</translation>
     </message>
     <message>
       <source>Add to selection</source>
-      <translation>Προσθήκη στην επιλογή</translation>
+      <translation>Προσθήκη στα επιλεγμένα</translation>
     </message>
   </context>
 </TS>
