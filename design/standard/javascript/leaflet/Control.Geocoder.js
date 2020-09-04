@@ -342,6 +342,33 @@
 				}
 
 				return L.Control.Geocoder.template(parts.join('<br/>'), a, true);
+			},
+			parseGeocoderData: function(properties){
+				var name = [];
+				if (properties.hasOwnProperty('road')){
+					name.push(properties['road']);
+				}else if (properties.hasOwnProperty('pedestrian')){
+					name.push(properties['pedestrian']);
+				}else if (properties.hasOwnProperty('suburb')){
+					name.push(properties['suburb']);
+				}
+				if (properties.hasOwnProperty('house_number')){
+					name.push(properties['house_number']);
+				}
+				if (properties.hasOwnProperty('postcode')){
+					name.push(properties['postcode']);
+				}
+				if (properties.hasOwnProperty('town')){
+					name.push(properties['town']);
+				}else if (properties.hasOwnProperty('city')){
+					name.push(properties['city']);
+				}else if (properties.hasOwnProperty('village')){
+					name.push(properties['village']);
+				}
+				//if (properties.hasOwnProperty('country')){
+				//    name.push(properties['country']);
+				//}
+				return name.join(' ').substr(0, 150);
 			}
 		},
 
@@ -363,7 +390,8 @@
 					for (var j = 0; j < 4; j++) bbox[j] = parseFloat(bbox[j]);
 					results[i] = {
 						icon: data[i].icon,
-						name: data[i].display_name,
+						//name: data[i].display_name,
+						name: this.options.parseGeocoderData(data[i].address),
 						html: this.options.htmlTemplate ?
 							this.options.htmlTemplate(data[i])
 							: undefined,
@@ -390,7 +418,8 @@
 				if (data && data.lat && data.lon) {
 					loc = L.latLng(data.lat, data.lon);
 					result.push({
-						name: data.display_name,
+						//name: data.display_name,
+						name: this.options.parseGeocoderData(data.address),
 						html: this.options.htmlTemplate ?
 							this.options.htmlTemplate(data)
 							: undefined,
