@@ -1,8 +1,8 @@
 <?php
 namespace Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector;
 
-use Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector;
 use eZTagsObject;
+use Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\FieldConnector;
 
 class TagsField extends FieldConnector
 {
@@ -28,14 +28,6 @@ class TagsField extends FieldConnector
 
     public function getData()
     {
-        \eZLog::write(__METHOD__, 'tags.log');
-        \eZLog::write(print_r(parent::getData(), 1), 'tags.log');
-        /*if ($this->subtreeLimit && $this->selectionType == self::MODE_LIST_SELECT )
-        {
-            return parent::getData();
-        }
-        return implode(', ', (array)parent::getData());*/
-
         return parent::getData();
     }
 
@@ -106,10 +98,7 @@ class TagsField extends FieldConnector
 
     public function setPayload($postData)
     {
-        /*\eZLog::write(__METHOD__, 'tags.log');
-        \eZLog::write(print_r($postData, 1), 'tags.log');*/
-        if (is_array($postData))
-        {
+        if (is_array($postData)) {
             return empty($postData) ? null : $postData;
         }
         return explode(',', $postData);
