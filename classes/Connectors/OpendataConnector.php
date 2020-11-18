@@ -2,10 +2,10 @@
 
 namespace Opencontent\Ocopendata\Forms\Connectors;
 
-use Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\ClassConnectorInterface;
-use Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\ClassConnectorFactory;
 use eZContentClass;
 use eZContentObject;
+use Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\ClassConnectorFactory;
+use Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\ClassConnectorInterface;
 use Opencontent\Opendata\Api\Values\Content;
 
 class OpendataConnector extends AbstractBaseConnector
@@ -28,6 +28,8 @@ class OpendataConnector extends AbstractBaseConnector
     protected $language;
 
     protected static $isLoaded;
+
+    protected $translatingFrom;
 
     protected static $availableParameters = array(
         'class',
@@ -95,6 +97,12 @@ class OpendataConnector extends AbstractBaseConnector
                 $locale = \eZLocale::currentLocaleCode();
                 if (isset($data['data'][$locale])){
                     $this->classConnector->setContent($data['data'][$locale]);
+                }else{
+                    foreach ($data['data'] as $language => $datum) {
+                        $this->classConnector->setContent($datum);
+                        $this->translatingFrom = $language;
+                        break;
+                    }
                 }
             }
 
@@ -144,7 +152,18 @@ class OpendataConnector extends AbstractBaseConnector
 
     protected function getSchema()
     {
-        return $this->classConnector->getSchema();
+        $schema = $this->classConnector->getSchema();
+        if ($this->translatingFrom){
+            $schema['title'] = $schema['title']
+                . ' <small>('
+                . \ezpI18n::tr('design/ezwebin/content/edit', 'Translating content from %from_lang to %to_lang', null, [
+                    '%from_lang' => \eZLocale::instance($this->translatingFrom)->LanguageName,
+                    '%to_lang' => \eZLocale::instance($this->language)->LanguageName,
+                ])
+                . ')</small>';
+        }
+
+        return $schema;
     }
 
     protected function getOptions()
