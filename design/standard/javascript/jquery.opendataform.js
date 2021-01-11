@@ -76,8 +76,9 @@ var OpenContentOcopendataConnector = Alpaca.Connector.extend({
 Alpaca.registerConnectorClass("opendataform", OpenContentOcopendataConnector);
 
 $(document).on('keydown', 'input, select, checkbox', function(e){
-    if(e.keyCode === 13)
+    if(e.keyCode === 13 && $(e.currentTarget).parents('form').hasClass('alpaca-form')) {
         e.preventDefault();
+    }
 });
 
 ;(function(defaults, $, window, document, undefined) {
@@ -183,7 +184,7 @@ $(document).on('keydown', 'input, select, checkbox', function(e){
 
         opendataFormEdit: function(params, options) {
             
-            if (jQuery.type(params.class) == 'undefined' && jQuery.type(params.object) == 'undefined') {
+            if (jQuery.type(params.class) === 'undefined' && jQuery.type(params.object) === 'undefined') {
                 throw new Error('Missing class/object parameter');
             }
 
@@ -192,7 +193,7 @@ $(document).on('keydown', 'input, select, checkbox', function(e){
 
         opendataFormCreate: function(params, options) {
 
-            if (jQuery.type(params.class) == 'undefined') {
+            if (jQuery.type(params.class) === 'undefined') {
                 throw new Error('Missing class parameter');
             }
 
@@ -201,7 +202,7 @@ $(document).on('keydown', 'input, select, checkbox', function(e){
 
         opendataFormManageLocation: function(params, options) {
 
-            if (jQuery.type(params.source) == 'undefined' && jQuery.type(params.destination) == 'undefined') {
+            if (jQuery.type(params.source) === 'undefined' && jQuery.type(params.destination) === 'undefined') {
                 throw new Error('Missing source/destination parameter');
             }
             options = $.extend({}, defaults, options);
@@ -214,13 +215,13 @@ $(document).on('keydown', 'input, select, checkbox', function(e){
 
             options = $.extend({}, defaults, options);
 
-            if (jQuery.type(params) == 'string' || jQuery.type(params) == 'number') {
+            if (jQuery.type(params) === 'string' || jQuery.type(params) === 'number') {
                 params = {
                     object: params
                 };
             }
 
-            if (jQuery.type(params.object) == 'undefined') {
+            if (jQuery.type(params.object) === 'undefined') {
                 throw new Error('Missing object parameter');
             }
 
@@ -266,13 +267,13 @@ $(document).on('keydown', 'input, select, checkbox', function(e){
 
             options = $.extend({}, defaults, options);
 
-            if (jQuery.type(params) == 'string' || jQuery.type(params) == 'number') {
+            if (jQuery.type(params) === 'string' || jQuery.type(params) === 'number') {
                 params = {
                     object: params
                 };
             }
 
-            if (jQuery.type(params.object) == 'undefined') {
+            if (jQuery.type(params.object) === 'undefined') {
                 throw new Error('Missing object parameter');
             }
 
