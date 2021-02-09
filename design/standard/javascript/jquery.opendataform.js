@@ -323,7 +323,6 @@ $(document).on('keydown', 'input, select, checkbox', function(e){
                                         if ($.isFunction(options.onSuccess)) {
                                             options.onSuccess();
                                         }
-                                        self.css('background', 'transparent');
                                     },
                                     "value": options.i18n.cancelDelete,
                                     "styles": "btn btn-lg btn-danger pull-left"

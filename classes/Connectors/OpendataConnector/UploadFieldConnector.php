@@ -8,7 +8,7 @@ use eZMimeType;
 use eZSys;
 use UploadHandler;
 
-abstract class UploadFieldConnector extends FieldConnector
+abstract class UploadFieldConnector extends FieldConnector implements CleanableFieldConnectorInterface
 {
     abstract protected function getUploadParamNameSuffix();
 

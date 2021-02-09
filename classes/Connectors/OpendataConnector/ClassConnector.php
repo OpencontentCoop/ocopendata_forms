@@ -176,7 +176,7 @@ class ClassConnector implements ClassConnectorInterface
     protected function cleanup()
     {
         foreach ($this->getFieldConnectors() as $identifier => $connector) {
-            if ($connector instanceof UploadFieldConnector) {
+            if ($connector instanceof CleanableFieldConnectorInterface) {
                 $connector->cleanup();
             }
         }
