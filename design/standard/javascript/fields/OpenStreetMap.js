@@ -109,7 +109,7 @@
                             var query = searchInput.val();
                             userMarker.search(query, function (results) {
                                 userMarker.resetMakers();
-                                if (results.length > 1) {
+                                if (results.length > 0) {
                                     mapContainer.show();
                                     map.invalidateSize(false);
                                     $.each(results, function (index, result) {
@@ -127,6 +127,9 @@
                                             }
                                         });
                                         userMarker.addMarker(marker, false);
+                                        if (results.length === 1){
+                                            userMarker.moveIn(result.center.lat, result.center.lng);
+                                        }
                                     });
                                     userMarker.fitBounds();
                                 } else {
