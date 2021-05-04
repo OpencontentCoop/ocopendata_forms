@@ -8,7 +8,11 @@ class BooleanField extends FieldConnector
 {
     public function getData()
     {
-        return (bool)parent::getData();
+        $data = parent::getData();
+        if ($data === null){
+            return (bool) $this->attribute->attribute( "data_int3" );
+        }
+        return (bool)$data;
     }
 
     public function getSchema()
