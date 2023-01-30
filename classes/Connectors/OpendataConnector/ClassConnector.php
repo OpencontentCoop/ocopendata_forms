@@ -356,7 +356,7 @@ class ClassConnector implements ClassConnectorInterface
         foreach ($categories as $identifier => $category) {
             $tabClass = $i == 0 ? ' class="active"' : '';
             $panelClass = $i == 0 ? ' active' : '';
-            $tabs .= '<li' . $tabClass . '><a data-toggle="tab" href="#attribute-group-' . $identifier . '">' . $category['name'] . '</a></li>';
+            $tabs .= '<li' . $tabClass . '><a data-bs-toggle="tab" data-toggle="tab" href="#attribute-group-' . $identifier . '">' . $category['name'] . '</a></li>';
             $panels .= '<div class="clearfix tab-pane' . $panelClass . '" id="attribute-group-' . $identifier . '"></div>';
             foreach ($category['identifiers'] as $field) {
                 $bindings[$field] = 'attribute-group-' . $identifier;
