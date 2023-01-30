@@ -8,7 +8,8 @@ $ViewList['demo'] = array(
     'functions' => array( 'use' ),
     'script' => 'demo.php',
     'params' => array(),
-    'unordered_params' => array()
+    'unordered_params' => array(),
+    'ui_context' => 'navigation',
 );
 
 $ViewList['connector'] = array(

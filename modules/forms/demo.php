@@ -11,14 +11,6 @@ if (!empty($_POST)){
     eZExecution::cleanExit();
 }
 
-$Result = array();
-$Result['path'] = array(
-    array(
-        'text' => "Forms demo",
-        'url' => false
-    )
-);
-
 $foundConnectors = array();
 $notfoundConnectors = array();
 $allDatatypes = eZDataType::allowedTypes();
@@ -47,8 +39,25 @@ foreach ($allDatatypes as $datatype){
 
 $tpl->setVariable('connector_by_datatype', $foundConnectors);
 $tpl->setVariable('not_found_connector_by_datatype', $notfoundConnectors);
+$tpl->setVariable( 'ui_context', 'navigation' );
 
-echo $tpl->fetch( 'design:forms/demo.tpl' );
-eZDisplayDebug();
-eZExecution::cleanExit();
+$Result = [];
+$Result['path'] = array(
+    array(
+        'text' => "Forms demo",
+        'url' => false
+    )
+);
+$contentInfoArray['persistent_variable'] = [
+    'show_path' => true,
+];
+if (is_array($tpl->variable('persistent_variable'))) {
+    $contentInfoArray['persistent_variable'] = array_merge(
+        $contentInfoArray['persistent_variable'],
+        $tpl->variable('persistent_variable')
+    );
+}
+$Result['content_info'] = $contentInfoArray;
+$Result['content'] = $tpl->fetch( 'design:forms/demo.tpl' );
+$Result['pagelayout'] = false;
 
