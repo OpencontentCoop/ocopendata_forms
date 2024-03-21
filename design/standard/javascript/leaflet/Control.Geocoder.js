@@ -345,6 +345,11 @@
 			},
 			parseGeocoderData: function(properties){
 				var name = [];
+				if (properties.hasOwnProperty('tourism')){
+					name.push(properties['tourism'] +', ');
+				}else if (properties.hasOwnProperty('amenity')){
+					name.push(properties['amenity'] +', ');
+				}
 				if (properties.hasOwnProperty('road')){
 					name.push(properties['road']);
 				}else if (properties.hasOwnProperty('pedestrian')){
