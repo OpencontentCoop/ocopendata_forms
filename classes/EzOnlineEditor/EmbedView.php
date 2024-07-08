@@ -95,8 +95,9 @@ class EmbedView extends AbstractView implements ViewInterface
         if (isset($embedNode)) {
             $tpl->setVariable('node', $embedNode);
         }
-
-        $templateOutput = $tpl->fetch('design:content/datatype/view/ezxmltags/' . $tagName . $tplSuffix . '.tpl');
+        $tpl->setVariable('tag_name', $tagName);
+        $tpl->setVariable('tpl_suffix', $tplSuffix);
+        $templateOutput = $tpl->fetch('design:forms/embed_view.tpl');
 
         $this->Result = $templateOutput;
     }
