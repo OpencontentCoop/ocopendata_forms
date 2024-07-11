@@ -11,6 +11,7 @@ use eZLocale;
 use eZURI;
 use eZURLOperator;
 use eZTemplate;
+use Opencontent\Ocopendata\Forms\EzOnlineEditor\EzOnlineEditorXMLInput;
 
 class EzOnlineEditorXmlField extends FieldConnector
 {
@@ -34,7 +35,7 @@ class EzOnlineEditorXmlField extends FieldConnector
             /** @var \eZXMLText $content */
             $content = $attribute->content();
 
-            $handler = new eZOEXMLInput(
+            $handler = new EzOnlineEditorXMLInput(
                 \eZXMLTextType::rawXMLText($attribute),
                 true,
                 $attribute
