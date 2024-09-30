@@ -7,9 +7,14 @@ class MatrixField extends FieldConnector
 {
     public function getSchema()
     {
+        //temp workaround
+        $name = $this->attribute->attribute('name');
+        if ($this->attribute->attribute('is_required')){
+            $name .= '*';
+        }
         $schema = array(
             "type" => "array",
-            "title" => $this->attribute->attribute('name'),
+            "title" => $name,
             "items" => array(
                 "type" => "object",
                 "properties" => array()
