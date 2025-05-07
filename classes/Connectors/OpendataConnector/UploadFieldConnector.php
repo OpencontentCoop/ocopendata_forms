@@ -2,10 +2,17 @@
 
 namespace Opencontent\Ocopendata\Forms\Connectors\OpendataConnector;
 
+use eZClusterFileHandler;
+use eZDebug;
+use eZDFSFileHandler;
+use eZDir;
 use eZExecution;
 use eZFSFileHandler;
+use eZINI;
 use eZMimeType;
 use eZSys;
+use eZUser;
+use SplFileObject;
 use UploadHandler;
 
 abstract class UploadFieldConnector extends FieldConnector implements CleanableFieldConnectorInterface
@@ -31,7 +38,7 @@ abstract class UploadFieldConnector extends FieldConnector implements CleanableF
     }
 
     /**
-     * @param \SplFileObject[] $fileObjectList
+     * @param SplFileObject[] $fileObjectList
      */
     public function insertFiles($fileObjectList)
     {
@@ -45,13 +52,13 @@ abstract class UploadFieldConnector extends FieldConnector implements CleanableF
 
             if ($this->isImage($this->getUploadDir() . $file->getBasename())) {
                 if (!is_dir($this->getUploadDir() . 'thumbnail')){
-                    \eZDir::mkdir($this->getUploadDir() . 'thumbnail');
+                    eZDir::mkdir($this->getUploadDir() . 'thumbnail');
                 }
                 $thumbnailPath = $this->getUploadDir() . 'thumbnail/' . $file->getBasename();
                 $cmd = 'convert ' . escapeshellarg($filePath) . ' -auto-orient -coalesce  -resize ' . escapeshellarg('80X80^') . ' -gravity center  -crop ' . escapeshellarg('80X80+0+0') . ' +repage ' . escapeshellarg($thumbnailPath);
                 exec($cmd, $output, $error);
                 if ($error) {
-                    \eZDebug::writeError(implode('\n', $output), __METHOD__);
+                    eZDebug::writeError(implode('\n', $output), __METHOD__);
                 }
             }
 
@@ -63,14 +70,14 @@ abstract class UploadFieldConnector extends FieldConnector implements CleanableF
                 'thumbnailUrl' => $this->getThumbnailUrl($file->getBasename()),
                 'deleteUrl' => $this->getServiceUrl('upload', array('delete' => $file->getBasename())),
                 'deleteType' => "GET",
-                'tempFileCheck' => $tempFileCheck
+                'tempFileCheck' => $tempFileCheck,
             );
         }
 
         return array('files' => $files);
     }
 
-    private function getThumbnailUrl($filename)
+    protected function getThumbnailUrl($filename)
     {
         $thumbnailUrl = $this->getServiceUrl('upload', array('preview' => $filename));
         if (!$this->isImage($this->getUploadDir() . $filename)) {
@@ -80,10 +87,8 @@ abstract class UploadFieldConnector extends FieldConnector implements CleanableF
         return $thumbnailUrl;
     }
 
-    private function doUpload($paramNamePrefix)
+    protected function calculateUploadParamName($paramNamePrefix)
     {
-        //$this->cleanup();
-
         $paramName = $this->getIdentifier() . $this->getUploadParamNameSuffix();
         if ($paramNamePrefix) {
             $fileNames = array_keys($_FILES);
@@ -94,15 +99,19 @@ abstract class UploadFieldConnector extends FieldConnector implements CleanableF
             }
         }
 
+        return $paramName;
+    }
+
+    protected function doUpload($paramNamePrefix)
+    {
+        $paramName = $this->calculateUploadParamName($paramNamePrefix);
         $options = array();
         $options['upload_dir'] = $this->getUploadDir();
         $options['download_via_php'] = true;
         $options['param_name'] = $paramName;
 
-        /** @var UploadHandler $uploadHandler */
         $uploadHandler = new UploadHandler($options, false);
         $data = $uploadHandler->post(false);
-
         $files = array();
         foreach ($data[$options['param_name']] as $file) {
 
@@ -118,14 +127,14 @@ abstract class UploadFieldConnector extends FieldConnector implements CleanableF
                 'thumbnailUrl' => $thumbnailUrl,
                 'deleteUrl' => $this->getServiceUrl('upload', array('delete' => $file->name)),
                 'deleteType' => "GET",
-                'tempFileCheck' => $tempFileCheck
+                'tempFileCheck' => $tempFileCheck,
             );
         }
 
         return array('files' => $files);
     }
 
-    private function doDelete()
+    protected function doDelete()
     {
         $fileName = $this->getHelper()->getParameter('delete');
 
@@ -144,13 +153,13 @@ abstract class UploadFieldConnector extends FieldConnector implements CleanableF
         return array(
             'files' => array(
                 array(
-                    $fileName => true
-                )
-            )
+                    $fileName => true,
+                ),
+            ),
         );
     }
 
-    private function doPreview()
+    protected function doPreview()
     {
         $fileName = $this->getHelper()->getParameter('preview');
         $filePath = $this->getUploadDir() . $fileName;
@@ -181,16 +190,17 @@ abstract class UploadFieldConnector extends FieldConnector implements CleanableF
 
     protected function getUploadDir()
     {
-        $directory = md5(\eZUser::currentUserID() . $this->class->attribute('identifier') . $this->getIdentifier() . $this->getUploadParamNameSuffix());
+        $directory = md5(
+            eZUser::currentUserID() . $this->class->attribute('identifier') . $this->getIdentifier() . $this->getUploadParamNameSuffix());
 
         $uploadDir = eZSys::cacheDirectory() . '/fileupload/' . $directory . '/';
-        $fileHandler = \eZClusterFileHandler::instance();
-        if ($fileHandler instanceof \eZDFSFileHandler) {
-            $mountPointPath = \eZINI::instance('file.ini')->variable('eZDFSClusteringSettings', 'MountPointPath');
+        $fileHandler = eZClusterFileHandler::instance();
+        if ($fileHandler instanceof eZDFSFileHandler) {
+            $mountPointPath = eZINI::instance('file.ini')->variable('eZDFSClusteringSettings', 'MountPointPath');
             $uploadDir = rtrim($mountPointPath, '/') . '/' . $uploadDir;
         }
 
-        \eZDir::mkdir($uploadDir, false, true);
+        eZDir::mkdir($uploadDir, false, true);
 
         return $uploadDir;
     }
@@ -198,7 +208,7 @@ abstract class UploadFieldConnector extends FieldConnector implements CleanableF
     protected function isImage($filePath)
     {
         $mime = eZMimeType::findByURL($filePath);
-        list($group, $type) = explode('/', $mime['name']);
+        [$group, ] = explode('/', $mime['name']);
 
         return $group == 'image';
     }
