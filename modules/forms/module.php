@@ -5,7 +5,7 @@ $Module = array( 'name' => 'OpenDataForms' );
 $ViewList = array();
 
 $ViewList['demo'] = array(
-    'functions' => array( 'use' ),
+    'functions' => array( 'demo' ),
     'script' => 'demo.php',
     'params' => array(),
     'unordered_params' => array()
@@ -30,3 +30,4 @@ $ViewList['ezoe'] = array(
 
 $FunctionList = array();
 $FunctionList['use'] = array();
+$FunctionList['demo'] = array();
