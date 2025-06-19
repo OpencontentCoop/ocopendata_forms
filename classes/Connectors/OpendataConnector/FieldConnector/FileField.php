@@ -24,7 +24,7 @@ class FileField extends UploadFieldConnector
                     'name' => $file->attribute('original_filename'),
                     'size' => $file->attribute('filesize'),
                     'url' => $rawContent['content']['url'],
-                    'thumbnailUrl' => false,
+                    'thumbnailUrl' => $this->getIconImageBase64Data($file->attribute('filepath')),
                     'deleteUrl' => $this->getServiceUrl('upload', array('delete' => $file->attribute('original_filename'))),
                     'deleteType' => "GET"
                 );
