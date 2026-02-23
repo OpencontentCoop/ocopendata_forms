@@ -6,6 +6,7 @@ use Opencontent\Ocopendata\Forms\Connectors\OpendataConnector\UploadFieldConnect
 use eZContentObjectAttribute;
 use eZBinaryFile;
 use eZFSFileHandler;
+use eZClusterFileHandler;
 
 class FileField extends UploadFieldConnector
 {
@@ -21,6 +22,7 @@ class FileField extends UploadFieldConnector
             if ($file instanceof eZBinaryFile) {
                 return array(
                     'id' => $rawContent['id'],
+                    'version' => $rawContent['version'],
                     'name' => $file->attribute('original_filename'),
                     'size' => $file->attribute('filesize'),
                     'url' => $rawContent['content']['url'],
@@ -83,6 +85,19 @@ class FileField extends UploadFieldConnector
                         'file' => $fileContent,
                         'filename' =>  $file['name'],
                     );
+                }
+            } else {
+                $binaryFile = eZBinaryFile::fetch(
+                    (int)$file['id'],
+                    (int)$file['version']
+                );
+                if ($binaryFile instanceof eZBinaryFile) {
+                    $fileInfo = $binaryFile->storedFileInfo();
+                    $file = eZClusterFileHandler::instance($fileInfo['filepath']);
+                    return [
+                        'file' => base64_encode($file->fetchContents()),
+                        'filename' => $binaryFile->attribute('original_filename'),
+                    ];
                 }
             }
         }
