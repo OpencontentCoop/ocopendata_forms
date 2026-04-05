@@ -39,6 +39,7 @@ class RelationsView extends AbstractView implements ViewInterface
             }
         }
 
+        // @phpstan-ignore variable.undefined
         if (!$embedObject instanceof \eZContentObject || !$embedObject->canRead()) {
             throw new \Exception(
                 \ezpI18n::tr('design/standard/ezoe', 'Invalid parameter: %parameter = %value', null,
@@ -130,6 +131,7 @@ class RelationsView extends AbstractView implements ViewInterface
 
         // generate class hash
         $classList = array();
+        // @phpstan-ignore variable.undefined
         if ($classListData) {
             $classList['-0-'] = 'None';
             foreach ($classListData as $class) {
@@ -142,6 +144,7 @@ class RelationsView extends AbstractView implements ViewInterface
         }
 
         $classListInline = array();
+        // @phpstan-ignore variable.undefined
         if ($classListInlineData) {
             $classListInline['-0-'] = 'None';
             foreach ($classListInlineData as $class) {

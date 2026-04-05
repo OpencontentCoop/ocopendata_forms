@@ -52,6 +52,7 @@ class ManageLocationConnector extends AbstractBaseConnector
         		throw new Exception("Source node $sourceNodeId not found", 1);        		
         	}
 
+         // @phpstan-ignore class.notFound
         	if (!$this->sourceNode->object()->checkAccess('edit') && !eZUser::currentUser()->attribute('has_manage_locations')){
         		throw new Exception("User can not manage locations in node $sourceNodeId", 1);  
         	}

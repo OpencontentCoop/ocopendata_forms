@@ -335,6 +335,7 @@ class EzOnlineEditorXMLInput extends eZOEXMLInput
             case 'literal' :
                 {
                     $literalText = '';
+                    // @phpstan-ignore variable.undefined
                     foreach ($tagChildren as $childTag) {
                         $literalText .= $childTag->textContent;
                     }
@@ -627,6 +628,7 @@ class EzOnlineEditorXMLInput extends eZOEXMLInput
                     }
 
                     $attributeText = '';
+                    // @phpstan-ignore empty.variable
                     if (!empty($attributes)) {
                         $attributeText = ' ' . implode(' ', $attributes);
                     }

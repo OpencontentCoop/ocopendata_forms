@@ -153,6 +153,7 @@ class UploadView extends AbstractView implements ViewInterface
                 echo 'window.parent.eZOEPopupUtils.selectByEmbedId( ' . $newObjectID . ', ' . $newObjectNodeID . ', ' . json_encode($newObjectName) . ' );';
                 echo '</script></head><body></body></html>';
             } catch (\InvalidArgumentException $e) {
+                // @phpstan-ignore variable.undefined
                 $uploadedObject->purge();
                 echo '<html><head><title>HiddenUploadFrame</title><script type="text/javascript">';
                 echo 'window.parent.document.getElementById("upload_in_progress").style.display = "none";';
