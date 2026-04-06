@@ -16,6 +16,7 @@ class CachedClassConnector extends ClassConnector
     {
         $connector = $this;
         return $this->getCacheManager( $this->class->attribute('identifier') . '_schema' )->processCache(
+            // @phpstan-ignore closure.unusedUse
             function($file) use($connector){
                 $content = include( $file );
 
@@ -36,6 +37,7 @@ class CachedClassConnector extends ClassConnector
     {
         $connector = $this;
         return $this->getCacheManager( $this->class->attribute('identifier') . '_options' )->processCache(
+            // @phpstan-ignore closure.unusedUse
             function($file) use($connector){
                 $content = include( $file );
 
@@ -57,6 +59,7 @@ class CachedClassConnector extends ClassConnector
     {
         $connector = $this;
         return $this->getCacheManager( $this->class->attribute('identifier') . '_options' )->processCache(
+            // @phpstan-ignore closure.unusedUse
             function($file) use($connector){
                 $content = include( $file );
 
